@@ -14,6 +14,6 @@ export class Vendor {
   @Column()
   email: string;
 
-  @Column({ nullable: true })
+  @Column()
   sub: string;
 }
