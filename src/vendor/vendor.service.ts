@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { Repository } from 'typeorm';
+import { Vendor } from './entities/vendor.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class VendorService {
+  constructor(
+    @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
+  ) {}
+
   create(createVendorDto: CreateVendorDto) {
-    return 'This action adds a new vendor';
+    const newVendor = this.vendorRepository.create(createVendorDto);
+    return this.vendorRepository.save(newVendor);
   }
 
   findAll() {
-    return `This action returns all vendor`;
+    return this.vendorRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} vendor`;
+    return this.vendorRepository.findBy({ id: id });
   }
 
   update(id: number, updateVendorDto: UpdateVendorDto) {
-    return `This action updates a #${id} vendor`;
+    return this.vendorRepository.update(id, updateVendorDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} vendor`;
+    return this.vendorRepository.delete(id);
   }
 }
