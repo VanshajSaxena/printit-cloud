@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrinterModule } from './printer/printer.module';
 import { PrintTransactionModule } from './print-transaction/print-transaction.module';
+import { PrintDocumentModule } from './print-document/print-document.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PrintTransactionModule } from './print-transaction/print-transaction.mo
     VendorModule,
     PrinterModule,
     PrintTransactionModule,
+    PrintDocumentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
