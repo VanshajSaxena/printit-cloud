@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Printer } from 'src/printer/entities/printer.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Vendor {
@@ -16,4 +18,10 @@ export class Vendor {
 
   @Column()
   sub: string;
+
+  @OneToMany(() => Printer, (printer) => printer.vendor)
+  printers: Printer[];
+
+  @OneToMany(() => PrintTransaction, (transaction) => transaction.vendor)
+  printTransactions: PrintTransaction[];
 }

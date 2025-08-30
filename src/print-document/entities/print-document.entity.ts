@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class PrintDocument {
@@ -16,4 +17,10 @@ export class PrintDocument {
 
   @Column({ length: 500 })
   outputConfiguration: string;
+
+  @ManyToOne(
+    () => PrintTransaction,
+    (printTransaction) => printTransaction.printDocuments,
+  )
+  printTransaction: PrintTransaction;
 }
