@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { VendorModule } from './vendor/vendor.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PrinterModule } from './printer/printer.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       inject: [ConfigService],
     }),
     VendorModule,
+    PrinterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

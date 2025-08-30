@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import { CreateVendorDto } from './dto/create-vendor.dto';
-import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { Repository } from 'typeorm';
-import { Vendor } from './entities/vendor.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { Vendor } from './entities/vendor.entity';
 
 @Injectable()
 export class VendorService {
@@ -21,7 +21,7 @@ export class VendorService {
   }
 
   findOne(id: number) {
-    return this.vendorRepository.findBy({ id: id });
+    return this.vendorRepository.findOneBy({ id });
   }
 
   update(id: number, updateVendorDto: UpdateVendorDto) {
