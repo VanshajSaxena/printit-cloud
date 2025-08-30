@@ -13,7 +13,10 @@ export class PrintTransactionService {
   ) {}
 
   create(createPrintTransactionDto: CreatePrintTransactionDto) {
-    return this.printTransactionRepository.create(createPrintTransactionDto);
+    const newPrintTransaction = this.printTransactionRepository.create(
+      createPrintTransactionDto,
+    );
+    return this.printTransactionRepository.save(newPrintTransaction);
   }
 
   findAll() {

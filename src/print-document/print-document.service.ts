@@ -13,7 +13,10 @@ export class PrintDocumentService {
   ) {}
 
   create(createPrintDocumentDto: CreatePrintDocumentDto) {
-    return this.printDocumentRepository.create(createPrintDocumentDto);
+    const newPrintDocument = this.printDocumentRepository.create(
+      createPrintDocumentDto,
+    );
+    return this.printDocumentRepository.save(newPrintDocument);
   }
 
   findAll() {
