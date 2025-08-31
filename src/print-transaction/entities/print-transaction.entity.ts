@@ -1,7 +1,7 @@
 import { PrintDocument } from 'src/print-document/entities/print-document.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class PrintTransaction {
@@ -16,7 +16,7 @@ export class PrintTransaction {
   })
   printer: Printer | null;
 
-  @ManyToOne(
+  @OneToMany(
     () => PrintDocument,
     (printDocument) => printDocument.printTransaction,
   )
