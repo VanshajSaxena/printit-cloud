@@ -1,1 +1,5 @@
-export class CreatePrintTransactionDto {}
+export class CreatePrintTransactionDto {
+  vendorId: number;
+  printerId?: number;
+  printDocumentIds: number[];
+}

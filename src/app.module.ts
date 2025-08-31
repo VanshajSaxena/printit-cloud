@@ -24,6 +24,7 @@ import { PrintDocumentModule } from './print-document/print-document.module';
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get<boolean>('SYNCHRONIZE'),
+        logging: 'all',
       }),
       inject: [ConfigService],
     }),

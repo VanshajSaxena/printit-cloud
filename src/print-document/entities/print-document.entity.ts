@@ -16,7 +16,7 @@ export class PrintDocument {
   status: string;
 
   @Column({ length: 500 })
-  outputConfiguration: string;
+  configuration: string;
 
   @ManyToOne(
     () => PrintTransaction,

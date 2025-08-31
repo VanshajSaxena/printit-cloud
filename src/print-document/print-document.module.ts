@@ -8,5 +8,6 @@ import { PrintDocument } from './entities/print-document.entity';
   imports: [TypeOrmModule.forFeature([PrintDocument])],
   controllers: [PrintDocumentController],
   providers: [PrintDocumentService],
+  exports: [TypeOrmModule],
 })
 export class PrintDocumentModule {}

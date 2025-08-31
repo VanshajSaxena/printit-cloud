@@ -14,7 +14,7 @@ export class PrintTransaction {
   @ManyToOne(() => Printer, (printer) => printer.printTransactions, {
     nullable: true,
   })
-  printer: Printer;
+  printer: Printer | null;
 
   @ManyToOne(
     () => PrintDocument,
