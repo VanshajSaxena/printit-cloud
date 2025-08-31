@@ -13,7 +13,7 @@ export class Vendor {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
