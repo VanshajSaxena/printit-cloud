@@ -1,6 +1,6 @@
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { Vendor } from './entities/vendor.entity';
@@ -11,7 +11,12 @@ export class VendorService {
     @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
   ) {}
 
-  create(createVendorDto: CreateVendorDto) {
+  async create(createVendorDto: CreateVendorDto) {
+    const { email } = createVendorDto;
+    const isTaken = await this.vendorRepository.existsBy({ email });
+    if (isTaken) {
+      throw new ConflictException(`The email ${email} already exists.`);
+    }
     const newVendor = this.vendorRepository.create(createVendorDto);
     return this.vendorRepository.save(newVendor);
   }
