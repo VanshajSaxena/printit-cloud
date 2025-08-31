@@ -1,11 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreatePrintTransactionDto {
   @IsNotEmpty()
+  @IsNumber()
   vendorId: number;
 
-  printerId?: number;
+  @IsOptional()
+  @IsNumber()
+  printerId: number;
 
   @IsNotEmpty()
+  @IsArray()
   printDocumentIds: number[];
 }

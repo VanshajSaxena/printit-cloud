@@ -15,7 +15,7 @@ export class PrintDocument {
   @Column()
   status: string;
 
-  @Column({ length: 500 })
+  @Column({ length: 500, nullable: true })
   configuration: string;
 
   @ManyToOne(

@@ -1,11 +1,14 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsJSON, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreatePrintDocumentDto {
   @IsNotEmpty()
+  @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsString()
   path: string;
 
+  @IsOptional()
+  @IsJSON()
   configuration: string;
 }
