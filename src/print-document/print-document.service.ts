@@ -16,6 +16,7 @@ export class PrintDocumentService {
     const newPrintDocument = this.printDocumentRepository.create(
       createPrintDocumentDto,
     );
+    newPrintDocument.status = 'PENDING';
     return this.printDocumentRepository.save(newPrintDocument);
   }
 
