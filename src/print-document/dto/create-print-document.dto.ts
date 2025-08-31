@@ -10,5 +10,5 @@ export class CreatePrintDocumentDto {
 
   @IsOptional()
   @IsJSON()
-  configuration: string;
+  configuration?: string;
 }

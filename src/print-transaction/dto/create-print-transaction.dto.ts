@@ -7,7 +7,7 @@ export class CreatePrintTransactionDto {
 
   @IsOptional()
   @IsNumber()
-  printerId: number;
+  printerId?: number;
 
   @IsNotEmpty()
   @IsArray()
