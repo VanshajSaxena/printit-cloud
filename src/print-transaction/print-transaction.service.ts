@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePrintTransactionDto } from './dto/create-print-transaction.dto';
 import { UpdatePrintTransactionDto } from './dto/update-print-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,8 +13,10 @@ export class PrintTransactionService {
   constructor(
     @InjectRepository(PrintTransaction)
     private printTransactionRepository: Repository<PrintTransaction>,
-    @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
-    @InjectRepository(Printer) private printerRepository: Repository<Printer>,
+    @InjectRepository(Vendor)
+    private vendorRepository: Repository<Vendor>,
+    @InjectRepository(Printer)
+    private printerRepository: Repository<Printer>,
     @InjectRepository(PrintDocument)
     private printDocumentRepository: Repository<PrintDocument>,
   ) {}

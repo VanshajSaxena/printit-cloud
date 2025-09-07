@@ -8,7 +8,8 @@ import { Vendor } from './entities/vendor.entity';
 @Injectable()
 export class VendorService {
   constructor(
-    @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
+    @InjectRepository(Vendor)
+    private vendorRepository: Repository<Vendor>,
   ) {}
 
   async create(createVendorDto: CreateVendorDto) {

@@ -13,8 +13,10 @@ import { Vendor } from 'src/vendor/entities/vendor.entity';
 @Injectable()
 export class PrinterService {
   constructor(
-    @InjectRepository(Printer) private printerRepository: Repository<Printer>,
-    @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
+    @InjectRepository(Printer)
+    private printerRepository: Repository<Printer>,
+    @InjectRepository(Vendor)
+    private vendorRepository: Repository<Vendor>,
   ) {}
 
   async create(createPrinterDto: CreatePrinterDto) {
