@@ -24,12 +24,6 @@ export class PrintTransactionService {
   ) {}
 
   async create(createPrintTransactionDto: CreatePrintTransactionDto) {
-    if (
-      createPrintTransactionDto.vendorId === undefined ||
-      createPrintTransactionDto.vendorId === null
-    ) {
-      throw new BadRequestException('Vendor ID is required.');
-    }
     const vendor = await this.vendorRepository.findOneBy({
       id: createPrintTransactionDto.vendorId,
     });
