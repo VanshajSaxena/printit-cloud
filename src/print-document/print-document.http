@@ -1,0 +1,46 @@
+### 
+
+@base_url = http://{{hostname}}:{{port}}/api/v1
+@documentId = 1
+@documentName = New document
+@documentPath = /documents/my-new-document.pdf
+@hostname = localhost
+@port = 3000
+
+
+### Create a new document
+
+POST {{base_url}}/documents HTTP/1.1
+Content-Type: application/json
+
+{
+  "configuration": "{\"colorMode\": \"sssf\"}",
+  "name": "{{documentName}}",
+  "path": "{{documentPath}}"
+}
+
+
+### Get all documents
+
+GET {{base_url}}/documents HTTP/1.1
+
+
+### Get a single document by ID
+
+GET {{base_url}}/documents/{{documentId}} HTTP/1.1
+
+
+### Update an existing document
+
+PATCH {{base_url}}/documents/{{documentId}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "My updated document",
+  "path": "/documents/my--document.pdf"
+}
+
+
+### Delete a document
+
+DELETE {{base_url}}/documents/{{documentId}} HTTP/1.1
