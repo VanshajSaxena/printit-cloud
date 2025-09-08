@@ -1,0 +1,47 @@
+### 
+
+@base_url = http://{{hostname}}:{{port}}/api/v1
+@hostname = localhost
+@port = 3000
+@printerId = 1
+@printerName = HP LaserJet Pro M404dn
+@vendorId = 1
+
+
+### Create a new printer
+
+POST {{base_url}}/printers HTTP/1.1
+Content-Type: application/json
+
+{
+  "capabilities": "{\"color\": \"color\"}",
+  "name": "{{printerName}}",
+  "vendorId": 1
+}
+
+
+### Get all printers
+
+GET {{base_url}}/printers HTTP/1.1
+
+
+### Get a single printer by ID
+
+GET {{base_url}}/printers/{{printerId}} HTTP/1.1
+
+
+### Update an existing printer
+
+PATCH {{base_url}}/printers/{{printerId}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "capabilities": "{\"color\": \"color\"}",
+  "name": "{{printerName}}",
+  "vendorId": 1
+}
+
+
+### Delete a printer
+
+DELETE {{base_url}}/printers/{{printerId}} HTTP/1.1
