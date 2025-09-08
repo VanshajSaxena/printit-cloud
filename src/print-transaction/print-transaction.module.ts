@@ -16,5 +16,6 @@ import { VendorModule } from 'src/vendor/vendor.module';
   ],
   controllers: [PrintTransactionController],
   providers: [PrintTransactionService],
+  exports: [TypeOrmModule, PrintTransactionService],
 })
 export class PrintTransactionModule {}
