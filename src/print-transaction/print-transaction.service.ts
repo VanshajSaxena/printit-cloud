@@ -62,11 +62,20 @@ export class PrintTransactionService {
     return this.printTransactionRepository.findOneBy({ id });
   }
 
-  update(id: number, updatePrintTransactionDto: UpdatePrintTransactionDto) {
-    // return this.printTransactionRepository.update(
-    //   id,
-    //   updatePrintTransactionDto,
-    // );
+  async update(
+    id: number,
+    updatePrintTransactionDto: UpdatePrintTransactionDto,
+  ) {
+    const printTransaction = await this.printTransactionRepository.findOneBy({
+      id,
+    });
+    if (!printTransaction) {
+      throw new NotFoundException(
+        `PrintTransaction not found for the id: ${id}`,
+      );
+    }
+    Object.assign(printTransaction, updatePrintTransactionDto);
+    return this.printTransactionRepository.save(printTransaction);
   }
 
   remove(id: number) {

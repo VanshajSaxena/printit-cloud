@@ -56,8 +56,13 @@ export class PrinterService {
     return this.printerRepository.findOneBy({ id });
   }
 
-  update(id: number, updatePrinterDto: UpdatePrinterDto) {
-    return this.printerRepository.update(id, updatePrinterDto);
+  async update(id: number, updatePrinterDto: UpdatePrinterDto) {
+    const printer = await this.printerRepository.findOneBy({ id });
+    if (!printer) {
+      throw new NotFoundException(`Printer not found for the id: ${id}`);
+    }
+    Object.assign(printer, updatePrinterDto);
+    return this.printerRepository.save(printer);
   }
 
   remove(id: number) {

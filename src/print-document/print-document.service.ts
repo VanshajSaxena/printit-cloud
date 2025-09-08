@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
 import { UpdatePrintDocumentDto } from './dto/update-print-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,8 +28,16 @@ export class PrintDocumentService {
     return this.printDocumentRepository.findOneBy({ id });
   }
 
-  update(id: number, updatePrintDocumentDto: UpdatePrintDocumentDto) {
-    return this.printDocumentRepository.update(id, updatePrintDocumentDto);
+  async update(
+    id: number,
+    updatePrintDocumentDto: UpdatePrintDocumentDto,
+  ): Promise<PrintDocument> {
+    const printDocument = await this.printDocumentRepository.findOneBy({ id });
+    if (!printDocument) {
+      throw new NotFoundException(`PrintDocument not found for the id: ${id}`);
+    }
+    Object.assign(printDocument, updatePrintDocumentDto);
+    return this.printDocumentRepository.save(printDocument);
   }
 
   remove(id: number) {
