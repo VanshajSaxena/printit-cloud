@@ -4,6 +4,7 @@ import { UpdatePrintDocumentDto } from './dto/update-print-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PrintDocument } from './entities/print-document.entity';
 import { Repository } from 'typeorm';
+import { DocumentStatus } from './enums/document-status.enum';
 
 @Injectable()
 export class PrintDocumentService {
@@ -16,7 +17,7 @@ export class PrintDocumentService {
     const newPrintDocument = this.printDocumentRepository.create(
       createPrintDocumentDto,
     );
-    newPrintDocument.status = 'PENDING';
+    newPrintDocument.status = DocumentStatus.PENDING;
     return this.printDocumentRepository.save(newPrintDocument);
   }
 
