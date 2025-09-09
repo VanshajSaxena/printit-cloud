@@ -1,0 +1,98 @@
+* Central Service
+
+** Entities
+
+*** Vendor (`/api/v1/vendors`)
+
+**** Fields
+     - id
+     - firstname
+     - lastname
+     - email (unique)
+     - sub
+
+**** Relationships
+     - OneToMany printers → Printer
+     - OneToMany printTransactions → PrintTransaction
+
+*** Printer (`/api/v1/printers`)
+
+**** Fields
+     - id
+     - name
+     - capabilities
+
+**** Relationships
+     - ManyToOne vendor → Vendor
+     - OneToMany printTransactions → PrintTransaction
+
+*** PrintTransaction (`/api/v1/transactions`)
+
+**** Fields
+     - id
+
+**** Relationships
+     - ManyToOne vendor → Vendor
+     - ManyToOne printer → Printer (nullable)
+     - OneToMany printDocuments → PrintDocument
+
+*** PrintDocument (`/api/v1/documents`)
+**** Fields
+     - id
+     - name
+     - path
+     - status
+     - configuration (nullable, length *0)
+**** Relationships
+     - ManyToOne printTransaction → PrintTransaction
+
+*** Relationships
+
+    @code mermaid
+    erDiagram
+    Vendor ||--o{ Printer  has
+    Vendor ||--o{ PrintTransaction  initiates
+    Printer ||--o{ PrintTransaction  handles
+    PrintTransaction ||--o{ PrintDocument  contains
+    @end
+
+** Server WebSocket Namespaces (Socket.IO)
+
+*** Single Notification Namespace (`/notifications`)
+
+**** (`join_vendor`)
+
+     The vendor application when starts, emits this event to the server, the server puts him into a private room identified by this vendor's id.
+
+**** (`new_transaction`)
+
+     When the server receives a new transaction using REST to this vendor, it emits an event specifically to the vendor's private room.
+
+     @code json
+     {
+       "id": 123 // transaction id
+     }
+     @end
+
+     The vendor application can then request the transaction content with this `id` using a REST endpoint.
+
+**** (`join_transaction`)
+
+     The customer's browser will emit this event after creating a new transaction, the server will put him in a private room identified by transaction's id.
+
+     @code json
+     {
+       "id" : 123 // transaction id
+     }
+     @end
+
+**** (`update_progress`)
+
+     Now when the desktop application updates the transaction status, the server emits this event specifically to the creator of this transaction (to the room identified by this transaction).
+
+     @code json
+     {
+       "id": 123 // transaction id
+       "progress": "printing" // progress status
+     }
+     @end
