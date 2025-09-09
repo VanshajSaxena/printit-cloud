@@ -1,5 +1,6 @@
 import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { DocumentStatus } from '../enums/document-status.enum';
 
 @Entity()
 export class PrintDocument {
@@ -12,8 +13,8 @@ export class PrintDocument {
   @Column()
   path: string;
 
-  @Column()
-  status: string;
+  @Column('enum', { enum: DocumentStatus, default: DocumentStatus.PENDING })
+  status: DocumentStatus;
 
   @Column({ length: 500, nullable: true })
   configuration: string;
