@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrinterModule } from './printer/printer.module';
 import { PrintTransactionModule } from './print-transaction/print-transaction.module';
 import { PrintDocumentModule } from './print-document/print-document.module';
+import { NotificationsGateway } from './notifications/notifications.gateway';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { PrintDocumentModule } from './print-document/print-document.module';
     PrintDocumentModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NotificationsGateway],
 })
 export class AppModule {}
