@@ -64,6 +64,12 @@
 
      The vendor application when starts, emits this event to the server, the server puts him into a private room identified by this vendor's id.
 
+     @code json
+     {
+       "id" : 123 // vendor id
+     }
+     @end
+
      - Should occur when the desktop application starts-up (restarts).
 
 **** (`new_transaction`)
@@ -78,7 +84,7 @@
 
      The vendor application can then request the transaction content with this `id` using a REST endpoint.
 
-     - Should occur when a new transaction is made from the mobile frontend.
+     - Should occur when a new transaction is made from the mobile frontend from the REST endpoint.
 
 **** (`join_transaction`)
 
