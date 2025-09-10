@@ -64,6 +64,8 @@
 
      The vendor application when starts, emits this event to the server, the server puts him into a private room identified by this vendor's id.
 
+     - Should occur when the desktop application starts-up (restarts).
+
 **** (`new_transaction`)
 
      When the server receives a new transaction using REST to this vendor, it emits an event specifically to the vendor's private room.
@@ -76,6 +78,8 @@
 
      The vendor application can then request the transaction content with this `id` using a REST endpoint.
 
+     - Should occur when a new transaction is made from the mobile frontend.
+
 **** (`join_transaction`)
 
      The customer's browser will emit this event after creating a new transaction, the server will put him in a private room identified by transaction's id.
@@ -85,6 +89,8 @@
        "id" : 123 // transaction id
      }
      @end
+
+     - Should occur immediately after the vendor approves the transaction.
 
 **** (`update_progress`)
 
@@ -96,3 +102,5 @@
        "progress": "printing" // progress status
      }
      @end
+
+     - Should occur when there is an update on the status of the transaction.
