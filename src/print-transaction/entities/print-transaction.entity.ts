@@ -21,6 +21,9 @@ export class PrintTransaction {
   })
   status: TransactionStatus;
 
+  @Column({ unique: true })
+  friendlyId: string;
+
   @ManyToOne(() => Vendor, (vendor) => vendor.printTransactions)
   vendor: Vendor;
 
