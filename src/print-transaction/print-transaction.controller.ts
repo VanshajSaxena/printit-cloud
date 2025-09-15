@@ -18,22 +18,22 @@ export class PrintTransactionController {
   ) {}
 
   @Post()
-  create(@Body() createPrintTransactionDto: CreatePrintTransactionDto) {
+  async create(@Body() createPrintTransactionDto: CreatePrintTransactionDto) {
     return this.printTransactionService.create(createPrintTransactionDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.printTransactionService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.printTransactionService.findOne(+id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updatePrintTransactionDto: UpdatePrintTransactionDto,
   ) {
@@ -41,7 +41,7 @@ export class PrintTransactionController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.printTransactionService.remove(+id);
   }
 }

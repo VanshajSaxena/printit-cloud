@@ -16,22 +16,22 @@ export class PrintDocumentController {
   constructor(private readonly printDocumentService: PrintDocumentService) {}
 
   @Post()
-  create(@Body() createPrintDocumentDto: CreatePrintDocumentDto) {
+  async create(@Body() createPrintDocumentDto: CreatePrintDocumentDto) {
     return this.printDocumentService.create(createPrintDocumentDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.printDocumentService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.printDocumentService.findOne(+id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updatePrintDocumentDto: UpdatePrintDocumentDto,
   ) {
@@ -39,7 +39,7 @@ export class PrintDocumentController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.printDocumentService.remove(+id);
   }
 }

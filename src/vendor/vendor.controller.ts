@@ -16,27 +16,30 @@ export class VendorController {
   constructor(private readonly vendorService: VendorService) {}
 
   @Post()
-  create(@Body() createVendorDto: CreateVendorDto) {
+  async create(@Body() createVendorDto: CreateVendorDto) {
     return this.vendorService.create(createVendorDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.vendorService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.vendorService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateVendorDto: UpdateVendorDto,
+  ) {
     return this.vendorService.update(+id, updateVendorDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.vendorService.remove(+id);
   }
 }

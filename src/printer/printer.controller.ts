@@ -16,27 +16,30 @@ export class PrinterController {
   constructor(private readonly printerService: PrinterService) {}
 
   @Post()
-  create(@Body() createPrinterDto: CreatePrinterDto) {
+  async create(@Body() createPrinterDto: CreatePrinterDto) {
     return this.printerService.create(createPrinterDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.printerService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.printerService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePrinterDto: UpdatePrinterDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updatePrinterDto: UpdatePrinterDto,
+  ) {
     return this.printerService.update(+id, updatePrinterDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.printerService.remove(+id);
   }
 }
