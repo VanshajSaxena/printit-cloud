@@ -48,11 +48,11 @@ export class PrinterService {
     return this.printerRepository.save(newPrinter);
   }
 
-  findAll() {
+  async findAll() {
     return this.printerRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.printerRepository.findOneBy({ id });
   }
 
@@ -65,7 +65,7 @@ export class PrinterService {
     return this.printerRepository.save(printer);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.printerRepository.delete(id);
   }
 }

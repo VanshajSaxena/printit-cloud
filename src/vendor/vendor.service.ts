@@ -26,11 +26,11 @@ export class VendorService {
     return this.vendorRepository.save(newVendor);
   }
 
-  findAll() {
+  async findAll() {
     return this.vendorRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.vendorRepository.findOneBy({ id });
   }
 
@@ -43,7 +43,7 @@ export class VendorService {
     return this.vendorRepository.save(vendor);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.vendorRepository.delete(id);
   }
 }

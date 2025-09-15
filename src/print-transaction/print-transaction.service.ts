@@ -70,11 +70,11 @@ export class PrintTransactionService {
     return this.printTransactionRepository.save(newPrintTransaction);
   }
 
-  findAll() {
+  async findAll() {
     return this.printTransactionRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.printTransactionRepository.findOneBy({ id });
   }
 
@@ -94,7 +94,7 @@ export class PrintTransactionService {
     return this.printTransactionRepository.save(printTransaction);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.printTransactionRepository.delete(id);
   }
 }

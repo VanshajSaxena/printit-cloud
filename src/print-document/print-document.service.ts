@@ -13,7 +13,7 @@ export class PrintDocumentService {
     private printDocumentRepository: Repository<PrintDocument>,
   ) {}
 
-  create(createPrintDocumentDto: CreatePrintDocumentDto) {
+  async create(createPrintDocumentDto: CreatePrintDocumentDto) {
     const newPrintDocument = this.printDocumentRepository.create(
       createPrintDocumentDto,
     );
@@ -21,11 +21,11 @@ export class PrintDocumentService {
     return this.printDocumentRepository.save(newPrintDocument);
   }
 
-  findAll() {
+  async findAll() {
     return this.printDocumentRepository.find();
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return this.printDocumentRepository.findOneBy({ id });
   }
 
@@ -41,7 +41,7 @@ export class PrintDocumentService {
     return this.printDocumentRepository.save(printDocument);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.printDocumentRepository.delete(id);
   }
 }
