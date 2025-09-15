@@ -16,7 +16,7 @@ export class PrintDocument {
   @Column('enum', { enum: DocumentStatus, default: DocumentStatus.PENDING })
   status: DocumentStatus;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'json', nullable: true })
   configuration: string | null;
 
   @ManyToOne(

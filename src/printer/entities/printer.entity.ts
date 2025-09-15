@@ -16,7 +16,7 @@ export class Printer {
   @Column()
   name: string;
 
-  @Column({ length: 500 })
+  @Column({ type: 'json' })
   capabilities: string;
 
   @ManyToOne(() => Vendor, (vendor) => vendor.printers)
