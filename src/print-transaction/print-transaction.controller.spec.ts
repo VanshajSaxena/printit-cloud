@@ -69,21 +69,21 @@ describe('PrintTransactionController', () => {
 
   describe('findOne', () => {
     it('should call the findOne method of the service with correct DTO', async () => {
-      const id = '1';
+      const id = 1;
       const expectedResult = { id: 1, vendorId: 1, printDocumentIds: [1, 2] };
 
       mockPrintTransactionService.findOne.mockResolvedValue(expectedResult);
 
       const result = await controller.findOne(id);
 
-      expect(service.findOne).toHaveBeenCalledWith(+id);
+      expect(service.findOne).toHaveBeenCalledWith(id);
       expect(result).toEqual(expectedResult);
     });
   });
 
   describe('update', () => {
     it('should call the update method of the service with correct DTO', async () => {
-      const id = '1';
+      const id = 1;
       const updataDto: UpdatePrintTransactionDto = { printerId: 1 };
       const expectedResult = {
         id: 1,
@@ -96,19 +96,19 @@ describe('PrintTransactionController', () => {
 
       const result = await controller.update(id, updataDto);
 
-      expect(service.update).toHaveBeenCalledWith(+id, updataDto);
+      expect(service.update).toHaveBeenCalledWith(id, updataDto);
       expect(result).toEqual(expectedResult);
     });
   });
 
   describe('remove', () => {
     it('should call the remove method of the service with correct DTO', async () => {
-      const id = '1';
+      const id = 1;
       mockPrintTransactionService.remove.mockResolvedValue({ affected: 1 });
 
       const result = await controller.remove(id);
 
-      expect(service.remove).toHaveBeenCalledWith(+id);
+      expect(service.remove).toHaveBeenCalledWith(id);
       expect(result).toEqual({ affected: 1 });
     });
   });

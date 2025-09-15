@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PrintDocumentService } from './print-document.service';
 import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
@@ -26,20 +27,20 @@ export class PrintDocumentController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.printDocumentService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.printDocumentService.findOne(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePrintDocumentDto: UpdatePrintDocumentDto,
   ) {
-    return this.printDocumentService.update(+id, updatePrintDocumentDto);
+    return this.printDocumentService.update(id, updatePrintDocumentDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.printDocumentService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.printDocumentService.remove(id);
   }
 }

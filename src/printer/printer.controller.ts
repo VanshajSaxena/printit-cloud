@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PrinterService } from './printer.service';
 import { CreatePrinterDto } from './dto/create-printer.dto';
@@ -26,20 +27,20 @@ export class PrinterController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.printerService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.printerService.findOne(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePrinterDto: UpdatePrinterDto,
   ) {
-    return this.printerService.update(+id, updatePrinterDto);
+    return this.printerService.update(id, updatePrinterDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.printerService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.printerService.remove(id);
   }
 }

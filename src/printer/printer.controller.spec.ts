@@ -74,7 +74,7 @@ describe('PrinterController', () => {
 
   describe('findOne', () => {
     it('should call the findOne method of the service with the correct id', async () => {
-      const id = '1';
+      const id = 1;
       const expectedResult = {
         id: 1,
         name: 'HP LaserJet 5581',
@@ -85,14 +85,14 @@ describe('PrinterController', () => {
 
       const result = await controller.findOne(id);
 
-      expect(service.findOne).toHaveBeenCalledWith(+id);
+      expect(service.findOne).toHaveBeenCalledWith(id);
       expect(result).toEqual(expectedResult);
     });
   });
 
   describe('update', () => {
     it('should call the update method of the service with the correct id and DTO', async () => {
-      const id = '1';
+      const id = 1;
       const updateDto: UpdatePrinterDto = { name: 'HP InkJet 5115' };
       const expectedResult = [
         {
@@ -106,19 +106,19 @@ describe('PrinterController', () => {
 
       const result = await controller.update(id, updateDto);
 
-      expect(service.update).toHaveBeenCalledWith(+id, updateDto);
+      expect(service.update).toHaveBeenCalledWith(id, updateDto);
       expect(result).toEqual(expectedResult);
     });
   });
 
   describe('remove', () => {
     it('should call the remove method of the service with the correct id', async () => {
-      const id = '1';
+      const id = 1;
       mockPrinterService.remove.mockResolvedValue({ affected: 1 });
 
       const result = await controller.remove(id);
 
-      expect(service.remove).toHaveBeenCalledWith(+id);
+      expect(service.remove).toHaveBeenCalledWith(id);
       expect(result).toEqual({ affected: 1 });
     });
   });

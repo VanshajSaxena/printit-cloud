@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
@@ -26,20 +27,20 @@ export class VendorController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.vendorService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.vendorService.findOne(id);
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateVendorDto: UpdateVendorDto,
   ) {
-    return this.vendorService.update(+id, updateVendorDto);
+    return this.vendorService.update(id, updateVendorDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.vendorService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return this.vendorService.remove(id);
   }
 }
