@@ -8,13 +8,18 @@ import {
 import { Repository } from 'typeorm';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { Vendor } from './entities/vendor.entity';
+import { nanoid } from 'nanoid';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
 
 @Injectable()
 export class VendorService {
   constructor(
     @InjectRepository(Vendor)
     private vendorRepository: Repository<Vendor>,
-  ) {}
+    private logger: ApplicationLogger,
+  ) {
+    this.logger.setContext(VendorService.name);
+  }
 
   async create(createVendorDto: CreateVendorDto) {
     const { email } = createVendorDto;
@@ -22,7 +27,16 @@ export class VendorService {
     if (isTaken) {
       throw new ConflictException(`The email ${email} already exists.`);
     }
+
     const newVendor = this.vendorRepository.create(createVendorDto);
+
+    let urlId = nanoid();
+    while (await this.vendorRepository.existsBy({ urlId: urlId })) {
+      urlId = nanoid();
+      this.logger.warn('An existing nanoid was generated.');
+    }
+
+    newVendor.urlId = urlId;
     return this.vendorRepository.save(newVendor);
   }
 

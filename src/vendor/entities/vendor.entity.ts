@@ -13,11 +13,17 @@ export class Vendor {
   @Column()
   lastname: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  givenName: string | null;
+
   @Column({ unique: true })
   email: string;
 
   @Column()
   sub: string;
+
+  @Column({ unique: true })
+  urlId: string; // URL-safe unique identifier
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];
