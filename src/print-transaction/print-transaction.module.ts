@@ -6,6 +6,7 @@ import { PrintTransaction } from './entities/print-transaction.entity';
 import { PrinterModule } from 'src/printer/printer.module';
 import { PrintDocumentModule } from 'src/print-document/print-document.module';
 import { VendorModule } from 'src/vendor/vendor.module';
+import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { VendorModule } from 'src/vendor/vendor.module';
     PrinterModule,
     PrintDocumentModule,
     VendorModule,
+    LoggerModule,
   ],
   controllers: [PrintTransactionController],
   providers: [PrintTransactionService],

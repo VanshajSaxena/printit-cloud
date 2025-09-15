@@ -8,6 +8,7 @@ import { Vendor } from 'src/vendor/entities/vendor.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { PrintDocument } from 'src/print-document/entities/print-document.entity';
 import { customAlphabet } from 'nanoid';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
 
 @Injectable()
 export class PrintTransactionService {
@@ -20,31 +21,28 @@ export class PrintTransactionService {
     private printerRepository: Repository<Printer>,
     @InjectRepository(PrintDocument)
     private printDocumentRepository: Repository<PrintDocument>,
-  ) {}
+    private logger: ApplicationLogger,
+  ) {
+    this.logger.setContext(PrintTransactionService.name);
+  }
+
+  private charSet: string = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
   async create(createPrintTransactionDto: CreatePrintTransactionDto) {
-    const [vendor, printer, printDocuments] = await Promise.all([
-      this.vendorRepository.findOneBy({
-        id: createPrintTransactionDto.vendorId,
-      }),
-      this.printerRepository.findOneBy({
-        id: createPrintTransactionDto.printerId,
-      }),
-      this.printDocumentRepository.findBy({
-        id: In(createPrintTransactionDto.printDocumentIds),
-      }),
-    ]);
+    const vendor = await this.vendorRepository.findOneBy({
+      id: createPrintTransactionDto.vendorId,
+    });
 
     if (!vendor) {
       throw new NotFoundException(
         `The vendor with id ${createPrintTransactionDto.vendorId} was not found.`,
       );
     }
-    if (!printer) {
-      throw new NotFoundException(
-        `The printer with id ${createPrintTransactionDto.printerId} was not found.`,
-      );
-    }
+
+    const printDocuments = await this.printDocumentRepository.findBy({
+      id: In(createPrintTransactionDto.printDocumentIds),
+    });
+
     if (
       createPrintTransactionDto.printDocumentIds.length !==
       printDocuments.length
@@ -54,11 +52,18 @@ export class PrintTransactionService {
       );
     }
 
-    const nanoid = customAlphabet('ABCDEFGHJKLMNOPQRSTUVWXYZ23456789', 8);
-    let friendlyId: string;
-    do {
+    // no check for printer as it is nullable
+    const printer = await this.printerRepository.findOneBy({
+      id: createPrintTransactionDto.printerId,
+    });
+
+    const nanoid = customAlphabet(this.charSet, 8);
+
+    let friendlyId: string = nanoid();
+    while (await this.printTransactionRepository.existsBy({ friendlyId })) {
       friendlyId = nanoid();
-    } while (await this.printTransactionRepository.existsBy({ friendlyId }));
+      this.logger.warn('An existing nanoid was generated.');
+    }
 
     const newPrintTransaction = this.printTransactionRepository.create({
       vendor,
