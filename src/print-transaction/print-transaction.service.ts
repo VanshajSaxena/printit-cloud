@@ -54,10 +54,17 @@ export class PrintTransactionService {
       );
     }
 
-    // no check for printer as it is nullable
-    const printer = await this.printerRepository.findOneBy({
-      id: createPrintTransactionDto.printerId,
-    }); // FIX: this is returning the first row when printerId === undefined.
+    let printer = null;
+    if (createPrintTransactionDto.printerId) {
+      printer = await this.printerRepository.findOneBy({
+        id: createPrintTransactionDto.printerId,
+      });
+      if (!printer) {
+        throw new NotFoundException(
+          `The printer with id ${createPrintTransactionDto.printerId} was not found.`,
+        );
+      }
+    }
 
     const nanoid = customAlphabet(this.charSet, 8);
 
