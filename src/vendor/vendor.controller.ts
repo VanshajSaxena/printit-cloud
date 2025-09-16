@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 
 @Controller({ path: 'vendors', version: '1' })
+@UseInterceptors(ClassSerializerInterceptor)
 export class VendorController {
   constructor(private readonly vendorService: VendorService) {}
 

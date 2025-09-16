@@ -10,6 +10,8 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { Vendor } from './entities/vendor.entity';
 import { nanoid } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
+import { plainToInstance } from 'class-transformer';
+import { VendorResponseDto } from './dto/vendor-response.dto';
 
 @Injectable()
 export class VendorService {
@@ -37,7 +39,8 @@ export class VendorService {
     }
 
     newVendor.urlId = urlId;
-    return this.vendorRepository.save(newVendor);
+    const saved = this.vendorRepository.save(newVendor);
+    return plainToInstance(VendorResponseDto, saved);
   }
 
   async findAll() {
