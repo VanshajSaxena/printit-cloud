@@ -59,7 +59,7 @@ export class PrintTransactionService {
 
     const nanoid = customAlphabet(this.charSet, 8);
 
-    let friendlyId: string = nanoid();
+    let friendlyId: string = nanoid(); // NOTE: Can be imporved with set retries.
     while (await this.printTransactionRepository.existsBy({ friendlyId })) {
       friendlyId = nanoid();
       this.logger.warn('An existing nanoid was generated.');
@@ -95,6 +95,7 @@ export class PrintTransactionService {
         `PrintTransaction not found for the id: ${id}`,
       );
     }
+    // NOTE: Use update method here and check for affected rows to provide feedback.
     Object.assign(printTransaction, updatePrintTransactionDto);
     return this.printTransactionRepository.save(printTransaction);
   }
