@@ -39,7 +39,7 @@ export class VendorService {
     }
 
     newVendor.urlId = urlId;
-    const saved = this.vendorRepository.save(newVendor);
+    const saved = await this.vendorRepository.save(newVendor);
     return plainToInstance(VendorResponseDto, saved);
   }
 
