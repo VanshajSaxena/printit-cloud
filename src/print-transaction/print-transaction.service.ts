@@ -9,6 +9,8 @@ import { Printer } from 'src/printer/entities/printer.entity';
 import { PrintDocument } from 'src/print-document/entities/print-document.entity';
 import { customAlphabet } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
+import { plainToInstance } from 'class-transformer';
+import { PrintTransactionResponseDto } from './dto/print-transaction-response.dto';
 
 @Injectable()
 export class PrintTransactionService {
@@ -55,7 +57,7 @@ export class PrintTransactionService {
     // no check for printer as it is nullable
     const printer = await this.printerRepository.findOneBy({
       id: createPrintTransactionDto.printerId,
-    });
+    }); // FIX: this is returning the first row when printerId === undefined.
 
     const nanoid = customAlphabet(this.charSet, 8);
 
@@ -72,7 +74,9 @@ export class PrintTransactionService {
       friendlyId,
     });
 
-    return this.printTransactionRepository.save(newPrintTransaction);
+    const saved =
+      await this.printTransactionRepository.save(newPrintTransaction);
+    return plainToInstance(PrintTransactionResponseDto, saved);
   }
 
   async findAll() {
