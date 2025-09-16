@@ -1,0 +1,24 @@
+import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { DocumentStatus } from '../enums/document-status.enum';
+import { Exclude, Expose } from 'class-transformer';
+
+@Exclude()
+export class PrintDocumentResponseDto {
+  @Expose()
+  id: number;
+
+  @Expose()
+  name: string;
+
+  @Expose()
+  path: string;
+
+  @Expose()
+  status: DocumentStatus;
+
+  @Expose()
+  configuration: string | null;
+
+  @Exclude()
+  printTransaction: PrintTransaction;
+}
