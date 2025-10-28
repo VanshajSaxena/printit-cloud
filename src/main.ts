@@ -15,13 +15,22 @@ async function bootstrap() {
   app.useLogger(new ApplicationLogger());
 
   const config = new DocumentBuilder()
-    .setTitle('Juggler Core')
+    .setTitle('Printly')
+    .setDescription('Printly Cloud API.')
     .setVersion('0.0.1')
     .build();
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  const documentFactory = () =>
+    SwaggerModule.createDocument(app, config, {
+      ignoreGlobalPrefix: false,
+      autoTagControllers: true,
+    });
 
-  SwaggerModule.setup('docs', app, documentFactory);
+  SwaggerModule.setup('docs', app, documentFactory, {
+    explorer: true,
+    jsonDocumentUrl: 'docs/json',
+    yamlDocumentUrl: 'docs/yaml',
+  });
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
   await app.listen(process.env.PORT ?? 3000);
