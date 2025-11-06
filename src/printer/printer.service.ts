@@ -17,7 +17,7 @@ export class PrinterService {
   ) {}
 
   async create(createPrinterDto: CreatePrinterDto) {
-    const vendor = await this.vendorService.getVendorEntity(
+    const vendor = await this.vendorService.getEntityOne(
       createPrinterDto.vendorId,
     );
 
@@ -52,6 +52,10 @@ export class PrinterService {
     const printer = await this.findOneEntity(id);
     const removed = await this.printerRepository.softRemove(printer);
     return plainToInstance(PrinterResponseDto, removed);
+  }
+
+  async getEntityOne(id: number) {
+    return this.findOneEntity(id);
   }
 
   private async findOneEntity(id: number) {

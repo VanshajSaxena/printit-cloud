@@ -3,7 +3,7 @@ import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
 import { UpdatePrintDocumentDto } from './dto/update-print-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PrintDocument } from './entities/print-document.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DocumentStatus } from './enums/document-status.enum';
 import { plainToInstance } from 'class-transformer';
 import { PrintDocumentResponseDto } from './dto/print-document-response.dto';
@@ -46,6 +46,14 @@ export class PrintDocumentService {
     const removed =
       await this.printDocumentRepository.softRemove(entityNeedRemoval);
     return plainToInstance(PrintDocumentResponseDto, removed);
+  }
+
+  getEntitites(ids: number[]) {
+    return this.printDocumentRepository.findBy({ id: In(ids) });
+  }
+
+  getEntityOne(id: number) {
+    return this.findOneEntity(id);
   }
 
   private async findOneEntity(id: number) {

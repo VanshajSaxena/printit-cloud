@@ -9,6 +9,6 @@ import { VendorModule } from 'src/vendor/vendor.module';
   imports: [TypeOrmModule.forFeature([Printer]), VendorModule],
   controllers: [PrinterController],
   providers: [PrinterService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, PrinterService],
 })
 export class PrinterModule {}

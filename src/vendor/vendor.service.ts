@@ -66,7 +66,7 @@ export class VendorService {
     return plainToInstance(VendorResponseDto, removed);
   }
 
-  getVendorEntity(id: number) {
+  getEntityOne(id: number) {
     return this.findOneEntity(id);
   }
 
