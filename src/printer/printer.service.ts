@@ -4,29 +4,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Printer } from './entities/printer.entity';
 import { Repository } from 'typeorm';
 import { UpdatePrinterDto } from './dto/update-printer.dto';
-import { Vendor } from 'src/vendor/entities/vendor.entity';
 import { plainToInstance } from 'class-transformer';
 import { PrinterResponseDto } from './dto/printer-response.dto';
+import { VendorService } from 'src/vendor/vendor.service';
 
 @Injectable()
 export class PrinterService {
   constructor(
     @InjectRepository(Printer)
     private printerRepository: Repository<Printer>,
-    @InjectRepository(Vendor)
-    private vendorRepository: Repository<Vendor>,
+    private vendorService: VendorService,
   ) {}
 
   async create(createPrinterDto: CreatePrinterDto) {
-    const vendor = await this.vendorRepository.findOneBy({
-      id: createPrinterDto.vendorId,
-    });
-
-    if (!vendor) {
-      throw new NotFoundException(
-        `Vendor not found for id ${createPrinterDto.vendorId}`,
-      );
-    }
+    const vendor = await this.vendorService.getVendorEntity(
+      createPrinterDto.vendorId,
+    );
 
     const newPrinter = this.printerRepository.create({
       name: createPrinterDto.name,
@@ -39,23 +32,33 @@ export class PrinterService {
   }
 
   async findAll() {
-    return this.printerRepository.find();
+    const printers = await this.printerRepository.find();
+    return plainToInstance(PrinterResponseDto, printers);
   }
 
   async findOne(id: number) {
-    return this.printerRepository.findOneBy({ id });
+    const printer = await this.findOneEntity(id);
+    return plainToInstance(PrinterResponseDto, printer);
   }
 
   async update(id: number, updatePrinterDto: UpdatePrinterDto) {
+    const printer = await this.findOneEntity(id);
+    Object.assign(printer, updatePrinterDto);
+    const saved = await this.printerRepository.save(printer);
+    return plainToInstance(PrinterResponseDto, saved);
+  }
+
+  async remove(id: number) {
+    const printer = await this.findOneEntity(id);
+    const removed = await this.printerRepository.softRemove(printer);
+    return plainToInstance(PrinterResponseDto, removed);
+  }
+
+  private async findOneEntity(id: number) {
     const printer = await this.printerRepository.findOneBy({ id });
     if (!printer) {
       throw new NotFoundException(`Printer not found for the id: ${id}`);
     }
-    Object.assign(printer, updatePrinterDto);
-    return this.printerRepository.save(printer);
-  }
-
-  async remove(id: number) {
-    return this.printerRepository.delete(id);
+    return printer;
   }
 }
