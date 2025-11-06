@@ -54,6 +54,10 @@ export class PrinterService {
     return plainToInstance(PrinterResponseDto, removed);
   }
 
+  async getOptionalEntityOne(id: number) {
+    return this.printerRepository.findOneBy({ id });
+  }
+
   async getEntityOne(id: number) {
     return this.findOneEntity(id);
   }

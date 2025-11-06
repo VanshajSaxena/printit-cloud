@@ -47,7 +47,7 @@ export class PrintTransactionService {
 
     let printer = null;
     if (createPrintTransactionDto.printerId) {
-      printer = await this.printerService.getEntityOne(
+      printer = await this.printerService.getOptionalEntityOne(
         createPrintTransactionDto.printerId,
       );
       if (!printer) {
