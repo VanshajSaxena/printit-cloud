@@ -44,23 +44,33 @@ export class VendorService {
   }
 
   async findAll() {
-    return this.vendorRepository.find();
+    const vendors = await this.vendorRepository.find();
+    return plainToInstance(VendorResponseDto, vendors);
   }
 
   async findOne(id: number) {
-    return this.vendorRepository.findOneBy({ id });
+    const vendor = await this.findOneEntity(id);
+    return plainToInstance(VendorResponseDto, vendor);
   }
 
   async update(id: number, updateVendorDto: UpdateVendorDto) {
+    const vendor = await this.findOneEntity(id);
+    Object.assign(vendor, updateVendorDto);
+    const saved = await this.vendorRepository.save(vendor);
+    return plainToInstance(VendorResponseDto, saved);
+  }
+
+  async remove(id: number) {
+    const vendor = await this.findOneEntity(id);
+    const removed = await this.vendorRepository.softRemove(vendor);
+    return plainToInstance(VendorResponseDto, removed);
+  }
+
+  private async findOneEntity(id: number) {
     const vendor = await this.vendorRepository.findOneBy({ id });
     if (!vendor) {
       throw new NotFoundException(`Vendor not found for id: ${id}`);
     }
-    Object.assign(vendor, updateVendorDto);
-    return this.vendorRepository.save(vendor);
-  }
-
-  async remove(id: number) {
-    return this.vendorRepository.delete(id);
+    return vendor;
   }
 }
