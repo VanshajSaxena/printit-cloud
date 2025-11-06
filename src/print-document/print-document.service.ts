@@ -25,26 +25,34 @@ export class PrintDocumentService {
   }
 
   async findAll() {
-    return this.printDocumentRepository.find();
+    const printDocuments = await this.printDocumentRepository.find();
+    return plainToInstance(PrintDocumentResponseDto, printDocuments);
   }
 
   async findOne(id: number) {
-    return this.printDocumentRepository.findOneBy({ id });
+    const printDocument = await this.findOneEntity(id);
+    return plainToInstance(PrintDocumentResponseDto, printDocument);
   }
 
-  async update(
-    id: number,
-    updatePrintDocumentDto: UpdatePrintDocumentDto,
-  ): Promise<PrintDocument> {
+  async update(id: number, updatePrintDocumentDto: UpdatePrintDocumentDto) {
+    const printDocument = await this.findOneEntity(id);
+    Object.assign(printDocument, updatePrintDocumentDto);
+    const saved = await this.printDocumentRepository.save(printDocument);
+    return plainToInstance(PrintDocumentResponseDto, saved);
+  }
+
+  async remove(id: number) {
+    const entityNeedRemoval = await this.findOneEntity(id);
+    const removed =
+      await this.printDocumentRepository.softRemove(entityNeedRemoval);
+    return plainToInstance(PrintDocumentResponseDto, removed);
+  }
+
+  private async findOneEntity(id: number) {
     const printDocument = await this.printDocumentRepository.findOneBy({ id });
     if (!printDocument) {
       throw new NotFoundException(`PrintDocument not found for the id: ${id}`);
     }
-    Object.assign(printDocument, updatePrintDocumentDto);
-    return this.printDocumentRepository.save(printDocument);
-  }
-
-  async remove(id: number) {
-    return this.printDocumentRepository.delete(id);
+    return printDocument;
   }
 }
