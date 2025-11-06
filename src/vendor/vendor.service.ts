@@ -66,6 +66,10 @@ export class VendorService {
     return plainToInstance(VendorResponseDto, removed);
   }
 
+  getVendorEntity(id: number) {
+    return this.findOneEntity(id);
+  }
+
   private async findOneEntity(id: number) {
     const vendor = await this.vendorRepository.findOneBy({ id });
     if (!vendor) {
