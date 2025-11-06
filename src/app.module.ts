@@ -27,6 +27,7 @@ import { LoggerModule } from './logger/logger.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get<boolean>('SYNCHRONIZE'),
         logging: 'all',
+        maxQueryExecutionTime: 1000,
       }),
       inject: [ConfigService],
     }),
