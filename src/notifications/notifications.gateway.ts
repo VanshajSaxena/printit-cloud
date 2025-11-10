@@ -15,6 +15,7 @@ import {
 } from './dto/notification-payloads.dto';
 import { Server, Socket } from 'socket.io';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
 
 @UsePipes(new ValidationPipe())
 @WebSocketGateway({ namespace: 'notifications' })
@@ -23,11 +24,16 @@ export class NotificationsGateway
 {
   @WebSocketServer() private server: Server;
 
+  constructor(private logger: ApplicationLogger) {
+    console.log('constructor ran');
+    this.logger.setContext(NotificationsGateway.name);
+  }
+
   handleConnection(@ConnectedSocket() client: Socket) {
-    console.log(client.id);
+    this.logger.log('Client Connected', [client.id]);
   }
   handleDisconnect(@ConnectedSocket() client: Socket) {
-    console.log(client.id);
+    this.logger.log('Client Disconnected', [client.id]);
   }
 
   @SubscribeMessage('join_vendor')

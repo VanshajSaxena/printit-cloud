@@ -1,6 +1,7 @@
 import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
 import { DocumentStatus } from '../enums/document-status.enum';
 import { Exclude, Expose } from 'class-transformer';
+import { ApiHideProperty } from '@nestjs/swagger';
 
 @Exclude()
 export class PrintDocumentResponseDto {
@@ -20,5 +21,6 @@ export class PrintDocumentResponseDto {
   configuration: string | null;
 
   @Exclude()
+  @ApiHideProperty()
   printTransaction: PrintTransaction;
 }

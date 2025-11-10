@@ -3,26 +3,23 @@ import { CreatePrintTransactionDto } from './dto/create-print-transaction.dto';
 import { UpdatePrintTransactionDto } from './dto/update-print-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PrintTransaction } from './entities/print-transaction.entity';
-import { In, Repository } from 'typeorm';
-import { Vendor } from 'src/vendor/entities/vendor.entity';
-import { Printer } from 'src/printer/entities/printer.entity';
-import { PrintDocument } from 'src/print-document/entities/print-document.entity';
+import { Repository } from 'typeorm';
 import { customAlphabet } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
 import { PrintTransactionResponseDto } from './dto/print-transaction-response.dto';
+import { VendorService } from 'src/vendor/vendor.service';
+import { PrintDocumentService } from 'src/print-document/print-document.service';
+import { PrinterService } from 'src/printer/printer.service';
 
 @Injectable()
 export class PrintTransactionService {
   constructor(
     @InjectRepository(PrintTransaction)
     private printTransactionRepository: Repository<PrintTransaction>,
-    @InjectRepository(Vendor)
-    private vendorRepository: Repository<Vendor>,
-    @InjectRepository(Printer)
-    private printerRepository: Repository<Printer>,
-    @InjectRepository(PrintDocument)
-    private printDocumentRepository: Repository<PrintDocument>,
+    private vendorService: VendorService,
+    private printerService: PrinterService,
+    private printDocumentService: PrintDocumentService,
     private logger: ApplicationLogger,
   ) {
     this.logger.setContext(PrintTransactionService.name);
@@ -31,19 +28,13 @@ export class PrintTransactionService {
   private charSet: string = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
   async create(createPrintTransactionDto: CreatePrintTransactionDto) {
-    const vendor = await this.vendorRepository.findOneBy({
-      id: createPrintTransactionDto.vendorId,
-    });
+    const vendor = await this.vendorService.getEntityOne(
+      createPrintTransactionDto.vendorId,
+    );
 
-    if (!vendor) {
-      throw new NotFoundException(
-        `The vendor with id ${createPrintTransactionDto.vendorId} was not found.`,
-      );
-    }
-
-    const printDocuments = await this.printDocumentRepository.findBy({
-      id: In(createPrintTransactionDto.printDocumentIds),
-    });
+    const printDocuments = await this.printDocumentService.getEntitites(
+      createPrintTransactionDto.printDocumentIds,
+    );
 
     if (
       createPrintTransactionDto.printDocumentIds.length !==
@@ -56,9 +47,9 @@ export class PrintTransactionService {
 
     let printer = null;
     if (createPrintTransactionDto.printerId) {
-      printer = await this.printerRepository.findOneBy({
-        id: createPrintTransactionDto.printerId,
-      });
+      printer = await this.printerService.getOptionalEntityOne(
+        createPrintTransactionDto.printerId,
+      );
       if (!printer) {
         throw new NotFoundException(
           `The printer with id ${createPrintTransactionDto.printerId} was not found.`,
@@ -68,7 +59,7 @@ export class PrintTransactionService {
 
     const nanoid = customAlphabet(this.charSet, 8);
 
-    let friendlyId: string = nanoid(); // NOTE: Can be imporved with set retries.
+    let friendlyId: string = nanoid();
     while (await this.printTransactionRepository.existsBy({ friendlyId })) {
       friendlyId = nanoid();
       this.logger.warn('An existing nanoid was generated.');
@@ -87,17 +78,33 @@ export class PrintTransactionService {
   }
 
   async findAll() {
-    return this.printTransactionRepository.find();
+    const printTransactions = await this.printTransactionRepository.find();
+    return plainToInstance(PrintTransactionResponseDto, printTransactions);
   }
 
   async findOne(id: number) {
-    return this.printTransactionRepository.findOneBy({ id });
+    const printTransaction = await this.findOneEntity(id);
+    return plainToInstance(PrintTransactionResponseDto, printTransaction);
   }
 
   async update(
     id: number,
     updatePrintTransactionDto: UpdatePrintTransactionDto,
   ) {
+    const printTransaction = await this.findOneEntity(id);
+    Object.assign(printTransaction, updatePrintTransactionDto);
+    const saved = await this.printTransactionRepository.save(printTransaction);
+    return plainToInstance(PrintTransactionResponseDto, saved);
+  }
+
+  async remove(id: number) {
+    const printTransaction = await this.findOneEntity(id);
+    const removed =
+      await this.printTransactionRepository.softRemove(printTransaction);
+    return plainToInstance(PrintTransactionResponseDto, removed);
+  }
+
+  private async findOneEntity(id: number) {
     const printTransaction = await this.printTransactionRepository.findOneBy({
       id,
     });
@@ -106,12 +113,6 @@ export class PrintTransactionService {
         `PrintTransaction not found for the id: ${id}`,
       );
     }
-    // NOTE: Use update method here and check for affected rows to provide feedback.
-    Object.assign(printTransaction, updatePrintTransactionDto);
-    return this.printTransactionRepository.save(printTransaction);
-  }
-
-  async remove(id: number) {
-    return this.printTransactionRepository.delete(id);
+    return printTransaction;
   }
 }

@@ -3,6 +3,6 @@ import { Injectable, Scope, ConsoleLogger } from '@nestjs/common';
 @Injectable({ scope: Scope.TRANSIENT })
 export class ApplicationLogger extends ConsoleLogger {
   constructor() {
-    super({ json: false });
+    super({ json: false, compact: true, timestamp: true });
   }
 }
