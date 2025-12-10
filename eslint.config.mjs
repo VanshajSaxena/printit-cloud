@@ -10,7 +10,7 @@ export default tseslint.config(
     ignores: ['eslint.config.mjs'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.strictTypeChecked,
   eslintPluginPrettierRecommended,
   {
     languageOptions: {
@@ -25,16 +25,26 @@ export default tseslint.config(
       },
     },
   },
+
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
+      // '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       '@typescript-eslint/unbound-method': 'error',
+      '@typescript-eslint/no-extraneous-class': [
+        'error',
+        { allowWithDecorator: true },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_' },
+      ],
     },
   },
   {
     files: ['test/**', '**/*.test.ts', '**/*.spec.ts'],
+    ...jestPlugin.configs['flat/recommended'],
     plugins: {
       jest: jestPlugin,
     },
