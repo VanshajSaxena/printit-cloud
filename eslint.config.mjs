@@ -40,6 +40,14 @@ export default tseslint.config(
         'warn',
         { argsIgnorePattern: '^_' },
       ],
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        {
+          allowNumber: true,
+          allowBoolean: true,
+        },
+      ],
+      '@typescript-eslint/no-misused-spread': 'off',
     },
   },
   {
