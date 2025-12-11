@@ -35,4 +35,6 @@ async function bootstrap() {
   app.enableVersioning({ type: VersioningType.URI });
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap().catch((error) => console.log(error));
+bootstrap().catch((error: unknown) => {
+  console.log(error);
+});
