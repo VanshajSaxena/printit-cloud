@@ -25,7 +25,6 @@ export class NotificationsGateway
   @WebSocketServer() private server: Server;
 
   constructor(private logger: ApplicationLogger) {
-    console.log('constructor ran');
     this.logger.setContext(NotificationsGateway.name);
   }
 
