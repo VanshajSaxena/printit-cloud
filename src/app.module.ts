@@ -9,6 +9,7 @@ import { PrintTransactionModule } from './print-transaction/print-transaction.mo
 import { PrintDocumentModule } from './print-document/print-document.module';
 import { NotificationsGateway } from './notifications/notifications.gateway';
 import { LoggerModule } from './logger/logger.module';
+import { R2Service } from './r2-service/r2-service';
 
 @Module({
   imports: [
@@ -38,6 +39,6 @@ import { LoggerModule } from './logger/logger.module';
     LoggerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, NotificationsGateway],
+  providers: [AppService, NotificationsGateway, R2Service],
 })
 export class AppModule {}
