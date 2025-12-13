@@ -6944,6 +6944,7 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tsconfig-paths: "npm:^4.2.0"
     typeorm: "npm:^0.3.26"
+    typeorm-naming-strategy: "npm:^2.0.16"
     typescript: "npm:^5.7.3"
     typescript-eslint: "npm:^8.20.0"
   languageName: unknown
@@ -9063,6 +9064,15 @@ __metadata:
   version: 0.0.6
   resolution: "typedarray@npm:0.0.6"
   checksum: 10c0/6005cb31df50eef8b1f3c780eb71a17925f3038a100d82f9406ac2ad1de5eb59f8e6decbdc145b3a1f8e5836e17b0c0002fb698b9fe2516b8f9f9ff602d36412
+  languageName: node
+  linkType: hard
+
+"typeorm-naming-strategy@npm:^2.0.16":
+  version: 2.0.16
+  resolution: "typeorm-naming-strategy@npm:2.0.16"
+  peerDependencies:
+    typeorm: ^0.3
+  checksum: 10c0/f630d40a5908d3157054b996de107db6836b7fe27cf31e7124fdf8c03e12654ca7b14832011a39a3dea3c044b3c053c24c2e79dffafe0ea9a09458f35d84478c
   languageName: node
   linkType: hard
 
