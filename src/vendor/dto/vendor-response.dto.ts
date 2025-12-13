@@ -26,10 +26,6 @@ export class VendorResponseDto {
 
   @Exclude()
   @ApiHideProperty()
-  sub: string;
-
-  @Exclude()
-  @ApiHideProperty()
   printers: Printer[];
 
   @Exclude()

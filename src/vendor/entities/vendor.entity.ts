@@ -19,11 +19,8 @@ export class Vendor {
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  sub: string;
-
   @Column({ unique: true })
-  urlId: string; // URL-safe unique identifier
+  urlId: string;
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];

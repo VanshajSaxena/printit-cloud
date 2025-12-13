@@ -2,11 +2,10 @@
 
 @base_url = http://{{hostname}}:{{port}}/api/v1
 @email = harshit@gmail.com
-@firstname = Harshit
+@firstName = Harshit
 @hostname = localhost
-@lastname = Shop
+@lastName = Shop
 @port = 3000
-@sub = 1234241234
 @vendorId = 1
 
 
@@ -17,9 +16,8 @@ Content-Type: application/json
 
 {
   "email": "{{email}}",
-  "firstname": "{{firstname}}",
-  "lastname": "{{lastname}}",
-  "sub": "{{sub}}"
+  "firstName": "{{firstName}}",
+  "lastName": "{{lastName}}"
 }
 
 
@@ -40,9 +38,8 @@ Content-Type: application/json
 
 {
   "email": "{{email}}",
-  "firstname": "{{firstname}}",
-  "lastname": "{{lastname}}",
-  "sub": "{{sub}}"
+  "firstName": "{{firstName}}",
+  "lastName": "{{lastName}}"
 }
 
 
