@@ -23,6 +23,7 @@ import { VendorModule } from './vendor/vendor.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
+        retryAttempts: 3,
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
         port: configService.get<number>('DB_PORT'),

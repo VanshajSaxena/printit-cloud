@@ -8,10 +8,10 @@ export class Vendor {
   id: number;
 
   @Column()
-  firstname: string;
+  firstName: string;
 
   @Column()
-  lastname: string;
+  lastName: string;
 
   @Column({ type: 'varchar', nullable: true })
   givenName: string | null;
