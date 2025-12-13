@@ -23,6 +23,8 @@ export class VendorService {
     this.logger.setContext(VendorService.name);
   }
 
+  #ID_LENGTH = 10;
+
   async create(createVendorDto: CreateVendorDto) {
     const { email } = createVendorDto;
     const isTaken = await this.vendorRepository.existsBy({ email });
@@ -32,9 +34,9 @@ export class VendorService {
 
     const newVendor = this.vendorRepository.create(createVendorDto);
 
-    let urlId = nanoid();
+    let urlId = nanoid(this.#ID_LENGTH);
     while (await this.vendorRepository.existsBy({ urlId: urlId })) {
-      urlId = nanoid();
+      urlId = nanoid(this.#ID_LENGTH);
       this.logger.warn('An existing nanoid was generated.');
     }
 
