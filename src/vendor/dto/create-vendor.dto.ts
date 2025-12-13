@@ -13,6 +13,10 @@ export class CreateVendorDto {
   @IsString()
   givenName?: string;
 
+  @IsOptional()
+  @IsString()
+  address?: string;
+
   @IsEmail()
   @IsString()
   email: string;

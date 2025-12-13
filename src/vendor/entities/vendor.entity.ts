@@ -19,6 +19,9 @@ export class Vendor {
   @Column({ unique: true })
   email: string;
 
+  @Column({ nullable: true })
+  address: string | null;
+
   @Column({ unique: true })
   urlId: string;
 
