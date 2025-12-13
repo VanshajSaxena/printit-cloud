@@ -14,7 +14,10 @@ import { R2Module } from './r2/r2.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env'],
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.env.production'
+          : '.env.development',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -26,7 +29,9 @@ import { R2Module } from './r2/r2.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<boolean>('SYNCHRONIZE'),
+        synchronize:
+          configService.get<string>('NODE_ENV') === 'development' &&
+          configService.get<boolean>('DB_SYNCHRONIZE'),
         logging: 'all',
         maxQueryExecutionTime: 1000,
       }),
