@@ -7,19 +7,19 @@ export class Vendor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   firstName: string;
 
-  @Column()
+  @Column({ length: 255 })
   lastName: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   givenName: string | null;
 
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   address: string | null;
 
   @Column({ unique: true })

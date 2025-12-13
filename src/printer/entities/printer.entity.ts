@@ -13,11 +13,11 @@ export class Printer {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   name: string;
 
-  @Column({ type: 'json' })
-  capabilities: string;
+  @Column({ type: 'jsonb' })
+  capabilities: Record<string, unknown>;
 
   @ManyToOne(() => Vendor, (vendor) => vendor.printers)
   vendor: Vendor;
