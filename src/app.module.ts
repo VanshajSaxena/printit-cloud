@@ -34,7 +34,10 @@ import { VendorModule } from './vendor/vendor.module';
         synchronize:
           configService.get<string>('NODE_ENV') === 'development' &&
           configService.get<boolean>('DB_SYNCHRONIZE'),
-        logging: 'all',
+        logging:
+          configService.get<string>('NODE_ENV') === 'development'
+            ? 'all'
+            : ['warn', 'error'],
         maxQueryExecutionTime: 1000,
         namingStrategy: new SnakeNamingStrategy(),
       }),
