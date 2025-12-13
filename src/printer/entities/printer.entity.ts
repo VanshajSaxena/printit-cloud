@@ -16,8 +16,8 @@ export class Printer {
   @Column({ length: 255 })
   name: string;
 
-  @Column({ type: 'jsonb' })
-  capabilities: Record<string, unknown>;
+  @Column({ type: 'json' })
+  capabilities: string;
 
   @ManyToOne(() => Vendor, (vendor) => vendor.printers)
   vendor: Vendor;

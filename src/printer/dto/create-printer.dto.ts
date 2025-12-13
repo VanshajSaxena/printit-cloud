@@ -7,7 +7,7 @@ export class CreatePrinterDto {
 
   @IsNotEmpty()
   @IsJSON()
-  capabilities: Record<string, unknown>;
+  capabilities: string;
 
   @IsNotEmpty()
   @IsNumber()
