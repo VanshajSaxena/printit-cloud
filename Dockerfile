@@ -1,29 +1,36 @@
-# Use the official Node.js image as the base image
-FROM node:22
+# ---------- Build stage ----------
+FROM node:22-bookworm-slim AS builder
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 RUN corepack enable
 
-# Copy package.json and package-lock.json to the working directory
 COPY package.json yarn.lock ./
-
 COPY .yarn .yarn
-
 COPY .yarnrc.yml ./
 
-# Install the application dependencies
 RUN yarn install --immutable
 
-# Copy the rest of the application files
 COPY . .
 
-# Build the NestJS application
 RUN yarn build
 
-# Expose the application port
+# ---------- Runtime stage ----------
+FROM node:22-bookworm-slim
+
+WORKDIR /app
+
+# Copy only what we need to run
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/yarn.lock ./
+COPY --from=builder /app/.yarn .yarn
+COPY --from=builder /app/.yarnrc.yml ./
+
+RUN corepack enable \ 
+  && yarn install --immutable \
+  && yarn cache clean --all
+
 EXPOSE 3000
 
-# Command to run the application
 CMD ["node", "dist/main"]
