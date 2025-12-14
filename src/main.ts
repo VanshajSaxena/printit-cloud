@@ -33,6 +33,9 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
+  app.enableCors({
+    origin: 'http://localhost:8080',
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap().catch((error: unknown) => {
