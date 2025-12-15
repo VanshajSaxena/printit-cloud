@@ -50,7 +50,14 @@ export class VendorService {
     return plainToInstance(VendorResponseDto, vendors);
   }
 
-  async findOne(id: number) {
+  async findOne(friendlyId: string) {
+    this.logger.debug(friendlyId);
+    const vendor = await this.vendorRepository.findOneBy({ urlId: friendlyId });
+    this.logger.debug(vendor);
+    return plainToInstance(VendorResponseDto, vendor);
+  }
+
+  async findOneById(id: number) {
     const vendor = await this.findOneEntity(id);
     return plainToInstance(VendorResponseDto, vendor);
   }

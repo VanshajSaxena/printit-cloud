@@ -26,12 +26,17 @@ export class VendorController {
     return this.vendorService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.vendorService.findOne(id);
+  @Get(':friendlyId')
+  async findOne(@Param('friendlyId') friendlyId: string) {
+    return this.vendorService.findOne(friendlyId);
   }
 
-  @Patch(':id')
+  @Get('internal/:id')
+  async findOneById(@Param('id', ParseIntPipe) id: number) {
+    return this.vendorService.findOneById(id);
+  }
+
+  @Patch('internal/:id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateVendorDto: UpdateVendorDto,
@@ -39,7 +44,7 @@ export class VendorController {
     return this.vendorService.update(id, updateVendorDto);
   }
 
-  @Delete(':id')
+  @Delete('internal/:id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.vendorService.remove(id);
   }

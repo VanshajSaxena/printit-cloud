@@ -18,6 +18,9 @@ export class VendorResponseDto {
   givenName: string | null;
 
   @Expose()
+  address: string;
+
+  @Expose()
   urlId: string;
 
   @Exclude()
