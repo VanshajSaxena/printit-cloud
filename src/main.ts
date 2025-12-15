@@ -1,11 +1,12 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 import { ApplicationLogger } from './logger/application-logger.service';
 
 async function bootstrap() {
@@ -36,6 +37,9 @@ async function bootstrap() {
   app.enableCors({
     origin: 'http://localhost:8080',
   });
+  const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
+  server.disable('etag');
+  server.disable('x-powered-by');
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap().catch((error: unknown) => {
