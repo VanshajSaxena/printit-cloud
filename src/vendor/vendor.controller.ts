@@ -43,14 +43,14 @@ export class VendorController {
       ],
     },
   })
-  async findOne(@Param('selector') selector: string | number) {
-    if (typeof selector === 'number') {
-      return await this.vendorService.findOneById(selector);
-    } else if (typeof selector === 'string' && selector.startsWith('@', 0)) {
-      return await this.vendorService.findOneByUsername(selector.substring(1));
-    } else {
-      return await this.vendorService.findOneBySlug(selector);
+  async findOne(@Param('selector') selector: string) {
+    if (selector.startsWith('@')) {
+      return this.vendorService.findOneByUsername(selector.substring(1));
     }
+    if (/^\d+$/.test(selector)) {
+      return this.vendorService.findOneById(Number(selector));
+    }
+    return this.vendorService.findOneBySlug(selector);
   }
 
   @Patch(':id')
