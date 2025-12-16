@@ -35,7 +35,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
   app.enableCors({
-    origin: 'http://localhost:8080',
+    origin: [
+      'http://localhost:8080',
+      'https://deploy-preview-40--printly-app.netlify.app',
+      'https://testing--printly-app.netlify.app',
+    ],
   });
   const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
   server.disable('etag');

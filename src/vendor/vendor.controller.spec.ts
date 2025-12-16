@@ -75,7 +75,7 @@ describe('VendorController', () => {
 
   describe('findOne', () => {
     it('should call the findOne method of the service with the correct id', async () => {
-      const id = 1;
+      const id = 'harrypotter';
       const expectedResult = {
         id: 1,
         firstName: 'Harry',
@@ -86,7 +86,7 @@ describe('VendorController', () => {
 
       const result = await controller.findOne(id);
 
-      expect(service.findOneById(id)).toHaveBeenCalledWith(id);
+      expect(service.findOneById(1)).toHaveBeenCalledWith(id);
       expect(result).toEqual(expectedResult);
     });
   });
