@@ -1,8 +1,8 @@
 {
-  "name": "juggler",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "Printly",
+  "version": "0.1.0",
+  "description": "Printly Backend",
+  "author": "Vanshaj Saxena",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
