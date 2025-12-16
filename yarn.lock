@@ -6899,57 +6899,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"juggler@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "juggler@workspace:."
-  dependencies:
-    "@aws-sdk/client-s3": "npm:^3.948.0"
-    "@aws-sdk/s3-request-presigner": "npm:^3.948.0"
-    "@eslint/eslintrc": "npm:^3.2.0"
-    "@eslint/js": "npm:^9.18.0"
-    "@nestjs/cli": "npm:^11.0.0"
-    "@nestjs/common": "npm:^11.0.1"
-    "@nestjs/config": "npm:^4.0.2"
-    "@nestjs/core": "npm:^11.0.1"
-    "@nestjs/mapped-types": "npm:*"
-    "@nestjs/platform-express": "npm:^11.0.1"
-    "@nestjs/platform-socket.io": "npm:^11.1.6"
-    "@nestjs/schematics": "npm:^11.0.0"
-    "@nestjs/swagger": "npm:^11.2.0"
-    "@nestjs/testing": "npm:^11.0.1"
-    "@nestjs/typeorm": "npm:^11.0.0"
-    "@nestjs/websockets": "npm:^11.1.6"
-    "@types/express": "npm:^5.0.0"
-    "@types/jest": "npm:^30.0.0"
-    "@types/node": "npm:^22.10.7"
-    "@types/supertest": "npm:^6.0.2"
-    class-transformer: "npm:^0.5.1"
-    class-validator: "npm:^0.14.2"
-    cross-env: "npm:^10.1.0"
-    eslint: "npm:^9.35.0"
-    eslint-config-prettier: "npm:^10.0.1"
-    eslint-plugin-jest: "npm:^29.0.1"
-    eslint-plugin-prettier: "npm:^5.2.2"
-    globals: "npm:^16.0.0"
-    jest: "npm:^30.0.0"
-    nanoid: "npm:3"
-    pg: "npm:^8.16.3"
-    prettier: "npm:^3.4.2"
-    reflect-metadata: "npm:^0.2.2"
-    rxjs: "npm:^7.8.1"
-    source-map-support: "npm:^0.5.21"
-    supertest: "npm:^7.0.0"
-    ts-jest: "npm:^29.2.5"
-    ts-loader: "npm:^9.5.2"
-    ts-node: "npm:^10.9.2"
-    tsconfig-paths: "npm:^4.2.0"
-    typeorm: "npm:^0.3.26"
-    typeorm-naming-strategy: "npm:^2.0.16"
-    typescript: "npm:^5.7.3"
-    typescript-eslint: "npm:^8.20.0"
-  languageName: unknown
-  linkType: soft
-
 "keyv@npm:^4.5.4":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -7957,6 +7906,57 @@ __metadata:
   checksum: 10c0/9f6cf1af5c3169093866c80adbfdad32f69c692b62f24ba3ca8cdec8519336123323f896396f9fa40346a41b197c5f6be15aec4d8620819f12496afaaca93f81
   languageName: node
   linkType: hard
+
+"printly@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "printly@workspace:."
+  dependencies:
+    "@aws-sdk/client-s3": "npm:^3.948.0"
+    "@aws-sdk/s3-request-presigner": "npm:^3.948.0"
+    "@eslint/eslintrc": "npm:^3.2.0"
+    "@eslint/js": "npm:^9.18.0"
+    "@nestjs/cli": "npm:^11.0.0"
+    "@nestjs/common": "npm:^11.0.1"
+    "@nestjs/config": "npm:^4.0.2"
+    "@nestjs/core": "npm:^11.0.1"
+    "@nestjs/mapped-types": "npm:*"
+    "@nestjs/platform-express": "npm:^11.0.1"
+    "@nestjs/platform-socket.io": "npm:^11.1.6"
+    "@nestjs/schematics": "npm:^11.0.0"
+    "@nestjs/swagger": "npm:^11.2.0"
+    "@nestjs/testing": "npm:^11.0.1"
+    "@nestjs/typeorm": "npm:^11.0.0"
+    "@nestjs/websockets": "npm:^11.1.6"
+    "@types/express": "npm:^5.0.0"
+    "@types/jest": "npm:^30.0.0"
+    "@types/node": "npm:^22.10.7"
+    "@types/supertest": "npm:^6.0.2"
+    class-transformer: "npm:^0.5.1"
+    class-validator: "npm:^0.14.2"
+    cross-env: "npm:^10.1.0"
+    eslint: "npm:^9.35.0"
+    eslint-config-prettier: "npm:^10.0.1"
+    eslint-plugin-jest: "npm:^29.0.1"
+    eslint-plugin-prettier: "npm:^5.2.2"
+    globals: "npm:^16.0.0"
+    jest: "npm:^30.0.0"
+    nanoid: "npm:3"
+    pg: "npm:^8.16.3"
+    prettier: "npm:^3.4.2"
+    reflect-metadata: "npm:^0.2.2"
+    rxjs: "npm:^7.8.1"
+    source-map-support: "npm:^0.5.21"
+    supertest: "npm:^7.0.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typeorm: "npm:^0.3.26"
+    typeorm-naming-strategy: "npm:^2.0.16"
+    typescript: "npm:^5.7.3"
+    typescript-eslint: "npm:^8.20.0"
+  languageName: unknown
+  linkType: soft
 
 "proc-log@npm:^6.0.0":
   version: 6.1.0
