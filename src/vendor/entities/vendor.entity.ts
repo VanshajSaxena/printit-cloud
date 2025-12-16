@@ -10,11 +10,14 @@ export class Vendor {
   @Column({ length: 255 })
   firstName: string;
 
-  @Column({ length: 255 })
+  @Column({ length: 255, nullable: true })
   lastName: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   givenName: string | null;
+
+  @Column({ unique: true, length: 255 })
+  username: string;
 
   @Column({ unique: true })
   email: string;
@@ -23,7 +26,7 @@ export class Vendor {
   address: string | null;
 
   @Column({ unique: true })
-  urlId: string;
+  slug: string;
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];

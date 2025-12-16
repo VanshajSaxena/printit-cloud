@@ -18,10 +18,13 @@ export class VendorResponseDto {
   givenName: string | null;
 
   @Expose()
+  username: string;
+
+  @Expose()
   address: string;
 
   @Expose()
-  urlId: string;
+  slug: string;
 
   @Exclude()
   @ApiHideProperty()

@@ -34,13 +34,13 @@ export class VendorService {
 
     const newVendor = this.vendorRepository.create(createVendorDto);
 
-    let urlId = nanoid(this.#ID_LENGTH);
-    while (await this.vendorRepository.existsBy({ urlId: urlId })) {
-      urlId = nanoid(this.#ID_LENGTH);
+    let slug = nanoid(this.#ID_LENGTH);
+    while (await this.vendorRepository.existsBy({ slug: slug })) {
+      slug = nanoid(this.#ID_LENGTH);
       this.logger.warn('An existing nanoid was generated.');
     }
 
-    newVendor.urlId = urlId;
+    newVendor.slug = slug;
     const saved = await this.vendorRepository.save(newVendor);
     return plainToInstance(VendorResponseDto, saved);
   }
@@ -50,10 +50,19 @@ export class VendorService {
     return plainToInstance(VendorResponseDto, vendors);
   }
 
-  async findOne(friendlyId: string) {
-    this.logger.debug(friendlyId);
-    const vendor = await this.vendorRepository.findOneBy({ urlId: friendlyId });
-    this.logger.debug(vendor);
+  async findOneBySlug(slug: string) {
+    const vendor = await this.vendorRepository.findOneBy({ slug });
+    if (!vendor) {
+      throw new NotFoundException(`Vendor not found for slug: ${slug}`);
+    }
+    return plainToInstance(VendorResponseDto, vendor);
+  }
+
+  async findOneByUsername(username: string) {
+    const vendor = await this.vendorRepository.findOneBy({ username });
+    if (!vendor) {
+      throw new NotFoundException(`Vendor not found for username: ${username}`);
+    }
     return plainToInstance(VendorResponseDto, vendor);
   }
 

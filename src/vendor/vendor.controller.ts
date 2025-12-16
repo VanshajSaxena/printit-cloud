@@ -11,6 +11,7 @@ import {
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { ApiParam } from '@nestjs/swagger';
 
 @Controller({ path: 'vendors', version: '1' })
 export class VendorController {
@@ -26,17 +27,33 @@ export class VendorController {
     return this.vendorService.findAll();
   }
 
-  @Get(':friendlyId')
-  async findOne(@Param('friendlyId') friendlyId: string) {
-    return this.vendorService.findOne(friendlyId);
+  @Get(':selector')
+  @ApiParam({
+    name: 'selector',
+    description: 'The unique identifier',
+    examples: {
+      id: { summary: 'Internal ID', value: 999 },
+      slug: { summary: 'Slug', value: 'xi28b2sg8d' },
+      username: { summary: 'Username', value: '@username' },
+    },
+    schema: {
+      oneOf: [
+        { type: 'string', description: 'Slug or Username' },
+        { type: 'integer', description: 'Internal Database ID' },
+      ],
+    },
+  })
+  async findOne(@Param('selector') selector: string | number) {
+    if (typeof selector === 'number') {
+      return await this.vendorService.findOneById(selector);
+    } else if (typeof selector === 'string' && selector.startsWith('@', 0)) {
+      return await this.vendorService.findOneByUsername(selector.substring(1));
+    } else {
+      return await this.vendorService.findOneBySlug(selector);
+    }
   }
 
-  @Get('internal/:id')
-  async findOneById(@Param('id', ParseIntPipe) id: number) {
-    return this.vendorService.findOneById(id);
-  }
-
-  @Patch('internal/:id')
+  @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateVendorDto: UpdateVendorDto,
@@ -44,7 +61,7 @@ export class VendorController {
     return this.vendorService.update(id, updateVendorDto);
   }
 
-  @Delete('internal/:id')
+  @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.vendorService.remove(id);
   }

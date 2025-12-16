@@ -41,6 +41,7 @@ describe('VendorController', () => {
         firstName: 'Harry',
         lastName: 'Potter',
         email: 'harrypotter@mail.com',
+        username: 'harrypotter',
       };
 
       const expectedResult = { id: 1, ...createDto };
@@ -85,7 +86,7 @@ describe('VendorController', () => {
 
       const result = await controller.findOne(id);
 
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(service.findOneById(id)).toHaveBeenCalledWith(id);
       expect(result).toEqual(expectedResult);
     });
   });

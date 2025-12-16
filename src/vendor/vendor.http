@@ -1,7 +1,7 @@
 ### 
 
 @base_url = http://{{hostname}}:{{port}}/api/v1
-@email = harshit@gmail.com
+@email = harshi@gmail.com
 @firstName = Harshit
 @hostname = localhost
 @lastName = Shop
@@ -17,7 +17,8 @@ Content-Type: application/json
 {
   "email": "{{email}}",
   "firstName": "{{firstName}}",
-  "lastName": "{{lastName}}"
+  "lastName": "{{lastName}}",
+  "username": "harshitsho"
 }
 
 

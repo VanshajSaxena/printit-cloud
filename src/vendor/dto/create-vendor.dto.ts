@@ -9,6 +9,10 @@ export class CreateVendorDto {
   @IsString()
   lastName: string;
 
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
   @IsOptional()
   @IsString()
   givenName?: string;
