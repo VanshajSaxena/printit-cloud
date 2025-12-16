@@ -26,8 +26,11 @@ export class VendorService {
   #ID_LENGTH = 10;
 
   async create(createVendorDto: CreateVendorDto) {
-    const { email } = createVendorDto;
-    const isTaken = await this.vendorRepository.existsBy({ email });
+    const { email, username } = createVendorDto;
+    const isTaken = await this.vendorRepository.existsBy([
+      { email },
+      { username },
+    ]);
     if (isTaken) {
       throw new ConflictException(`The email ${email} already exists.`);
     }
