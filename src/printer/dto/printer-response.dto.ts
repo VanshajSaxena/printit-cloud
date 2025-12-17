@@ -1,7 +1,7 @@
 import { ApiHideProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 import { IsJSON } from 'class-validator';
-import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Transaction } from 'src/print-transaction/entities/print-transaction.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 
 @Exclude()
@@ -22,7 +22,7 @@ export class PrinterResponseDto {
 
   @Exclude()
   @ApiHideProperty()
-  printTransactions: PrintTransaction[];
+  printTransactions: Transaction[];
 
   constructor(partial: Partial<PrinterResponseDto>) {
     Object.assign(this, partial);

@@ -1,4 +1,4 @@
-import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Transaction } from 'src/print-transaction/entities/print-transaction.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import {
   Column,
@@ -22,6 +22,6 @@ export class Printer {
   @ManyToOne(() => Vendor, (vendor) => vendor.printers)
   vendor: Vendor;
 
-  @OneToMany(() => PrintTransaction, (transaction) => transaction.printer)
-  printTransactions: PrintTransaction[];
+  @OneToMany(() => Transaction, (transaction) => transaction.printer)
+  printTransactions: Transaction[];
 }

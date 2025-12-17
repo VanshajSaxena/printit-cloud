@@ -8,19 +8,19 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { PrintTransactionService } from './print-transaction.service';
-import { CreatePrintTransactionDto } from './dto/create-print-transaction.dto';
-import { UpdatePrintTransactionDto } from './dto/update-print-transaction.dto';
+import { TransactionService } from './print-transaction.service';
+import { CreateTransactionDto } from './dto/create-print-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-print-transaction.dto';
 
 @Controller({ path: 'transactions', version: '1' })
-export class PrintTransactionController {
+export class TransactionController {
   constructor(
-    private readonly printTransactionService: PrintTransactionService,
+    private readonly printTransactionService: TransactionService,
   ) {}
 
   @Post()
-  async create(@Body() createPrintTransactionDto: CreatePrintTransactionDto) {
-    return this.printTransactionService.create(createPrintTransactionDto);
+  async create(@Body() createTransactionDto: CreateTransactionDto) {
+    return this.printTransactionService.create(createTransactionDto);
   }
 
   @Get()
@@ -36,9 +36,9 @@ export class PrintTransactionController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updatePrintTransactionDto: UpdatePrintTransactionDto,
+    @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.printTransactionService.update(id, updatePrintTransactionDto);
+    return this.printTransactionService.update(id, updateTransactionDto);
   }
 
   @Delete(':id')

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PrintTransactionService } from './print-transaction.service';
-import { PrintTransactionController } from './print-transaction.controller';
+import { TransactionService } from './print-transaction.service';
+import { TransactionController } from './print-transaction.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PrintTransaction } from './entities/print-transaction.entity';
+import { Transaction } from './entities/print-transaction.entity';
 import { PrinterModule } from 'src/printer/printer.module';
 import { DocumentModule } from 'src/document/document.module';
 import { VendorModule } from 'src/vendor/vendor.module';
@@ -10,14 +10,14 @@ import { LoggerModule } from 'src/logger/logger.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PrintTransaction]),
+    TypeOrmModule.forFeature([Transaction]),
     PrinterModule,
     DocumentModule,
     VendorModule,
     LoggerModule,
   ],
-  controllers: [PrintTransactionController],
-  providers: [PrintTransactionService],
-  exports: [TypeOrmModule, PrintTransactionService],
+  controllers: [TransactionController],
+  providers: [TransactionService],
+  exports: [TypeOrmModule, TransactionService],
 })
-export class PrintTransactionModule {}
+export class TransactionModule {}

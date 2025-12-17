@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrintTransactionController } from './print-transaction.controller';
-import { PrintTransactionService } from './print-transaction.service';
-import { CreatePrintTransactionDto } from './dto/create-print-transaction.dto';
-import { UpdatePrintTransactionDto } from './dto/update-print-transaction.dto';
+import { TransactionController } from './print-transaction.controller';
+import { TransactionService } from './print-transaction.service';
+import { CreateTransactionDto } from './dto/create-print-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-print-transaction.dto';
 
-describe('PrintTransactionController', () => {
-  let controller: PrintTransactionController;
-  let service: PrintTransactionService;
+describe('TransactionController', () => {
+  let controller: TransactionController;
+  let service: TransactionService;
 
-  const mockPrintTransactionService = {
+  const mockTransactionService = {
     create: jest.fn(),
     findAll: jest.fn(),
     findOne: jest.fn(),
@@ -18,19 +18,19 @@ describe('PrintTransactionController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [PrintTransactionController],
+      controllers: [TransactionController],
       providers: [
         {
-          provide: PrintTransactionService,
-          useValue: mockPrintTransactionService,
+          provide: TransactionService,
+          useValue: mockTransactionService,
         },
       ],
     }).compile();
 
-    controller = module.get<PrintTransactionController>(
-      PrintTransactionController,
+    controller = module.get<TransactionController>(
+      TransactionController,
     );
-    service = module.get<PrintTransactionService>(PrintTransactionService);
+    service = module.get<TransactionService>(TransactionService);
   });
 
   it('should be defined', () => {
@@ -39,13 +39,13 @@ describe('PrintTransactionController', () => {
 
   describe('create', () => {
     it('should call the create method of the service with the correct DTO', async () => {
-      const createDto: CreatePrintTransactionDto = {
+      const createDto: CreateTransactionDto = {
         vendorId: 1,
         documentIds: [1, 2],
       };
 
       const expectedResult = { id: 1, ...createDto };
-      mockPrintTransactionService.create.mockResolvedValue(expectedResult);
+      mockTransactionService.create.mockResolvedValue(expectedResult);
 
       const result = await controller.create(createDto);
 
@@ -58,7 +58,7 @@ describe('PrintTransactionController', () => {
     it('should call the findAll method of the service with correct DTO', async () => {
       const expectedResult = [{ id: 1, vendorId: 1, documentIds: [1, 2] }];
 
-      mockPrintTransactionService.findAll.mockResolvedValue(expectedResult);
+      mockTransactionService.findAll.mockResolvedValue(expectedResult);
 
       const result = await controller.findAll();
 
@@ -72,7 +72,7 @@ describe('PrintTransactionController', () => {
       const id = 1;
       const expectedResult = { id: 1, vendorId: 1, documentIds: [1, 2] };
 
-      mockPrintTransactionService.findOne.mockResolvedValue(expectedResult);
+      mockTransactionService.findOne.mockResolvedValue(expectedResult);
 
       const result = await controller.findOne(id);
 
@@ -84,7 +84,7 @@ describe('PrintTransactionController', () => {
   describe('update', () => {
     it('should call the update method of the service with correct DTO', async () => {
       const id = 1;
-      const updataDto: UpdatePrintTransactionDto = { printerId: 1 };
+      const updataDto: UpdateTransactionDto = { printerId: 1 };
       const expectedResult = {
         id: 1,
         vendorId: 1,
@@ -92,7 +92,7 @@ describe('PrintTransactionController', () => {
         printerId: 1,
       };
 
-      mockPrintTransactionService.update.mockResolvedValue(expectedResult);
+      mockTransactionService.update.mockResolvedValue(expectedResult);
 
       const result = await controller.update(id, updataDto);
 
@@ -104,7 +104,7 @@ describe('PrintTransactionController', () => {
   describe('remove', () => {
     it('should call the remove method of the service with correct DTO', async () => {
       const id = 1;
-      mockPrintTransactionService.remove.mockResolvedValue({ affected: 1 });
+      mockTransactionService.remove.mockResolvedValue({ affected: 1 });
 
       const result = await controller.remove(id);
 

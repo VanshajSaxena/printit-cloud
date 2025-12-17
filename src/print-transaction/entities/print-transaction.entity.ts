@@ -11,7 +11,7 @@ import {
 import { TransactionStatus } from '../enums/transaction-status.enum';
 
 @Entity()
-export class PrintTransaction {
+export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
