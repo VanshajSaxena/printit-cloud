@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DocumentService } from './print-document.service';
+import { DocumentService } from './document.service';
 import { Repository } from 'typeorm';
-import { Document } from './entities/print-document.entity';
+import { Document } from './entities/document.entity';
 import { DocumentStatus } from './enums/document-status.enum';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreateDocumentDto } from './dto/create-print-document.dto';
+import { CreateDocumentDto } from './dto/create-document.dto';
 
 describe('DocumentService', () => {
   let service: DocumentService;

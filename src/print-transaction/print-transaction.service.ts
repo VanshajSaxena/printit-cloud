@@ -9,7 +9,7 @@ import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
 import { PrintTransactionResponseDto } from './dto/print-transaction-response.dto';
 import { VendorService } from 'src/vendor/vendor.service';
-import { DocumentService } from 'src/print-document/print-document.service';
+import { DocumentService } from 'src/document/document.service';
 import { PrinterService } from 'src/printer/printer.service';
 
 @Injectable()

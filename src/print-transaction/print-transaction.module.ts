@@ -4,7 +4,7 @@ import { PrintTransactionController } from './print-transaction.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PrintTransaction } from './entities/print-transaction.entity';
 import { PrinterModule } from 'src/printer/printer.module';
-import { DocumentModule } from 'src/print-document/print-document.module';
+import { DocumentModule } from 'src/document/document.module';
 import { VendorModule } from 'src/vendor/vendor.module';
 import { LoggerModule } from 'src/logger/logger.module';
 

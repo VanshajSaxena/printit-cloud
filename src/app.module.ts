@@ -6,7 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from './logger/logger.module';
 import { NotificationsGateway } from './notifications/notifications.gateway';
-import { DocumentModule } from './print-document/print-document.module';
+import { DocumentModule } from './document/document.module';
 import { PrintTransactionModule } from './print-transaction/print-transaction.module';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';

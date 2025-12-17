@@ -1,4 +1,4 @@
-import { Document } from 'src/print-document/entities/print-document.entity';
+import { Document } from 'src/document/entities/document.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import {

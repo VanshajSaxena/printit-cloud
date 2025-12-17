@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDocumentDto } from './dto/create-print-document.dto';
-import { UpdateDocumentDto } from './dto/update-print-document.dto';
+import { CreateDocumentDto } from './dto/create-document.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Document } from './entities/print-document.entity';
+import { Document } from './entities/document.entity';
 import { In, Repository } from 'typeorm';
 import { DocumentStatus } from './enums/document-status.enum';
 import { plainToInstance } from 'class-transformer';
-import { DocumentResponseDto } from './dto/print-document-response.dto';
+import { DocumentResponseDto } from './dto/document-response.dto';
 
 @Injectable()
 export class DocumentService {

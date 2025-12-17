@@ -8,9 +8,9 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { DocumentService } from './print-document.service';
-import { CreateDocumentDto } from './dto/create-print-document.dto';
-import { UpdateDocumentDto } from './dto/update-print-document.dto';
+import { DocumentService } from './document.service';
+import { CreateDocumentDto } from './dto/create-document.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Controller({ path: 'documents', version: '1' })
 export class DocumentController {
