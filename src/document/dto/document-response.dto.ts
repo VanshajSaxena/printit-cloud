@@ -1,4 +1,4 @@
-import { Transaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { DocumentStatus } from '../enums/document-status.enum';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';

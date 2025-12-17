@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateTransactionDto } from './dto/create-print-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-print-transaction.dto';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Transaction } from './entities/print-transaction.entity';
+import { Transaction } from './entities/transaction.entity';
 import { Repository } from 'typeorm';
 import { customAlphabet } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
-import { TransactionResponseDto } from './dto/print-transaction-response.dto';
+import { TransactionResponseDto } from './dto/transaction-response.dto';
 import { VendorService } from 'src/vendor/vendor.service';
 import { DocumentService } from 'src/document/document.service';
 import { PrinterService } from 'src/printer/printer.service';

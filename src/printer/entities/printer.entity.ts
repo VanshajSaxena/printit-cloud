@@ -1,4 +1,4 @@
-import { Transaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import {
   Column,

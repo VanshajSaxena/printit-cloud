@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TransactionService } from './print-transaction.service';
-import { TransactionController } from './print-transaction.controller';
+import { TransactionService } from './transaction.service';
+import { TransactionController } from './transaction.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Transaction } from './entities/print-transaction.entity';
+import { Transaction } from './entities/transaction.entity';
 import { PrinterModule } from 'src/printer/printer.module';
 import { DocumentModule } from 'src/document/document.module';
 import { VendorModule } from 'src/vendor/vendor.module';

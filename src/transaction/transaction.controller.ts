@@ -8,9 +8,9 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { TransactionService } from './print-transaction.service';
-import { CreateTransactionDto } from './dto/create-print-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-print-transaction.dto';
+import { TransactionService } from './transaction.service';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {

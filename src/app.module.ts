@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 import { LoggerModule } from './logger/logger.module';
 import { NotificationsGateway } from './notifications/notifications.gateway';
 import { DocumentModule } from './document/document.module';
-import { TransactionModule } from './print-transaction/print-transaction.module';
+import { TransactionModule } from './transaction/transaction.module';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { VendorModule } from './vendor/vendor.module';
