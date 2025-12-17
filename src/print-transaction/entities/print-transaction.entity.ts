@@ -24,17 +24,17 @@ export class Transaction {
   @Column({ unique: true })
   friendlyId: string;
 
-  @ManyToOne(() => Vendor, (vendor) => vendor.printTransactions)
+  @ManyToOne(() => Vendor, (vendor) => vendor.transactions)
   vendor: Vendor;
 
-  @ManyToOne(() => Printer, (printer) => printer.printTransactions, {
+  @ManyToOne(() => Printer, (printer) => printer.transactions, {
     nullable: true,
   })
   printer: Printer | null;
 
   @OneToMany(
     () => Document,
-    (document) => document.printTransaction,
+    (document) => document.transaction,
   )
   documents: Document[];
 }

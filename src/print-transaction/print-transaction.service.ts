@@ -16,7 +16,7 @@ import { PrinterService } from 'src/printer/printer.service';
 export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
-    private printTransactionRepository: Repository<Transaction>,
+    private transactionRepository: Repository<Transaction>,
     private vendorService: VendorService,
     private printerService: PrinterService,
     private documentService: DocumentService,
@@ -60,12 +60,12 @@ export class TransactionService {
     const nanoid = customAlphabet(this.charSet, 8);
 
     let friendlyId: string = nanoid();
-    while (await this.printTransactionRepository.existsBy({ friendlyId })) {
+    while (await this.transactionRepository.existsBy({ friendlyId })) {
       friendlyId = nanoid();
       this.logger.warn('An existing nanoid was generated.');
     }
 
-    const newTransaction = this.printTransactionRepository.create({
+    const newTransaction = this.transactionRepository.create({
       vendor,
       printer,
       documents,
@@ -73,46 +73,46 @@ export class TransactionService {
     });
 
     const saved =
-      await this.printTransactionRepository.save(newTransaction);
+      await this.transactionRepository.save(newTransaction);
     return plainToInstance(TransactionResponseDto, saved);
   }
 
   async findAll() {
-    const printTransactions = await this.printTransactionRepository.find();
-    return plainToInstance(TransactionResponseDto, printTransactions);
+    const transactions = await this.transactionRepository.find();
+    return plainToInstance(TransactionResponseDto, transactions);
   }
 
   async findOne(id: number) {
-    const printTransaction = await this.findOneEntity(id);
-    return plainToInstance(TransactionResponseDto, printTransaction);
+    const transaction = await this.findOneEntity(id);
+    return plainToInstance(TransactionResponseDto, transaction);
   }
 
   async update(
     id: number,
     updateTransactionDto: UpdateTransactionDto,
   ) {
-    const printTransaction = await this.findOneEntity(id);
-    Object.assign(printTransaction, updateTransactionDto);
-    const saved = await this.printTransactionRepository.save(printTransaction);
+    const transaction = await this.findOneEntity(id);
+    Object.assign(transaction, updateTransactionDto);
+    const saved = await this.transactionRepository.save(transaction);
     return plainToInstance(TransactionResponseDto, saved);
   }
 
   async remove(id: number) {
-    const printTransaction = await this.findOneEntity(id);
+    const transaction = await this.findOneEntity(id);
     const removed =
-      await this.printTransactionRepository.softRemove(printTransaction);
+      await this.transactionRepository.softRemove(transaction);
     return plainToInstance(TransactionResponseDto, removed);
   }
 
   private async findOneEntity(id: number) {
-    const printTransaction = await this.printTransactionRepository.findOneBy({
+    const transaction = await this.transactionRepository.findOneBy({
       id,
     });
-    if (!printTransaction) {
+    if (!transaction) {
       throw new NotFoundException(
         `Transaction not found for the id: ${id}`,
       );
     }
-    return printTransaction;
+    return transaction;
   }
 }

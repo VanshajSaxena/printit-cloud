@@ -12,7 +12,7 @@
 
 **** Relationships
      - OneToMany printers → Printer
-     - OneToMany printTransactions → Transaction
+     - OneToMany transactions → Transaction
 
 *** Printer (`/api/v1/printers`)
 
@@ -23,7 +23,7 @@
 
 **** Relationships
      - ManyToOne vendor → Vendor
-     - OneToMany printTransactions → Transaction
+     - OneToMany transactions → Transaction
 
 *** Transaction (`/api/v1/transactions`)
 
@@ -43,7 +43,7 @@
      - status
      - configuration (nullable, length *0)
 **** Relationships
-     - ManyToOne printTransaction → Transaction
+     - ManyToOne transaction → Transaction
 
 *** Relationships
 

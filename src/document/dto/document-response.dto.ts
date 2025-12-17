@@ -22,5 +22,5 @@ export class DocumentResponseDto {
 
   @Exclude()
   @ApiHideProperty()
-  printTransaction: Transaction;
+  transaction: Transaction;
 }

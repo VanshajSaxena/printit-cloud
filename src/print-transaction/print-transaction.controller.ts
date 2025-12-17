@@ -15,22 +15,22 @@ import { UpdateTransactionDto } from './dto/update-print-transaction.dto';
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {
   constructor(
-    private readonly printTransactionService: TransactionService,
+    private readonly transactionService: TransactionService,
   ) {}
 
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.printTransactionService.create(createTransactionDto);
+    return this.transactionService.create(createTransactionDto);
   }
 
   @Get()
   async findAll() {
-    return this.printTransactionService.findAll();
+    return this.transactionService.findAll();
   }
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.printTransactionService.findOne(id);
+    return this.transactionService.findOne(id);
   }
 
   @Patch(':id')
@@ -38,11 +38,11 @@ export class TransactionController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.printTransactionService.update(id, updateTransactionDto);
+    return this.transactionService.update(id, updateTransactionDto);
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.printTransactionService.remove(id);
+    return this.transactionService.remove(id);
   }
 }

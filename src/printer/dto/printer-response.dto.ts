@@ -22,7 +22,7 @@ export class PrinterResponseDto {
 
   @Exclude()
   @ApiHideProperty()
-  printTransactions: Transaction[];
+  transactions: Transaction[];
 
   constructor(partial: Partial<PrinterResponseDto>) {
     Object.assign(this, partial);

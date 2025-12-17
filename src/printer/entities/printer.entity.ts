@@ -23,5 +23,5 @@ export class Printer {
   vendor: Vendor;
 
   @OneToMany(() => Transaction, (transaction) => transaction.printer)
-  printTransactions: Transaction[];
+  transactions: Transaction[];
 }

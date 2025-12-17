@@ -36,7 +36,7 @@ export class VendorResponseDto {
 
   @Exclude()
   @ApiHideProperty()
-  printTransactions: Transaction[];
+  transactions: Transaction[];
 
   constructor(partial: Partial<VendorResponseDto>) {
     Object.assign(this, partial);
