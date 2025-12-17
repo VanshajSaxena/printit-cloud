@@ -16,9 +16,7 @@ export class DocumentService {
   ) {}
 
   async create(createDocumentDto: CreateDocumentDto) {
-    const newDocument = this.documentRepository.create(
-      createDocumentDto,
-    );
+    const newDocument = this.documentRepository.create(createDocumentDto);
     newDocument.status = DocumentStatus.PENDING;
     const saved = await this.documentRepository.save(newDocument);
     return plainToInstance(DocumentResponseDto, saved);
@@ -43,8 +41,7 @@ export class DocumentService {
 
   async remove(id: number) {
     const entityNeedRemoval = await this.findOneEntity(id);
-    const removed =
-      await this.documentRepository.softRemove(entityNeedRemoval);
+    const removed = await this.documentRepository.softRemove(entityNeedRemoval);
     return plainToInstance(DocumentResponseDto, removed);
   }
 

@@ -1,4 +1,5 @@
-import { IsJSON, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { ColorMode } from '../enums/document-status.enum';
 
 export class CreateDocumentDto {
   @IsNotEmpty()
@@ -6,9 +7,12 @@ export class CreateDocumentDto {
   name: string;
 
   @IsString()
-  path: string;
+  key: string;
 
-  @IsOptional()
-  @IsJSON()
-  configuration?: string;
+  @IsString()
+  @IsEnum(ColorMode)
+  colorMode: ColorMode;
+
+  @IsInt()
+  copies: number;
 }

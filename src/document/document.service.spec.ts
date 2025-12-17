@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentService } from './document.service';
 import { Repository } from 'typeorm';
 import { Document } from './entities/document.entity';
-import { DocumentStatus } from './enums/document-status.enum';
+import { ColorMode, DocumentStatus } from './enums/document-status.enum';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CreateDocumentDto } from './dto/create-document.dto';
 
@@ -30,9 +30,7 @@ describe('DocumentService', () => {
     }).compile();
 
     service = module.get<DocumentService>(DocumentService);
-    repository = module.get<Repository<Document>>(
-      getRepositoryToken(Document),
-    );
+    repository = module.get<Repository<Document>>(getRepositoryToken(Document));
   });
 
   it('should be defined', () => {
@@ -43,8 +41,9 @@ describe('DocumentService', () => {
     it('should create a new print document and save it with PENDING status', async () => {
       const createDto: CreateDocumentDto = {
         name: 'Test Document',
-        path: 'test/path.pdf',
-        configuration: '{"pages": 1}',
+        key: 'test/path.pdf',
+        copies: 12,
+        colorMode: ColorMode.COLOR,
       };
 
       const createdDocument = {

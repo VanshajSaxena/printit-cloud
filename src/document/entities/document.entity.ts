@@ -1,6 +1,6 @@
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { DocumentStatus } from '../enums/document-status.enum';
+import { ColorMode, DocumentStatus } from '../enums/document-status.enum';
 
 @Entity()
 export class Document {
@@ -11,17 +11,17 @@ export class Document {
   name: string;
 
   @Column()
-  path: string;
+  key: string;
 
   @Column('enum', { enum: DocumentStatus, default: DocumentStatus.PENDING })
   status: DocumentStatus;
 
-  @Column({ type: 'json', nullable: true })
-  configuration: string | null;
+  @Column({ type: 'integer' })
+  copies: number;
 
-  @ManyToOne(
-    () => Transaction,
-    (transaction) => transaction.documents,
-  )
+  @Column('enum', { enum: ColorMode, default: ColorMode.MONOCHROME })
+  colorMode: ColorMode;
+
+  @ManyToOne(() => Transaction, (transaction) => transaction.documents)
   transaction: Transaction;
 }
