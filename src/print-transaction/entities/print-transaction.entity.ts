@@ -34,7 +34,7 @@ export class PrintTransaction {
 
   @OneToMany(
     () => Document,
-    (printDocument) => printDocument.printTransaction,
+    (document) => document.printTransaction,
   )
-  printDocuments: Document[];
+  documents: Document[];
 }

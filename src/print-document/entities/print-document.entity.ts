@@ -21,7 +21,7 @@ export class Document {
 
   @ManyToOne(
     () => PrintTransaction,
-    (printTransaction) => printTransaction.printDocuments,
+    (printTransaction) => printTransaction.documents,
   )
   printTransaction: PrintTransaction;
 }

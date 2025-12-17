@@ -19,7 +19,7 @@ export class PrintTransactionService {
     private printTransactionRepository: Repository<PrintTransaction>,
     private vendorService: VendorService,
     private printerService: PrinterService,
-    private printDocumentService: DocumentService,
+    private documentService: DocumentService,
     private logger: ApplicationLogger,
   ) {
     this.logger.setContext(PrintTransactionService.name);
@@ -32,13 +32,13 @@ export class PrintTransactionService {
       createPrintTransactionDto.vendorId,
     );
 
-    const printDocuments = await this.printDocumentService.getEntitites(
-      createPrintTransactionDto.printDocumentIds,
+    const documents = await this.documentService.getEntitites(
+      createPrintTransactionDto.documentIds,
     );
 
     if (
-      createPrintTransactionDto.printDocumentIds.length !==
-      printDocuments.length
+      createPrintTransactionDto.documentIds.length !==
+      documents.length
     ) {
       throw new NotFoundException(
         `One or more print documents were not found.`,
@@ -68,7 +68,7 @@ export class PrintTransactionService {
     const newPrintTransaction = this.printTransactionRepository.create({
       vendor,
       printer,
-      printDocuments,
+      documents,
       friendlyId,
     });
 

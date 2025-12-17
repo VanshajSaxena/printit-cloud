@@ -11,5 +11,5 @@ export class CreatePrintTransactionDto {
 
   @IsNotEmpty()
   @IsArray()
-  printDocumentIds: number[];
+  documentIds: number[];
 }

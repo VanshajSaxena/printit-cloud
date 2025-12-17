@@ -12,44 +12,44 @@ import { DocumentResponseDto } from './dto/print-document-response.dto';
 export class DocumentService {
   constructor(
     @InjectRepository(Document)
-    private printDocumentRepository: Repository<Document>,
+    private documentRepository: Repository<Document>,
   ) {}
 
   async create(createDocumentDto: CreateDocumentDto) {
-    const newDocument = this.printDocumentRepository.create(
+    const newDocument = this.documentRepository.create(
       createDocumentDto,
     );
     newDocument.status = DocumentStatus.PENDING;
-    const saved = await this.printDocumentRepository.save(newDocument);
+    const saved = await this.documentRepository.save(newDocument);
     return plainToInstance(DocumentResponseDto, saved);
   }
 
   async findAll() {
-    const printDocuments = await this.printDocumentRepository.find();
-    return plainToInstance(DocumentResponseDto, printDocuments);
+    const documents = await this.documentRepository.find();
+    return plainToInstance(DocumentResponseDto, documents);
   }
 
   async findOne(id: number) {
-    const printDocument = await this.findOneEntity(id);
-    return plainToInstance(DocumentResponseDto, printDocument);
+    const document = await this.findOneEntity(id);
+    return plainToInstance(DocumentResponseDto, document);
   }
 
   async update(id: number, updateDocumentDto: UpdateDocumentDto) {
-    const printDocument = await this.findOneEntity(id);
-    Object.assign(printDocument, updateDocumentDto);
-    const saved = await this.printDocumentRepository.save(printDocument);
+    const document = await this.findOneEntity(id);
+    Object.assign(document, updateDocumentDto);
+    const saved = await this.documentRepository.save(document);
     return plainToInstance(DocumentResponseDto, saved);
   }
 
   async remove(id: number) {
     const entityNeedRemoval = await this.findOneEntity(id);
     const removed =
-      await this.printDocumentRepository.softRemove(entityNeedRemoval);
+      await this.documentRepository.softRemove(entityNeedRemoval);
     return plainToInstance(DocumentResponseDto, removed);
   }
 
   getEntitites(ids: number[]) {
-    return this.printDocumentRepository.findBy({ id: In(ids) });
+    return this.documentRepository.findBy({ id: In(ids) });
   }
 
   getEntityOne(id: number) {
@@ -57,10 +57,10 @@ export class DocumentService {
   }
 
   private async findOneEntity(id: number) {
-    const printDocument = await this.printDocumentRepository.findOneBy({ id });
-    if (!printDocument) {
+    const document = await this.documentRepository.findOneBy({ id });
+    if (!document) {
       throw new NotFoundException(`Document not found for the id: ${id}`);
     }
-    return printDocument;
+    return document;
   }
 }

@@ -17,7 +17,7 @@ export class PrintTransactionResponseDto {
   friendlyId: string;
 
   @Expose()
-  printDocuments: Document[];
+  documents: Document[];
 
   @Exclude()
   @ApiHideProperty()

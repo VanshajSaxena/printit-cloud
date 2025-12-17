@@ -41,7 +41,7 @@ describe('PrintTransactionController', () => {
     it('should call the create method of the service with the correct DTO', async () => {
       const createDto: CreatePrintTransactionDto = {
         vendorId: 1,
-        printDocumentIds: [1, 2],
+        documentIds: [1, 2],
       };
 
       const expectedResult = { id: 1, ...createDto };
@@ -56,7 +56,7 @@ describe('PrintTransactionController', () => {
 
   describe('findAll', () => {
     it('should call the findAll method of the service with correct DTO', async () => {
-      const expectedResult = [{ id: 1, vendorId: 1, printDocumentIds: [1, 2] }];
+      const expectedResult = [{ id: 1, vendorId: 1, documentIds: [1, 2] }];
 
       mockPrintTransactionService.findAll.mockResolvedValue(expectedResult);
 
@@ -70,7 +70,7 @@ describe('PrintTransactionController', () => {
   describe('findOne', () => {
     it('should call the findOne method of the service with correct DTO', async () => {
       const id = 1;
-      const expectedResult = { id: 1, vendorId: 1, printDocumentIds: [1, 2] };
+      const expectedResult = { id: 1, vendorId: 1, documentIds: [1, 2] };
 
       mockPrintTransactionService.findOne.mockResolvedValue(expectedResult);
 
@@ -88,7 +88,7 @@ describe('PrintTransactionController', () => {
       const expectedResult = {
         id: 1,
         vendorId: 1,
-        printDocumentIds: [1, 2],
+        documentIds: [1, 2],
         printerId: 1,
       };
 

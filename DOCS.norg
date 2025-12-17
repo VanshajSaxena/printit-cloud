@@ -33,7 +33,7 @@
 **** Relationships
      - ManyToOne vendor → Vendor
      - ManyToOne printer → Printer (nullable)
-     - OneToMany printDocuments → Document
+     - OneToMany documents → Document
 
 *** Document (`/api/v1/documents`)
 **** Fields
