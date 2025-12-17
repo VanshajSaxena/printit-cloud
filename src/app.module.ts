@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { VendorModule } from './vendor/vendor.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PrinterModule } from './printer/printer.module';
-import { PrintTransactionModule } from './print-transaction/print-transaction.module';
-import { PrintDocumentModule } from './print-document/print-document.module';
-import { NotificationsGateway } from './notifications/notifications.gateway';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategy';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { LoggerModule } from './logger/logger.module';
+import { NotificationsGateway } from './notifications/notifications.gateway';
+import { PrintDocumentModule } from './print-document/print-document.module';
+import { PrintTransactionModule } from './print-transaction/print-transaction.module';
+import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
+import { VendorModule } from './vendor/vendor.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { R2Module } from './r2/r2.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
+        retryAttempts: 3,
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
@@ -32,8 +34,12 @@ import { R2Module } from './r2/r2.module';
         synchronize:
           configService.get<string>('NODE_ENV') === 'development' &&
           configService.get<boolean>('DB_SYNCHRONIZE'),
-        logging: 'all',
+        logging:
+          configService.get<string>('NODE_ENV') === 'development'
+            ? 'all'
+            : ['warn', 'error'],
         maxQueryExecutionTime: 1000,
+        namingStrategy: new SnakeNamingStrategy(),
       }),
       inject: [ConfigService],
     }),

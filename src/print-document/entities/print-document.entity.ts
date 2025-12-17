@@ -7,7 +7,7 @@ export class PrintDocument {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   name: string;
 
   @Column()

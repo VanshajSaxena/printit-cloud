@@ -13,7 +13,7 @@ export class Printer {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   name: string;
 
   @Column({ type: 'json' })

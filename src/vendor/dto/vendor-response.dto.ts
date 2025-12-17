@@ -9,24 +9,26 @@ export class VendorResponseDto {
   id: number;
 
   @Expose()
-  firstname: string;
+  firstName: string;
 
   @Expose()
-  lastname: string;
+  lastName: string;
 
   @Expose()
   givenName: string | null;
 
   @Expose()
-  urlId: string;
+  username: string;
+
+  @Expose()
+  address: string;
+
+  @Expose()
+  slug: string;
 
   @Exclude()
   @ApiHideProperty()
   email: string;
-
-  @Exclude()
-  @ApiHideProperty()
-  sub: string;
 
   @Exclude()
   @ApiHideProperty()

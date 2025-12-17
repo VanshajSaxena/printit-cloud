@@ -6,10 +6,9 @@
 
 **** Fields
      - id
-     - firstname
-     - lastname
+     - firstName
+     - lastName
      - email (unique)
-     - sub
 
 **** Relationships
      - OneToMany printers → Printer

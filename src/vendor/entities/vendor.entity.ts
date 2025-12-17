@@ -7,23 +7,26 @@ export class Vendor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  firstname: string;
+  @Column({ length: 255 })
+  firstName: string;
 
-  @Column()
-  lastname: string;
+  @Column({ length: 255, nullable: true })
+  lastName: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   givenName: string | null;
+
+  @Column({ unique: true, length: 255 })
+  username: string;
 
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  sub: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  address: string | null;
 
   @Column({ unique: true })
-  urlId: string; // URL-safe unique identifier
+  slug: string;
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];

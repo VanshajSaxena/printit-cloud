@@ -38,10 +38,10 @@ describe('VendorController', () => {
   describe('create', () => {
     it('should call the create method of the service with the correct DTO', async () => {
       const createDto: CreateVendorDto = {
-        firstname: 'Harry',
-        lastname: 'Potter',
+        firstName: 'Harry',
+        lastName: 'Potter',
         email: 'harrypotter@mail.com',
-        sub: '1234567890',
+        username: 'harrypotter',
       };
 
       const expectedResult = { id: 1, ...createDto };
@@ -59,10 +59,9 @@ describe('VendorController', () => {
       const expectedResult = [
         {
           id: 1,
-          firstname: 'Harry',
-          lastname: 'Potter',
+          firstName: 'Harry',
+          lastName: 'Potter',
           email: 'harrypotter@mail.com',
-          sub: '1234567890',
         },
       ];
       mockVendorService.findAll.mockResolvedValue(expectedResult);
@@ -76,19 +75,18 @@ describe('VendorController', () => {
 
   describe('findOne', () => {
     it('should call the findOne method of the service with the correct id', async () => {
-      const id = 1;
+      const id = 'harrypotter';
       const expectedResult = {
         id: 1,
-        firstname: 'Harry',
-        lastname: 'Potter',
+        firstName: 'Harry',
+        lastName: 'Potter',
         email: 'harrypotter@mail.com',
-        sub: '1234567890',
       };
       mockVendorService.findOne.mockResolvedValue(expectedResult);
 
       const result = await controller.findOne(id);
 
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(service.findOneById(1)).toHaveBeenCalledWith(id);
       expect(result).toEqual(expectedResult);
     });
   });
@@ -97,15 +95,14 @@ describe('VendorController', () => {
     it('should call the update method of the service with the correct id and DTO', async () => {
       const id = 1;
       const updateDto = {
-        firstname: 'Ronn',
-        lastname: 'Potter',
+        firstName: 'Ronn',
+        lastName: 'Potter',
       };
       const expectedResult = {
         id: 1,
-        firstname: 'Harry',
-        lastname: 'Potter',
+        firstName: 'Harry',
+        lastName: 'Potter',
         email: 'harrypotter@mail.com',
-        sub: '1234567890',
       };
       mockVendorService.update.mockResolvedValue(expectedResult);
 

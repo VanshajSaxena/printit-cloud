@@ -1,11 +1,12 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
 import { ApplicationLogger } from './logger/application-logger.service';
 
 async function bootstrap() {
@@ -17,7 +18,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Printly')
     .setDescription('Printly Cloud API.')
-    .setVersion('0.0.1')
+    .setVersion('0.1.0')
     .build();
 
   const documentFactory = () =>
@@ -33,6 +34,16 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
+  app.enableCors({
+    origin: [
+      'http://localhost:8080',
+      'https://deploy-preview-40--printly-app.netlify.app',
+      'https://testing--printly-app.netlify.app',
+    ],
+  });
+  const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
+  server.disable('etag');
+  server.disable('x-powered-by');
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap().catch((error: unknown) => {
