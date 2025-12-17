@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrintDocumentService } from './print-document.service';
+import { DocumentService } from './document.service';
 import { Repository } from 'typeorm';
-import { PrintDocument } from './entities/print-document.entity';
+import { Document } from './entities/document.entity';
 import { DocumentStatus } from './enums/document-status.enum';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
+import { CreateDocumentDto } from './dto/create-document.dto';
 
-describe('PrintDocumentService', () => {
-  let service: PrintDocumentService;
-  let repository: Repository<PrintDocument>;
+describe('DocumentService', () => {
+  let service: DocumentService;
+  let repository: Repository<Document>;
 
-  const mockPrintDocumentRepository = {
+  const mockDocumentRepository = {
     create: jest.fn(),
     find: jest.fn(),
     findOneBy: jest.fn(),
@@ -21,17 +21,17 @@ describe('PrintDocumentService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PrintDocumentService,
+        DocumentService,
         {
-          provide: getRepositoryToken(PrintDocument),
-          useValue: mockPrintDocumentRepository,
+          provide: getRepositoryToken(Document),
+          useValue: mockDocumentRepository,
         },
       ],
     }).compile();
 
-    service = module.get<PrintDocumentService>(PrintDocumentService);
-    repository = module.get<Repository<PrintDocument>>(
-      getRepositoryToken(PrintDocument),
+    service = module.get<DocumentService>(DocumentService);
+    repository = module.get<Repository<Document>>(
+      getRepositoryToken(Document),
     );
   });
 
@@ -41,7 +41,7 @@ describe('PrintDocumentService', () => {
 
   describe('create', () => {
     it('should create a new print document and save it with PENDING status', async () => {
-      const createDto: CreatePrintDocumentDto = {
+      const createDto: CreateDocumentDto = {
         name: 'Test Document',
         path: 'test/path.pdf',
         configuration: '{"pages": 1}',
@@ -57,8 +57,8 @@ describe('PrintDocumentService', () => {
         ...createdDocument,
       };
 
-      mockPrintDocumentRepository.create.mockReturnValue(createdDocument);
-      mockPrintDocumentRepository.save.mockResolvedValue(savedDocument);
+      mockDocumentRepository.create.mockReturnValue(createdDocument);
+      mockDocumentRepository.save.mockResolvedValue(savedDocument);
 
       const result = await service.create(createDto);
 

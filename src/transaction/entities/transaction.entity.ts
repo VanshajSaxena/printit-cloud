@@ -1,4 +1,4 @@
-import { PrintDocument } from 'src/print-document/entities/print-document.entity';
+import { Document } from 'src/document/entities/document.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import {
@@ -11,7 +11,7 @@ import {
 import { TransactionStatus } from '../enums/transaction-status.enum';
 
 @Entity()
-export class PrintTransaction {
+export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,17 +24,17 @@ export class PrintTransaction {
   @Column({ unique: true })
   friendlyId: string;
 
-  @ManyToOne(() => Vendor, (vendor) => vendor.printTransactions)
+  @ManyToOne(() => Vendor, (vendor) => vendor.transactions)
   vendor: Vendor;
 
-  @ManyToOne(() => Printer, (printer) => printer.printTransactions, {
+  @ManyToOne(() => Printer, (printer) => printer.transactions, {
     nullable: true,
   })
   printer: Printer | null;
 
   @OneToMany(
-    () => PrintDocument,
-    (printDocument) => printDocument.printTransaction,
+    () => Document,
+    (document) => document.transaction,
   )
-  printDocuments: PrintDocument[];
+  documents: Document[];
 }

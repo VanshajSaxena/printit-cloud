@@ -12,7 +12,7 @@
 
 **** Relationships
      - OneToMany printers → Printer
-     - OneToMany printTransactions → PrintTransaction
+     - OneToMany transactions → Transaction
 
 *** Printer (`/api/v1/printers`)
 
@@ -23,9 +23,9 @@
 
 **** Relationships
      - ManyToOne vendor → Vendor
-     - OneToMany printTransactions → PrintTransaction
+     - OneToMany transactions → Transaction
 
-*** PrintTransaction (`/api/v1/transactions`)
+*** Transaction (`/api/v1/transactions`)
 
 **** Fields
      - id
@@ -33,9 +33,9 @@
 **** Relationships
      - ManyToOne vendor → Vendor
      - ManyToOne printer → Printer (nullable)
-     - OneToMany printDocuments → PrintDocument
+     - OneToMany documents → Document
 
-*** PrintDocument (`/api/v1/documents`)
+*** Document (`/api/v1/documents`)
 **** Fields
      - id
      - name
@@ -43,16 +43,16 @@
      - status
      - configuration (nullable, length *0)
 **** Relationships
-     - ManyToOne printTransaction → PrintTransaction
+     - ManyToOne transaction → Transaction
 
 *** Relationships
 
     @code mermaid
     erDiagram
     Vendor ||--o{ Printer  has
-    Vendor ||--o{ PrintTransaction  initiates
-    Printer ||--o{ PrintTransaction  handles
-    PrintTransaction ||--o{ PrintDocument  contains
+    Vendor ||--o{ Transaction  initiates
+    Printer ||--o{ Transaction  handles
+    Transaction ||--o{ Document  contains
     @end
 
 ** Server WebSocket Namespaces (Socket.IO)

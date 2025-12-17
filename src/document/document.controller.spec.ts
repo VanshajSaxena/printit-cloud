@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrintDocumentController } from './print-document.controller';
-import { PrintDocumentService } from './print-document.service';
-import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
-import { UpdatePrintDocumentDto } from './dto/update-print-document.dto';
+import { DocumentController } from './document.controller';
+import { DocumentService } from './document.service';
+import { CreateDocumentDto } from './dto/create-document.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
 
-describe('PrintDocumentController', () => {
-  let controller: PrintDocumentController;
-  let service: PrintDocumentService;
+describe('DocumentController', () => {
+  let controller: DocumentController;
+  let service: DocumentService;
 
-  const mockPrintDocumentService = {
+  const mockDocumentService = {
     create: jest.fn(),
     findAll: jest.fn(),
     findOne: jest.fn(),
@@ -18,17 +18,17 @@ describe('PrintDocumentController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [PrintDocumentController],
+      controllers: [DocumentController],
       providers: [
         {
-          provide: PrintDocumentService,
-          useValue: mockPrintDocumentService,
+          provide: DocumentService,
+          useValue: mockDocumentService,
         },
       ],
     }).compile();
 
-    controller = module.get<PrintDocumentController>(PrintDocumentController);
-    service = module.get<PrintDocumentService>(PrintDocumentService);
+    controller = module.get<DocumentController>(DocumentController);
+    service = module.get<DocumentService>(DocumentService);
   });
 
   afterEach(() => {
@@ -41,13 +41,13 @@ describe('PrintDocumentController', () => {
 
   describe('create', () => {
     it('should call the create method of the service with the correct DTO', async () => {
-      const createDto: CreatePrintDocumentDto = {
+      const createDto: CreateDocumentDto = {
         name: 'Test Doc',
         path: '/path/to/doc',
       };
 
       const expectedResult = { id: 1, ...createDto };
-      mockPrintDocumentService.create.mockResolvedValue(expectedResult);
+      mockDocumentService.create.mockResolvedValue(expectedResult);
 
       const result = await controller.create(createDto);
 
@@ -61,7 +61,7 @@ describe('PrintDocumentController', () => {
       const expectedResult = [
         { id: 1, name: 'Test Doc', path: '/path/to/doc' },
       ];
-      mockPrintDocumentService.findAll.mockResolvedValue(expectedResult);
+      mockDocumentService.findAll.mockResolvedValue(expectedResult);
 
       const result = await controller.findAll();
 
@@ -74,7 +74,7 @@ describe('PrintDocumentController', () => {
     it('should call the findOne method of the service with the correct id', async () => {
       const id = 1;
       const expectedResult = { id: 1, name: 'Test Doc', path: '/path/to/doc' };
-      mockPrintDocumentService.findOne.mockResolvedValue(expectedResult);
+      mockDocumentService.findOne.mockResolvedValue(expectedResult);
 
       const result = await controller.findOne(id);
 
@@ -86,13 +86,13 @@ describe('PrintDocumentController', () => {
   describe('update', () => {
     it('should call the update method of the service with the correct id and DTO', async () => {
       const id = 1;
-      const updateDto: UpdatePrintDocumentDto = { name: 'Updated Doc' };
+      const updateDto: UpdateDocumentDto = { name: 'Updated Doc' };
       const expectedResult = {
         id: 1,
         name: 'Updated Doc',
         path: '/path/to/doc',
       };
-      mockPrintDocumentService.update.mockResolvedValue(expectedResult);
+      mockDocumentService.update.mockResolvedValue(expectedResult);
 
       const result = await controller.update(id, updateDto);
 
@@ -104,7 +104,7 @@ describe('PrintDocumentController', () => {
   describe('remove', () => {
     it('should call the remove method of the service with the correct id', async () => {
       const id = 1;
-      mockPrintDocumentService.remove.mockResolvedValue({ affected: 1 });
+      mockDocumentService.remove.mockResolvedValue({ affected: 1 });
 
       const result = await controller.remove(id);
 

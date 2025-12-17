@@ -1,9 +1,9 @@
-import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { DocumentStatus } from '../enums/document-status.enum';
 
 @Entity()
-export class PrintDocument {
+export class Document {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,8 +20,8 @@ export class PrintDocument {
   configuration: string | null;
 
   @ManyToOne(
-    () => PrintTransaction,
-    (printTransaction) => printTransaction.printDocuments,
+    () => Transaction,
+    (transaction) => transaction.documents,
   )
-  printTransaction: PrintTransaction;
+  transaction: Transaction;
 }

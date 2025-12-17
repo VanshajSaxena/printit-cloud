@@ -7,6 +7,8 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { nanoid } from 'nanoid';
+import { UploadFileResponseDto } from './dto/upload-file-response.dto';
+import { DownloadFileResponseDto } from './dto/download-file-response.dto';
 
 @Injectable()
 export class R2Service {
@@ -32,7 +34,7 @@ export class R2Service {
       Key: key,
     });
     const url = await getSignedUrl(this.s3, command);
-    return { url, key };
+    return new UploadFileResponseDto({ url, key });
   }
 
   async createDownloadURL(key: string) {
@@ -40,6 +42,7 @@ export class R2Service {
       Bucket: this.bucketName,
       Key: key,
     });
-    return getSignedUrl(this.s3, command);
+    const url = await getSignedUrl(this.s3, command);
+    return new DownloadFileResponseDto({ url });
   }
 }

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class DownloadFileDto {
+export class DownloadFileRequestDto {
   @IsNotEmpty()
   @IsString()
   key: string;

@@ -1,10 +1,10 @@
-import { PrintTransaction } from 'src/print-transaction/entities/print-transaction.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { DocumentStatus } from '../enums/document-status.enum';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
 
 @Exclude()
-export class PrintDocumentResponseDto {
+export class DocumentResponseDto {
   @Expose()
   id: number;
 
@@ -22,5 +22,5 @@ export class PrintDocumentResponseDto {
 
   @Exclude()
   @ApiHideProperty()
-  printTransaction: PrintTransaction;
+  transaction: Transaction;
 }

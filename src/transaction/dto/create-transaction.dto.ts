@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
-export class CreatePrintTransactionDto {
+export class CreateTransactionDto {
   @IsNotEmpty()
   @IsNumber()
   vendorId: number;
@@ -11,5 +11,5 @@ export class CreatePrintTransactionDto {
 
   @IsNotEmpty()
   @IsArray()
-  printDocumentIds: number[];
+  documentIds: number[];
 }

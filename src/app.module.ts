@@ -6,8 +6,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggerModule } from './logger/logger.module';
 import { NotificationsGateway } from './notifications/notifications.gateway';
-import { PrintDocumentModule } from './print-document/print-document.module';
-import { PrintTransactionModule } from './print-transaction/print-transaction.module';
+import { DocumentModule } from './document/document.module';
+import { TransactionModule } from './transaction/transaction.module';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { VendorModule } from './vendor/vendor.module';
@@ -45,8 +45,8 @@ import { VendorModule } from './vendor/vendor.module';
     }),
     VendorModule,
     PrinterModule,
-    PrintTransactionModule,
-    PrintDocumentModule,
+    TransactionModule,
+    DocumentModule,
     LoggerModule,
     R2Module,
   ],
