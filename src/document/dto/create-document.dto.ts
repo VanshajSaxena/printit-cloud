@@ -10,9 +10,12 @@ export class CreateDocumentDto {
   key: string;
 
   @IsString()
+  contentType: string | undefined;
+
+  @IsString()
   @IsEnum(ColorMode)
-  colorMode: ColorMode;
+  colorMode?: ColorMode;
 
   @IsInt()
-  copies: number;
+  copies?: number;
 }

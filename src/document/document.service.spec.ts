@@ -44,6 +44,7 @@ describe('DocumentService', () => {
         key: 'test/path.pdf',
         copies: 12,
         colorMode: ColorMode.COLOR,
+        contentType: 'application/pdf',
       };
 
       const createdDocument = {

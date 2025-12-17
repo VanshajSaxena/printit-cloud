@@ -47,6 +47,7 @@ describe('DocumentController', () => {
         key: '/path/to/doc',
         copies: 1,
         colorMode: ColorMode.COLOR,
+        contentType: 'application/pdf',
       };
 
       const expectedResult = { id: 1, ...createDto };

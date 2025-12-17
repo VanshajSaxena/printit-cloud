@@ -13,14 +13,21 @@ export class Document {
   @Column()
   key: string;
 
+  @Column({ nullable: true })
+  contentType: string;
+
   @Column('enum', { enum: DocumentStatus, default: DocumentStatus.PENDING })
   status: DocumentStatus;
 
-  @Column({ type: 'integer' })
-  copies: number;
+  @Column({ type: 'integer', nullable: true })
+  copies: number | null;
 
-  @Column('enum', { enum: ColorMode, default: ColorMode.MONOCHROME })
-  colorMode: ColorMode;
+  @Column('enum', {
+    enum: ColorMode,
+    default: ColorMode.MONOCHROME,
+    nullable: true,
+  })
+  colorMode: ColorMode | null;
 
   @ManyToOne(() => Transaction, (transaction) => transaction.documents)
   transaction: Transaction;

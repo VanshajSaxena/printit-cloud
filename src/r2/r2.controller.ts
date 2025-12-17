@@ -8,8 +8,8 @@ export class R2Controller {
   constructor(private readonly r2Service: R2Service) {}
 
   @Post()
-  async requestUploadFile(@Body() { filename }: UploadFileRequestDto) {
-    return this.r2Service.createUploadURL(filename);
+  async requestUploadFile(@Body() uploadFileRequestDto: UploadFileRequestDto) {
+    return this.r2Service.createUploadURL(uploadFileRequestDto);
   }
   @Get()
   async requestDownloadFile(@Body() { key }: DownloadFileRequestDto) {
