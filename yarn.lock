@@ -8033,6 +8033,7 @@ __metadata:
     "@nestjs/testing": "npm:^11.0.1"
     "@nestjs/typeorm": "npm:^11.0.0"
     "@nestjs/websockets": "npm:^11.1.6"
+    "@railway/cli": "npm:^4.15.0"
     "@types/express": "npm:^5.0.0"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.10.7"
