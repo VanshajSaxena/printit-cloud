@@ -4,7 +4,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
 
 @Exclude()
-export class PrintDocumentResponseDto {
+export class DocumentResponseDto {
   @Expose()
   id: number;
 

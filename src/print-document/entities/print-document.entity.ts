@@ -3,7 +3,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { DocumentStatus } from '../enums/document-status.enum';
 
 @Entity()
-export class PrintDocument {
+export class Document {
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -33,9 +33,9 @@
 **** Relationships
      - ManyToOne vendor → Vendor
      - ManyToOne printer → Printer (nullable)
-     - OneToMany printDocuments → PrintDocument
+     - OneToMany printDocuments → Document
 
-*** PrintDocument (`/api/v1/documents`)
+*** Document (`/api/v1/documents`)
 **** Fields
      - id
      - name
@@ -52,7 +52,7 @@
     Vendor ||--o{ Printer  has
     Vendor ||--o{ PrintTransaction  initiates
     Printer ||--o{ PrintTransaction  handles
-    PrintTransaction ||--o{ PrintDocument  contains
+    PrintTransaction ||--o{ Document  contains
     @end
 
 ** Server WebSocket Namespaces (Socket.IO)

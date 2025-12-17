@@ -9,7 +9,7 @@ import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
 import { PrintTransactionResponseDto } from './dto/print-transaction-response.dto';
 import { VendorService } from 'src/vendor/vendor.service';
-import { PrintDocumentService } from 'src/print-document/print-document.service';
+import { DocumentService } from 'src/print-document/print-document.service';
 import { PrinterService } from 'src/printer/printer.service';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class PrintTransactionService {
     private printTransactionRepository: Repository<PrintTransaction>,
     private vendorService: VendorService,
     private printerService: PrinterService,
-    private printDocumentService: PrintDocumentService,
+    private printDocumentService: DocumentService,
     private logger: ApplicationLogger,
   ) {
     this.logger.setContext(PrintTransactionService.name);

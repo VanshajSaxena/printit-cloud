@@ -1,51 +1,51 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
-import { UpdatePrintDocumentDto } from './dto/update-print-document.dto';
+import { CreateDocumentDto } from './dto/create-print-document.dto';
+import { UpdateDocumentDto } from './dto/update-print-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PrintDocument } from './entities/print-document.entity';
+import { Document } from './entities/print-document.entity';
 import { In, Repository } from 'typeorm';
 import { DocumentStatus } from './enums/document-status.enum';
 import { plainToInstance } from 'class-transformer';
-import { PrintDocumentResponseDto } from './dto/print-document-response.dto';
+import { DocumentResponseDto } from './dto/print-document-response.dto';
 
 @Injectable()
-export class PrintDocumentService {
+export class DocumentService {
   constructor(
-    @InjectRepository(PrintDocument)
-    private printDocumentRepository: Repository<PrintDocument>,
+    @InjectRepository(Document)
+    private printDocumentRepository: Repository<Document>,
   ) {}
 
-  async create(createPrintDocumentDto: CreatePrintDocumentDto) {
-    const newPrintDocument = this.printDocumentRepository.create(
-      createPrintDocumentDto,
+  async create(createDocumentDto: CreateDocumentDto) {
+    const newDocument = this.printDocumentRepository.create(
+      createDocumentDto,
     );
-    newPrintDocument.status = DocumentStatus.PENDING;
-    const saved = await this.printDocumentRepository.save(newPrintDocument);
-    return plainToInstance(PrintDocumentResponseDto, saved);
+    newDocument.status = DocumentStatus.PENDING;
+    const saved = await this.printDocumentRepository.save(newDocument);
+    return plainToInstance(DocumentResponseDto, saved);
   }
 
   async findAll() {
     const printDocuments = await this.printDocumentRepository.find();
-    return plainToInstance(PrintDocumentResponseDto, printDocuments);
+    return plainToInstance(DocumentResponseDto, printDocuments);
   }
 
   async findOne(id: number) {
     const printDocument = await this.findOneEntity(id);
-    return plainToInstance(PrintDocumentResponseDto, printDocument);
+    return plainToInstance(DocumentResponseDto, printDocument);
   }
 
-  async update(id: number, updatePrintDocumentDto: UpdatePrintDocumentDto) {
+  async update(id: number, updateDocumentDto: UpdateDocumentDto) {
     const printDocument = await this.findOneEntity(id);
-    Object.assign(printDocument, updatePrintDocumentDto);
+    Object.assign(printDocument, updateDocumentDto);
     const saved = await this.printDocumentRepository.save(printDocument);
-    return plainToInstance(PrintDocumentResponseDto, saved);
+    return plainToInstance(DocumentResponseDto, saved);
   }
 
   async remove(id: number) {
     const entityNeedRemoval = await this.findOneEntity(id);
     const removed =
       await this.printDocumentRepository.softRemove(entityNeedRemoval);
-    return plainToInstance(PrintDocumentResponseDto, removed);
+    return plainToInstance(DocumentResponseDto, removed);
   }
 
   getEntitites(ids: number[]) {
@@ -59,7 +59,7 @@ export class PrintDocumentService {
   private async findOneEntity(id: number) {
     const printDocument = await this.printDocumentRepository.findOneBy({ id });
     if (!printDocument) {
-      throw new NotFoundException(`PrintDocument not found for the id: ${id}`);
+      throw new NotFoundException(`Document not found for the id: ${id}`);
     }
     return printDocument;
   }

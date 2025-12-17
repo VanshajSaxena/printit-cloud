@@ -8,17 +8,17 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
-import { PrintDocumentService } from './print-document.service';
-import { CreatePrintDocumentDto } from './dto/create-print-document.dto';
-import { UpdatePrintDocumentDto } from './dto/update-print-document.dto';
+import { DocumentService } from './print-document.service';
+import { CreateDocumentDto } from './dto/create-print-document.dto';
+import { UpdateDocumentDto } from './dto/update-print-document.dto';
 
 @Controller({ path: 'documents', version: '1' })
-export class PrintDocumentController {
-  constructor(private readonly printDocumentService: PrintDocumentService) {}
+export class DocumentController {
+  constructor(private readonly printDocumentService: DocumentService) {}
 
   @Post()
-  async create(@Body() createPrintDocumentDto: CreatePrintDocumentDto) {
-    return this.printDocumentService.create(createPrintDocumentDto);
+  async create(@Body() createDocumentDto: CreateDocumentDto) {
+    return this.printDocumentService.create(createDocumentDto);
   }
 
   @Get()
@@ -34,9 +34,9 @@ export class PrintDocumentController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updatePrintDocumentDto: UpdatePrintDocumentDto,
+    @Body() updateDocumentDto: UpdateDocumentDto,
   ) {
-    return this.printDocumentService.update(id, updatePrintDocumentDto);
+    return this.printDocumentService.update(id, updateDocumentDto);
   }
 
   @Delete(':id')

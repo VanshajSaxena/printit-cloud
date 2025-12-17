@@ -1,4 +1,4 @@
-import { PrintDocument } from 'src/print-document/entities/print-document.entity';
+import { Document } from 'src/print-document/entities/print-document.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import { TransactionStatus } from '../enums/transaction-status.enum';
@@ -17,7 +17,7 @@ export class PrintTransactionResponseDto {
   friendlyId: string;
 
   @Expose()
-  printDocuments: PrintDocument[];
+  printDocuments: Document[];
 
   @Exclude()
   @ApiHideProperty()

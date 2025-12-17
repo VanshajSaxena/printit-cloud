@@ -1,6 +1,6 @@
 import { IsJSON, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreatePrintDocumentDto {
+export class CreateDocumentDto {
   @IsNotEmpty()
   @IsString()
   name: string;

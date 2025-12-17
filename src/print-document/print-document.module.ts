@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { PrintDocumentService } from './print-document.service';
-import { PrintDocumentController } from './print-document.controller';
+import { DocumentService } from './print-document.service';
+import { DocumentController } from './print-document.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PrintDocument } from './entities/print-document.entity';
+import { Document } from './entities/print-document.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PrintDocument])],
-  controllers: [PrintDocumentController],
-  providers: [PrintDocumentService],
-  exports: [TypeOrmModule, PrintDocumentService],
+  imports: [TypeOrmModule.forFeature([Document])],
+  controllers: [DocumentController],
+  providers: [DocumentService],
+  exports: [TypeOrmModule, DocumentService],
 })
-export class PrintDocumentModule {}
+export class DocumentModule {}
