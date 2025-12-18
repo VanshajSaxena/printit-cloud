@@ -36,6 +36,7 @@ export class R2Service {
   async createUploadURL({ filename, contentType }: UploadFileRequestDto) {
     const cleanedFilename = filename
       .trim()
+      .toLowerCase()
       .normalize()
       .replaceAll(' ', '-')
       .replaceAll('/', '-');
