@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDocumentDto } from './dto/create-document.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Document } from './entities/document.entity';
-import { In, Repository } from 'typeorm';
-import { DocumentStatus } from './enums/document-status.enum';
 import { plainToInstance } from 'class-transformer';
+import { In, Repository } from 'typeorm';
+import { CreateDocumentDto } from './dto/create-document.dto';
 import { DocumentResponseDto } from './dto/document-response.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
+import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentService {
@@ -17,7 +16,6 @@ export class DocumentService {
 
   async create(createDocumentDto: CreateDocumentDto) {
     const newDocument = this.documentRepository.create(createDocumentDto);
-    newDocument.status = DocumentStatus.PENDING;
     const saved = await this.documentRepository.save(newDocument);
     return plainToInstance(DocumentResponseDto, saved);
   }

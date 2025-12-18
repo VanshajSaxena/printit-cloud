@@ -39,7 +39,7 @@ export class R2Service {
       filename.trim().normalize().replaceAll(' ', '-').replaceAll('/', '-'),
     ];
     const key = keyArr.join('/');
-    this.documentService.create({ key, name: filename, contentType });
+    this.documentService.create({ key, filename: filename, contentType });
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,

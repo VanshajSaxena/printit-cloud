@@ -3,7 +3,6 @@ import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
-import { ColorMode } from './enums/document-status.enum';
 
 describe('DocumentController', () => {
   let controller: DocumentController;
@@ -43,10 +42,8 @@ describe('DocumentController', () => {
   describe('create', () => {
     it('should call the create method of the service with the correct DTO', async () => {
       const createDto: CreateDocumentDto = {
-        name: 'Test Doc',
+        filename: 'Test Doc',
         key: '/path/to/doc',
-        copies: 1,
-        colorMode: ColorMode.COLOR,
         contentType: 'application/pdf',
       };
 
@@ -90,7 +87,7 @@ describe('DocumentController', () => {
   describe('update', () => {
     it('should call the update method of the service with the correct id and DTO', async () => {
       const id = 1;
-      const updateDto: UpdateDocumentDto = { name: 'Updated Doc' };
+      const updateDto: UpdateDocumentDto = { filename: 'Updated Doc' };
       const expectedResult = {
         id: 1,
         name: 'Updated Doc',

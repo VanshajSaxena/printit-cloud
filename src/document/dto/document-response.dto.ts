@@ -1,7 +1,6 @@
-import { Transaction } from 'src/transaction/entities/transaction.entity';
-import { ColorMode, DocumentStatus } from '../enums/document-status.enum';
-import { Exclude, Expose } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
+import { Exclude, Expose } from 'class-transformer';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 
 @Exclude()
 export class DocumentResponseDto {
@@ -13,17 +12,6 @@ export class DocumentResponseDto {
 
   @Expose()
   key: string;
-
-  @Expose()
-  status: DocumentStatus;
-
-  @Exclude()
-  @ApiHideProperty()
-  colorMode: ColorMode;
-
-  @Exclude()
-  @ApiHideProperty()
-  copies: number;
 
   @Exclude()
   @ApiHideProperty()
