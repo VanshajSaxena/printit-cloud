@@ -13,7 +13,7 @@ export class Document {
   @Column()
   key: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   contentType: string;
 
   @Column('enum', { enum: DocumentStatus, default: DocumentStatus.PENDING })

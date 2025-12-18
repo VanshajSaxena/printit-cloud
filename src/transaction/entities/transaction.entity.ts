@@ -32,9 +32,6 @@ export class Transaction {
   })
   printer: Printer | null;
 
-  @OneToMany(
-    () => Document,
-    (document) => document.transaction,
-  )
+  @OneToMany(() => Document, (document) => document.transaction)
   documents: Document[];
 }
