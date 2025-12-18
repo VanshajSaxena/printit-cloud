@@ -8,19 +8,19 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ColorMode } from '../enums/print-job.enum';
+import { OutputColor } from '../enums/print-job.enum';
 
 @Entity()
 export class PrintJob {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('enum', { enum: ColorMode, default: ColorMode.MONOCHROME })
-  colorMode: ColorMode;
+  @Column('enum', { enum: OutputColor, default: OutputColor.MONOCHROME })
+  outputColor: OutputColor;
 
   @Column({ type: 'int', default: 1 })
-  @Check('"copies" > 0')
-  copies: number;
+  @Check('"copy_count" > 0')
+  copyCount: number;
 
   @ManyToOne(() => Document)
   document: Document;

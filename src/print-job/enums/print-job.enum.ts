@@ -1,4 +1,4 @@
-export enum ColorMode {
+export enum OutputColor {
   COLOR = 'COLOR',
   MONOCHROME = 'MONOCHROME',
   GRAYSCALE = 'GRAYSCALE',

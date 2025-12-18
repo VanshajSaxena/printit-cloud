@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PrintJobService } from './print-job.service';
 import { CreatePrintJobDto } from './dto/create-print-job.dto';
 import { UpdatePrintJobDto } from './dto/update-print-job.dto';
@@ -23,7 +31,10 @@ export class PrintJobController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePrintJobDto: UpdatePrintJobDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updatePrintJobDto: UpdatePrintJobDto,
+  ) {
     return this.printJobService.update(+id, updatePrintJobDto);
   }
 

@@ -9,5 +9,6 @@ export class CreateDocumentDto {
   key: string;
 
   @IsString()
+  @IsOptional()
   contentType: string | undefined;
 }
