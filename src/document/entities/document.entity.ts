@@ -1,9 +1,11 @@
+import { PrintJob } from 'src/print-job/entities/print-job.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -20,6 +22,9 @@ export class Document {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   contentType: string | null;
+
+  @OneToMany(() => PrintJob, (printJob) => printJob.document)
+  jobs: PrintJob[];
 
   @ManyToOne(() => Transaction, (transaction) => transaction.documents)
   transaction: Transaction;
