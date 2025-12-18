@@ -19,6 +19,7 @@ export class Document {
   key: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
+  contentType: string | null;
 
   @ManyToOne(() => Transaction, (transaction) => transaction.documents)
   transaction: Transaction;
