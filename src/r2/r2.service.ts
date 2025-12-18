@@ -34,10 +34,12 @@ export class R2Service {
   }
 
   async createUploadURL({ filename, contentType }: UploadFileRequestDto) {
-    const keyArr = [
-      this.env,
-      filename.trim().normalize().replaceAll(' ', '-').replaceAll('/', '-'),
-    ];
+    const cleanedFilename = filename
+      .trim()
+      .normalize()
+      .replaceAll(' ', '-')
+      .replaceAll('/', '-');
+    const keyArr = [this.env, cleanedFilename];
     const key = keyArr.join('/');
     this.documentService.create({ key, filename: filename, contentType });
     const command = new PutObjectCommand({
