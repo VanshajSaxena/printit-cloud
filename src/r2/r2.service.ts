@@ -6,10 +6,11 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { UploadFileResponseDto } from './dto/upload-file-response.dto';
-import { DownloadFileResponseDto } from './dto/download-file-response.dto';
-import { UploadFileRequestDto } from './dto/upload-file-request.dto';
 import { DocumentService } from 'src/document/document.service';
+import { CreateDocumentDto } from 'src/document/dto/create-document.dto';
+import { DownloadFileResponseDto } from './dto/download-file-response.dto';
+import { UploadFileBatchRequestDto } from './dto/upload-file-batch-request.dto';
+import { UploadFileResponseDto } from './dto/upload-file-response.dto';
 
 @Injectable()
 export class R2Service {
@@ -33,23 +34,35 @@ export class R2Service {
     });
   }
 
-  async createUploadURL({ filename, contentType }: UploadFileRequestDto) {
-    const cleanedFilename = filename
-      .trim()
-      .toLowerCase()
-      .normalize()
-      .replaceAll(' ', '-')
-      .replaceAll('/', '-');
-    const keyArr = [this.env, cleanedFilename];
-    const key = keyArr.join('/');
-    this.documentService.create({ key, filename: filename, contentType });
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-      ContentType: contentType,
+  async createUploadURLs(uploadFileBatchRequestDto: UploadFileBatchRequestDto) {
+    const metadata = uploadFileBatchRequestDto.files;
+    const documentBatch = metadata.map(({ filename, contentType }) => {
+      const cleanedFilename = filename
+        .trim()
+        .toLowerCase()
+        .normalize()
+        .replaceAll(' ', '-')
+        .replaceAll('/', '-');
+      const keyArr = [this.env, cleanedFilename];
+      const key = keyArr.join('/');
+      return new CreateDocumentDto({ filename, key, contentType });
     });
-    const url = await getSignedUrl(this.s3, command);
-    return new UploadFileResponseDto({ url, key });
+    const documents = await this.documentService.createMany(documentBatch);
+
+    return await Promise.all(
+      documents.map(async ({ key, id, contentType }) => {
+        const command = new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: key,
+          ContentType: contentType,
+          Metadata: {
+            id: id.toString(),
+          },
+        });
+        const url = await getSignedUrl(this.s3, command);
+        return new UploadFileResponseDto({ url, id });
+      }),
+    );
   }
 
   async createDownloadURL(key: string) {

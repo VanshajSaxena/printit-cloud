@@ -36,10 +36,7 @@ export class TransactionService {
       createTransactionDto.documentIds,
     );
 
-    if (
-      createTransactionDto.documentIds.length !==
-      documents.length
-    ) {
+    if (createTransactionDto.documentIds.length !== documents.length) {
       throw new NotFoundException(
         `One or more print documents were not found.`,
       );
@@ -72,8 +69,7 @@ export class TransactionService {
       friendlyId,
     });
 
-    const saved =
-      await this.transactionRepository.save(newTransaction);
+    const saved = await this.transactionRepository.save(newTransaction);
     return plainToInstance(TransactionResponseDto, saved);
   }
 
@@ -87,10 +83,7 @@ export class TransactionService {
     return plainToInstance(TransactionResponseDto, transaction);
   }
 
-  async update(
-    id: number,
-    updateTransactionDto: UpdateTransactionDto,
-  ) {
+  async update(id: number, updateTransactionDto: UpdateTransactionDto) {
     const transaction = await this.findOneEntity(id);
     Object.assign(transaction, updateTransactionDto);
     const saved = await this.transactionRepository.save(transaction);
@@ -99,8 +92,7 @@ export class TransactionService {
 
   async remove(id: number) {
     const transaction = await this.findOneEntity(id);
-    const removed =
-      await this.transactionRepository.softRemove(transaction);
+    const removed = await this.transactionRepository.softRemove(transaction);
     return plainToInstance(TransactionResponseDto, removed);
   }
 
@@ -109,9 +101,7 @@ export class TransactionService {
       id,
     });
     if (!transaction) {
-      throw new NotFoundException(
-        `Transaction not found for the id: ${id}`,
-      );
+      throw new NotFoundException(`Transaction not found for the id: ${id}`);
     }
     return transaction;
   }

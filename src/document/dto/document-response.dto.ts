@@ -13,6 +13,9 @@ export class DocumentResponseDto {
   @Expose()
   key: string;
 
+  @Expose()
+  contentType: string;
+
   @Exclude()
   @ApiHideProperty()
   transaction: Transaction;

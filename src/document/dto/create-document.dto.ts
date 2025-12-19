@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateDocumentDto {
   @IsNotEmpty()
@@ -9,6 +9,9 @@ export class CreateDocumentDto {
   key: string;
 
   @IsString()
-  @IsOptional()
-  contentType: string | undefined;
+  contentType: string;
+
+  constructor(partial: Partial<CreateDocumentDto>) {
+    Object.assign(this, partial);
+  }
 }

@@ -20,8 +20,8 @@ export class Document {
   @Column()
   key: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  contentType: string | null;
+  @Column({ type: 'varchar', length: 255 })
+  contentType: string;
 
   @OneToMany(() => PrintJob, (printJob) => printJob.document)
   jobs: PrintJob[];

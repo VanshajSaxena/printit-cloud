@@ -6,18 +6,30 @@ import { CreateDocumentDto } from './dto/create-document.dto';
 import { DocumentResponseDto } from './dto/document-response.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
 
 @Injectable()
 export class DocumentService {
   constructor(
     @InjectRepository(Document)
     private documentRepository: Repository<Document>,
-  ) {}
+    private logger: ApplicationLogger,
+  ) {
+    this.logger.setContext(DocumentService.name);
+  }
+
+  async createMany(createDocumentDto: CreateDocumentDto[]) {
+    const newDocument = this.documentRepository.create(createDocumentDto);
+    const saved = await this.documentRepository.save(newDocument);
+    this.logger.log('Created multiple document objects', [saved.length, saved]);
+    return plainToInstance(DocumentResponseDto, saved);
+  }
 
   async create(createDocumentDto: CreateDocumentDto) {
     const newDocument = this.documentRepository.create(createDocumentDto);
     const saved = await this.documentRepository.save(newDocument);
-    return plainToInstance(DocumentResponseDto, saved);
+    this.logger.log('Created a new document object', saved);
+    return plainToInstance(DocumentResponseDto, [saved]);
   }
 
   async findAll() {

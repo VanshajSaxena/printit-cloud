@@ -6,7 +6,7 @@ export class UploadFileResponseDto {
   url: string;
 
   @Expose()
-  key: string;
+  id: number;
 
   constructor(partial: Partial<UploadFileResponseDto>) {
     Object.assign(this, partial);
