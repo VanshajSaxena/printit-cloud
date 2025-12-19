@@ -11,6 +11,7 @@ import { CreateDocumentDto } from 'src/document/dto/create-document.dto';
 import { DownloadFileResponseDto } from './dto/download-file-response.dto';
 import { UploadFileBatchRequestDto } from './dto/upload-file-batch-request.dto';
 import { UploadFileResponseDto } from './dto/upload-file-response.dto';
+import { UploadFileBatchResponseDto } from './dto/upload-file-batch-response.dto';
 
 @Injectable()
 export class R2Service {
@@ -49,7 +50,7 @@ export class R2Service {
     });
     const documents = await this.documentService.createMany(documentBatch);
 
-    return await Promise.all(
+    const signedUrls = await Promise.all(
       documents.map(async ({ key, id, contentType }) => {
         const command = new PutObjectCommand({
           Bucket: this.bucketName,
@@ -63,6 +64,9 @@ export class R2Service {
         return new UploadFileResponseDto({ url, id });
       }),
     );
+    return new UploadFileBatchResponseDto({
+      signedUrls: signedUrls,
+    });
   }
 
   async createDownloadURL(key: string) {
