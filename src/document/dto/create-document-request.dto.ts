@@ -6,9 +6,6 @@ export class CreateDocumentDto {
   filename: string;
 
   @IsString()
-  key: string;
-
-  @IsString()
   contentType: string;
 
   constructor(partial: Partial<CreateDocumentDto>) {

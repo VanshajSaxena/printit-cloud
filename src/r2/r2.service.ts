@@ -7,24 +7,21 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentService } from 'src/document/document.service';
-import { CreateDocumentDto } from 'src/document/dto/create-document.dto';
 import { DownloadFileResponseDto } from './dto/download-file-response.dto';
 import { UploadFileBatchRequestDto } from './dto/upload-file-batch-request.dto';
-import { UploadFileResponseDto } from './dto/upload-file-response.dto';
 import { UploadFileBatchResponseDto } from './dto/upload-file-batch-response.dto';
+import { UploadFileResponseDto } from './dto/upload-file-response.dto';
 
 @Injectable()
 export class R2Service {
   private readonly s3: S3Client;
   private readonly bucketName: string;
-  private readonly env: string;
 
   constructor(
     private readonly config: ConfigService,
     private readonly documentService: DocumentService,
   ) {
     this.bucketName = config.getOrThrow('R2_BUCKET_NAME');
-    this.env = config.getOrThrow('NODE_ENV');
     this.s3 = new S3Client({
       region: 'auto',
       endpoint: this.config.getOrThrow<string>('R2_ENDPOINT'),
@@ -35,20 +32,8 @@ export class R2Service {
     });
   }
 
-  async createUploadURLs(uploadFileBatchRequestDto: UploadFileBatchRequestDto) {
-    const metadata = uploadFileBatchRequestDto.files;
-    const documentBatch = metadata.map(({ filename, contentType }) => {
-      const cleanedFilename = filename
-        .trim()
-        .toLowerCase()
-        .normalize()
-        .replaceAll(' ', '-')
-        .replaceAll('/', '-');
-      const keyArr = [this.env, cleanedFilename];
-      const key = keyArr.join('/');
-      return new CreateDocumentDto({ filename, key, contentType });
-    });
-    const documents = await this.documentService.createMany(documentBatch);
+  async createUploadURLs({ ids }: UploadFileBatchRequestDto) {
+    const documents = await this.documentService.findByIds({ ids });
 
     const signedUrls = await Promise.all(
       documents.map(async ({ key, id, contentType }) => {

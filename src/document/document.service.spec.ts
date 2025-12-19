@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DocumentService } from './document.service';
-import { CreateDocumentDto } from './dto/create-document.dto';
+import { CreateDocumentDto } from './dto/create-document-request.dto';
 import { Document } from './entities/document.entity';
 import { DocumentStatus } from '../print-job/enums/print-job.enum';
 
@@ -41,7 +41,6 @@ describe('DocumentService', () => {
     it('should create a new print document and save it with PENDING status', async () => {
       const createDto: CreateDocumentDto = {
         filename: 'Test Document',
-        key: 'test/path.pdf',
         contentType: 'application/pdf',
       };
 

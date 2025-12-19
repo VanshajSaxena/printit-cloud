@@ -1,10 +1,6 @@
-import { Type } from 'class-transformer';
-import { IsArray, ValidateNested } from 'class-validator';
-import { UploadFileRequestDto } from './upload-file-request.dto';
+import { IsArray } from 'class-validator';
 
 export class UploadFileBatchRequestDto {
-  @ValidateNested()
   @IsArray()
-  @Type(() => UploadFileRequestDto)
-  files: UploadFileRequestDto[];
+  ids: number[];
 }
