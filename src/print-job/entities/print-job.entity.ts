@@ -11,7 +11,7 @@ import {
 import { OutputColor } from '../enums/print-job.enum';
 
 @Entity()
-export class PrintJob {
+export class Job {
   @PrimaryGeneratedColumn()
   id: number;
 

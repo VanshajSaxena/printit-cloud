@@ -2,44 +2,44 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { CreatePrintJobDto } from './dto/create-print-job.dto';
-import { PrintJobResponseDto } from './dto/print-job-response.dto';
-import { UpdatePrintJobDto } from './dto/update-print-job.dto';
-import { PrintJob } from './entities/print-job.entity';
+import { CreateJobDto } from './dto/create-print-job.dto';
+import { JobResponseDto } from './dto/print-job-response.dto';
+import { UpdateJobDto } from './dto/update-print-job.dto';
+import { Job } from './entities/print-job.entity';
 
 @Injectable()
-export class PrintJobService {
+export class JobService {
   constructor(
-    @InjectRepository(PrintJob)
-    private printJobRepository: Repository<PrintJob>,
+    @InjectRepository(Job)
+    private printJobRepository: Repository<Job>,
   ) {}
-  async create(createPrintJobDto: CreatePrintJobDto) {
-    const newPrintJob = this.printJobRepository.create(createPrintJobDto);
-    const saved = await this.printJobRepository.save(newPrintJob);
-    return plainToInstance(PrintJobResponseDto, saved);
+  async create(createJobDto: CreateJobDto) {
+    const newJob = this.printJobRepository.create(createJobDto);
+    const saved = await this.printJobRepository.save(newJob);
+    return plainToInstance(JobResponseDto, saved);
   }
 
   async findAll() {
     const printJobs = await this.printJobRepository.find();
-    return plainToInstance(PrintJobResponseDto, printJobs);
+    return plainToInstance(JobResponseDto, printJobs);
   }
 
   async findOne(id: number) {
     const printJob = await this.findOneEntity(id);
-    return plainToInstance(PrintJobResponseDto, printJob);
+    return plainToInstance(JobResponseDto, printJob);
   }
 
-  async update(id: number, updatePrintJobDto: UpdatePrintJobDto) {
+  async update(id: number, updateJobDto: UpdateJobDto) {
     const printJob = await this.findOneEntity(id);
-    Object.assign(printJob, updatePrintJobDto);
+    Object.assign(printJob, updateJobDto);
     const saved = await this.printJobRepository.save(printJob);
-    return plainToInstance(PrintJobResponseDto, saved);
+    return plainToInstance(JobResponseDto, saved);
   }
 
   async remove(id: number) {
     const entityNeedRemoval = await this.findOneEntity(id);
     const removed = await this.printJobRepository.softRemove(entityNeedRemoval);
-    return plainToInstance(PrintJobResponseDto, removed);
+    return plainToInstance(JobResponseDto, removed);
   }
 
   private async findOneEntity(id: number) {

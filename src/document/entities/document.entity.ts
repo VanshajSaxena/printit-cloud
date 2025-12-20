@@ -1,4 +1,4 @@
-import { PrintJob } from 'src/print-job/entities/print-job.entity';
+import { Job } from 'src/print-job/entities/print-job.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
   Column,
@@ -23,8 +23,8 @@ export class Document {
   @Column({ type: 'varchar', length: 255 })
   contentType: string;
 
-  @OneToMany(() => PrintJob, (printJob) => printJob.document)
-  jobs: PrintJob[];
+  @OneToMany(() => Job, (printJob) => printJob.document)
+  jobs: Job[];
 
   @ManyToOne(() => Transaction, (transaction) => transaction.documents)
   transaction: Transaction;

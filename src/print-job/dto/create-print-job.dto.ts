@@ -1,7 +1,7 @@
 import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { OutputColor } from '../enums/print-job.enum';
 
-export class CreatePrintJobDto {
+export class CreateJobDto {
   @IsString()
   @IsNotEmpty()
   documentKey: string;
