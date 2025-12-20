@@ -23,7 +23,7 @@ export class Document {
   @Column({ type: 'varchar', length: 255 })
   contentType: string;
 
-  @OneToMany(() => Job, (printJob) => printJob.document)
+  @OneToMany(() => Job, (job) => job.document)
   jobs: Job[];
 
   @ManyToOne(() => Transaction, (transaction) => transaction.documents)

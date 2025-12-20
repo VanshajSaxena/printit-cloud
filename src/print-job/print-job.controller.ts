@@ -13,21 +13,21 @@ import { UpdateJobDto } from './dto/update-print-job.dto';
 
 @Controller('print-job')
 export class JobController {
-  constructor(private readonly printJobService: JobService) {}
+  constructor(private readonly jobService: JobService) {}
 
   @Post()
   create(@Body() createJobDto: CreateJobDto) {
-    return this.printJobService.create(createJobDto);
+    return this.jobService.create(createJobDto);
   }
 
   @Get()
   findAll() {
-    return this.printJobService.findAll();
+    return this.jobService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.printJobService.findOne(+id);
+    return this.jobService.findOne(+id);
   }
 
   @Patch(':id')
@@ -35,11 +35,11 @@ export class JobController {
     @Param('id') id: string,
     @Body() updateJobDto: UpdateJobDto,
   ) {
-    return this.printJobService.update(+id, updateJobDto);
+    return this.jobService.update(+id, updateJobDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.printJobService.remove(+id);
+    return this.jobService.remove(+id);
   }
 }
