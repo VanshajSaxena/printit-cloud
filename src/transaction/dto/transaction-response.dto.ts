@@ -4,6 +4,7 @@ import { Vendor } from 'src/vendor/entities/vendor.entity';
 import { TransactionStatus } from '../enums/transaction-status.enum';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiHideProperty } from '@nestjs/swagger';
+import { Job } from 'src/job/entities/job.entity';
 
 @Exclude()
 export class TransactionResponseDto {
@@ -16,8 +17,9 @@ export class TransactionResponseDto {
   @Expose()
   friendlyId: string;
 
-  @Expose()
-  documents: Document[];
+  @Exclude()
+  @ApiHideProperty()
+  jobs: Job[];
 
   @Exclude()
   @ApiHideProperty()

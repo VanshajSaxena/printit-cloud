@@ -6,13 +6,29 @@ import { CreateJobDto } from './dto/create-job.dto';
 import { JobResponseDto } from './dto/job-response.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
+import { DocumentService } from 'src/document/document.service';
 
 @Injectable()
 export class JobService {
   constructor(
     @InjectRepository(Job)
     private jobRepository: Repository<Job>,
+    private documentService: DocumentService,
   ) {}
+
+  async createMany(createJobDto: CreateJobDto[]) {
+    const jobs = await Promise.all(
+      createJobDto.map(async ({ copyCount, documentId, outputColor }) => {
+        const document = await this.documentService.getEntityOne(documentId);
+        return this.jobRepository.create({ document, copyCount, outputColor });
+      }),
+    );
+
+    const newJobs = this.jobRepository.create(jobs);
+    const savedJobs = await this.jobRepository.save(newJobs);
+    return plainToInstance(JobResponseDto, savedJobs);
+  }
+
   async create(createJobDto: CreateJobDto) {
     const newJob = this.jobRepository.create(createJobDto);
     const saved = await this.jobRepository.save(newJob);

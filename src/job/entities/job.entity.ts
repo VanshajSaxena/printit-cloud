@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OutputColor } from '../enums/job.enum';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 
 @Entity()
 export class Job {
@@ -21,6 +22,9 @@ export class Job {
   @Column({ type: 'int', default: 1 })
   @Check('"copy_count" > 0')
   copyCount: number;
+
+  @ManyToOne(() => Transaction)
+  transaction: Transaction;
 
   @ManyToOne(() => Document)
   document: Document;

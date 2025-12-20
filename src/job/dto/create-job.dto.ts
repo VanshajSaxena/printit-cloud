@@ -1,14 +1,18 @@
-import { IsEnum, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsNumber } from 'class-validator';
 import { OutputColor } from '../enums/job.enum';
 
 export class CreateJobDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  documentKey: string;
+  documentId: number;
 
   @IsEnum(OutputColor)
   outputColor: OutputColor;
 
   @IsInt()
   copyCount: number;
+
+  constructor(partial: Partial<CreateJobDto>) {
+    Object.assign(this, partial);
+  }
 }

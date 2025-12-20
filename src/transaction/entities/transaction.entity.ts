@@ -1,4 +1,4 @@
-import { Document } from 'src/document/entities/document.entity';
+import { Job } from 'src/job/entities/job.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import {
@@ -32,6 +32,6 @@ export class Transaction {
   })
   printer: Printer | null;
 
-  @OneToMany(() => Document, (document) => document.transaction)
-  documents: Document[];
+  @OneToMany(() => Job, (job) => job.transaction)
+  jobs: Job[];
 }

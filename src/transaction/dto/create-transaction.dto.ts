@@ -1,4 +1,11 @@
-import { IsArray, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  ValidateNested,
+} from 'class-validator';
+import { CreateJobDto } from 'src/job/dto/create-job.dto';
 
 export class CreateTransactionDto {
   @IsNotEmpty()
@@ -11,5 +18,6 @@ export class CreateTransactionDto {
 
   @IsNotEmpty()
   @IsArray()
-  documentIds: number[];
+  @ValidateNested()
+  jobs: CreateJobDto[];
 }

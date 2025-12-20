@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TransactionController } from './transaction.controller';
-import { TransactionService } from './transaction.service';
+import { CreateJobDto } from 'src/job/dto/create-job.dto';
+import { OutputColor } from 'src/job/enums/job.enum';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { TransactionController } from './transaction.controller';
+import { TransactionService } from './transaction.service';
 
 describe('TransactionController', () => {
   let controller: TransactionController;
@@ -27,9 +29,7 @@ describe('TransactionController', () => {
       ],
     }).compile();
 
-    controller = module.get<TransactionController>(
-      TransactionController,
-    );
+    controller = module.get<TransactionController>(TransactionController);
     service = module.get<TransactionService>(TransactionService);
   });
 
@@ -41,7 +41,13 @@ describe('TransactionController', () => {
     it('should call the create method of the service with the correct DTO', async () => {
       const createDto: CreateTransactionDto = {
         vendorId: 1,
-        documentIds: [1, 2],
+        jobs: [
+          new CreateJobDto({
+            documentId: 1,
+            copyCount: 2,
+            outputColor: OutputColor.COLOR,
+          }),
+        ],
       };
 
       const expectedResult = { id: 1, ...createDto };
