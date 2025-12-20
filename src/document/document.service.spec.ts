@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document-request.dto';
 import { Document } from './entities/document.entity';
-import { DocumentStatus } from '../print-job/enums/print-job.enum';
+import { DocumentStatus } from '../job/enums/job.enum';
 
 describe('DocumentService', () => {
   let service: DocumentService;

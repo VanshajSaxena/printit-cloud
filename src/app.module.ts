@@ -11,7 +11,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { VendorModule } from './vendor/vendor.module';
-import { JobModule } from './print-job/print-job.module';
+import { JobModule } from './job/job.module';
 
 @Module({
   imports: [

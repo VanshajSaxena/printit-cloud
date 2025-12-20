@@ -7,11 +7,11 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { JobService } from './print-job.service';
-import { CreateJobDto } from './dto/create-print-job.dto';
-import { UpdateJobDto } from './dto/update-print-job.dto';
+import { JobService } from './job.service';
+import { CreateJobDto } from './dto/create-job.dto';
+import { UpdateJobDto } from './dto/update-job.dto';
 
-@Controller('print-job')
+@Controller('job')
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
@@ -31,10 +31,7 @@ export class JobController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateJobDto: UpdateJobDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
     return this.jobService.update(+id, updateJobDto);
   }
 

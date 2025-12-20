@@ -1,4 +1,4 @@
-import { Job } from 'src/print-job/entities/print-job.entity';
+import { Job } from 'src/job/entities/job.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
   Column,

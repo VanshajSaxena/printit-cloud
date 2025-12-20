@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { OutputColor } from '../enums/print-job.enum';
+import { OutputColor } from '../enums/job.enum';
 
 @Entity()
 export class Job {

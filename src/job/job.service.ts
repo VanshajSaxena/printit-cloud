@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { CreateJobDto } from './dto/create-print-job.dto';
-import { JobResponseDto } from './dto/print-job-response.dto';
-import { UpdateJobDto } from './dto/update-print-job.dto';
-import { Job } from './entities/print-job.entity';
+import { CreateJobDto } from './dto/create-job.dto';
+import { JobResponseDto } from './dto/job-response.dto';
+import { UpdateJobDto } from './dto/update-job.dto';
+import { Job } from './entities/job.entity';
 
 @Injectable()
 export class JobService {
