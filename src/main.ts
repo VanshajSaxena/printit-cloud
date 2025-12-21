@@ -8,20 +8,6 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ApplicationLogger } from './logger/application-logger.service';
-import { networkInterfaces } from 'os';
-
-function getNetworkAddress() {
-  const nets = networkInterfaces();
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name]!) {
-      // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-      if (net.family === 'IPv4' && !net.internal) {
-        return net.address;
-      }
-    }
-  }
-  return 'localhost';
-}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -59,12 +45,7 @@ async function bootstrap() {
   const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
   server.disable('etag');
   server.disable('x-powered-by');
-  await app.listen(port ?? 3000, '0.0.0.0');
-  const url = await app.getUrl();
-  console.log('Application is running on: ', url);
-  const networkIp = getNetworkAddress();
-  console.log(`  ➜  Local:   http://localhost:${port}/`);
-  console.log(`  ➜  Network: http://${networkIp}:${port}/`);
+  await app.listen(port ?? 3000);
 }
 bootstrap().catch((error: unknown) => {
   console.log(error);
