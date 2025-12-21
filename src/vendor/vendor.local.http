@@ -1,0 +1,45 @@
+### 
+
+@base_url = https://{{hostname}}:{{port}}/api/v1
+@hostname = localhost
+@port = 3000
+
+
+### Create a new vendor
+
+POST {{base_url}}/vendors HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "harry@himail.com",
+  "firstName": "Harry",
+  "lastName": "Potter",
+  "username": "harrypotter"
+}
+
+
+### Get all vendors
+
+GET {{base_url}}/vendors HTTP/1.1
+
+
+### Get a single vendor by ID
+
+GET {{base_url}}/vendors/@harrypotter HTTP/1.1
+
+
+### Update an existing vendor
+
+PATCH {{base_url}}/vendors/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "harry@potter.com",
+  "firstName": "Harry",
+  "lastName": "Potter"
+}
+
+
+### Delete a vendor
+
+DELETE {{base_url}}/vendors/1 HTTP/1.1
