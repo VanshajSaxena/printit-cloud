@@ -1,6 +1,11 @@
-import { Transaction } from 'src/transaction/entities/transaction.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { DocumentStatus } from '../enums/document-status.enum';
+import { Job } from 'src/job/entities/job.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Document {
@@ -8,20 +13,17 @@ export class Document {
   id: number;
 
   @Column({ length: 255 })
-  name: string;
+  filename: string;
 
   @Column()
-  path: string;
+  key: string;
 
-  @Column('enum', { enum: DocumentStatus, default: DocumentStatus.PENDING })
-  status: DocumentStatus;
+  @Column({ type: 'varchar', length: 255 })
+  contentType: string;
 
-  @Column({ type: 'json', nullable: true })
-  configuration: string | null;
+  @OneToMany(() => Job, (job) => job.document)
+  jobs: Job[];
 
-  @ManyToOne(
-    () => Transaction,
-    (transaction) => transaction.documents,
-  )
-  transaction: Transaction;
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
 }

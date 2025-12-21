@@ -11,6 +11,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { VendorModule } from './vendor/vendor.module';
+import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { VendorModule } from './vendor/vendor.module';
     DocumentModule,
     LoggerModule,
     R2Module,
+    JobModule,
   ],
   controllers: [AppController],
   providers: [AppService, NotificationsGateway],

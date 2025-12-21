@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DocumentService } from './document.service';
-import { Repository } from 'typeorm';
-import { Document } from './entities/document.entity';
-import { DocumentStatus } from './enums/document-status.enum';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreateDocumentDto } from './dto/create-document.dto';
+import { Repository } from 'typeorm';
+import { DocumentService } from './document.service';
+import { CreateDocumentDto } from './dto/create-document-request.dto';
+import { Document } from './entities/document.entity';
+import { DocumentStatus } from '../job/enums/job.enum';
 
 describe('DocumentService', () => {
   let service: DocumentService;
@@ -30,9 +30,7 @@ describe('DocumentService', () => {
     }).compile();
 
     service = module.get<DocumentService>(DocumentService);
-    repository = module.get<Repository<Document>>(
-      getRepositoryToken(Document),
-    );
+    repository = module.get<Repository<Document>>(getRepositoryToken(Document));
   });
 
   it('should be defined', () => {
@@ -42,9 +40,8 @@ describe('DocumentService', () => {
   describe('create', () => {
     it('should create a new print document and save it with PENDING status', async () => {
       const createDto: CreateDocumentDto = {
-        name: 'Test Document',
-        path: 'test/path.pdf',
-        configuration: '{"pages": 1}',
+        filename: 'Test Document',
+        contentType: 'application/pdf',
       };
 
       const createdDocument = {

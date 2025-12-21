@@ -14,9 +14,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {
-  constructor(
-    private readonly transactionService: TransactionService,
-  ) {}
+  constructor(private readonly transactionService: TransactionService) {}
 
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionDto) {

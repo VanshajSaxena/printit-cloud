@@ -9,8 +9,8 @@ import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
 import { TransactionResponseDto } from './dto/transaction-response.dto';
 import { VendorService } from 'src/vendor/vendor.service';
-import { DocumentService } from 'src/document/document.service';
 import { PrinterService } from 'src/printer/printer.service';
+import { JobService } from 'src/job/job.service';
 
 @Injectable()
 export class TransactionService {
@@ -19,8 +19,8 @@ export class TransactionService {
     private transactionRepository: Repository<Transaction>,
     private vendorService: VendorService,
     private printerService: PrinterService,
-    private documentService: DocumentService,
     private logger: ApplicationLogger,
+    private jobService: JobService,
   ) {
     this.logger.setContext(TransactionService.name);
   }
@@ -32,14 +32,14 @@ export class TransactionService {
       createTransactionDto.vendorId,
     );
 
-    const documents = await this.documentService.getEntitites(
-      createTransactionDto.documentIds,
-    );
+    const jobs = await this.jobService.createMany(createTransactionDto.jobs);
 
-    if (
-      createTransactionDto.documentIds.length !==
-      documents.length
-    ) {
+    if (createTransactionDto.jobs.length !== jobs.length) {
+      this.logger.error(
+        'Created Job count do not match with dto job count.',
+        createTransactionDto.jobs,
+        createTransactionDto.jobs.length,
+      );
       throw new NotFoundException(
         `One or more print documents were not found.`,
       );
@@ -68,12 +68,11 @@ export class TransactionService {
     const newTransaction = this.transactionRepository.create({
       vendor,
       printer,
-      documents,
+      jobs,
       friendlyId,
     });
 
-    const saved =
-      await this.transactionRepository.save(newTransaction);
+    const saved = await this.transactionRepository.save(newTransaction);
     return plainToInstance(TransactionResponseDto, saved);
   }
 
@@ -87,10 +86,7 @@ export class TransactionService {
     return plainToInstance(TransactionResponseDto, transaction);
   }
 
-  async update(
-    id: number,
-    updateTransactionDto: UpdateTransactionDto,
-  ) {
+  async update(id: number, updateTransactionDto: UpdateTransactionDto) {
     const transaction = await this.findOneEntity(id);
     Object.assign(transaction, updateTransactionDto);
     const saved = await this.transactionRepository.save(transaction);
@@ -99,8 +95,7 @@ export class TransactionService {
 
   async remove(id: number) {
     const transaction = await this.findOneEntity(id);
-    const removed =
-      await this.transactionRepository.softRemove(transaction);
+    const removed = await this.transactionRepository.softRemove(transaction);
     return plainToInstance(TransactionResponseDto, removed);
   }
 
@@ -109,9 +104,7 @@ export class TransactionService {
       id,
     });
     if (!transaction) {
-      throw new NotFoundException(
-        `Transaction not found for the id: ${id}`,
-      );
+      throw new NotFoundException(`Transaction not found for the id: ${id}`);
     }
     return transaction;
   }

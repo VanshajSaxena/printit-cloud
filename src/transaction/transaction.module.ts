@@ -7,6 +7,7 @@ import { PrinterModule } from 'src/printer/printer.module';
 import { DocumentModule } from 'src/document/document.module';
 import { VendorModule } from 'src/vendor/vendor.module';
 import { LoggerModule } from 'src/logger/logger.module';
+import { JobModule } from 'src/job/job.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { LoggerModule } from 'src/logger/logger.module';
     DocumentModule,
     VendorModule,
     LoggerModule,
+    JobModule,
   ],
   controllers: [TransactionController],
   providers: [TransactionService],

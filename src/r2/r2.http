@@ -1,0 +1,25 @@
+### 
+
+@base_url = http://{{hostname}}:{{port}}/api/v1
+@hostname = localhost
+@port = 3000
+
+
+### Create new file and get upload URL
+
+POST {{base_url}}/files HTTP/1.1
+Content-Type: application/json
+
+{
+  "contentType": "application/pdf",
+  "filename": "Test File Name.pdf"
+}
+
+
+### Get file download URL
+
+GET {{base_url}}/files HTTP/1.1
+
+{
+  "key": "sometestkey"
+}

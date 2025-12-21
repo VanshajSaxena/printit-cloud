@@ -6,16 +6,21 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { nanoid } from 'nanoid';
-import { UploadFileResponseDto } from './dto/upload-file-response.dto';
+import { DocumentService } from 'src/document/document.service';
 import { DownloadFileResponseDto } from './dto/download-file-response.dto';
+import { UploadFileBatchRequestDto } from './dto/upload-file-batch-request.dto';
+import { UploadFileBatchResponseDto } from './dto/upload-file-batch-response.dto';
+import { UploadFileResponseDto } from './dto/upload-file-response.dto';
 
 @Injectable()
 export class R2Service {
   private readonly s3: S3Client;
   private readonly bucketName: string;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly documentService: DocumentService,
+  ) {
     this.bucketName = config.getOrThrow('R2_BUCKET_NAME');
     this.s3 = new S3Client({
       region: 'auto',
@@ -27,14 +32,26 @@ export class R2Service {
     });
   }
 
-  async createUploadURL(filename: string) {
-    const key = nanoid().concat('---', filename);
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
+  async createUploadURLs({ ids }: UploadFileBatchRequestDto) {
+    const documents = await this.documentService.findByIds({ ids });
+
+    const signedUrls = await Promise.all(
+      documents.map(async ({ key, id, contentType }) => {
+        const command = new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: key,
+          ContentType: contentType,
+          Metadata: {
+            id: id.toString(),
+          },
+        });
+        const url = await getSignedUrl(this.s3, command);
+        return new UploadFileResponseDto({ url, id });
+      }),
+    );
+    return new UploadFileBatchResponseDto({
+      signedUrls: signedUrls,
     });
-    const url = await getSignedUrl(this.s3, command);
-    return new UploadFileResponseDto({ url, key });
   }
 
   async createDownloadURL(key: string) {
