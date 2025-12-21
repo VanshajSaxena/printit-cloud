@@ -45,7 +45,7 @@ export class R2Service {
             id: id.toString(),
           },
         });
-        const url = await getSignedUrl(this.s3, command);
+        const url = await getSignedUrl(this.s3, command, { expiresIn: 60 * 5 });
         return new UploadFileResponseDto({ url, id });
       }),
     );

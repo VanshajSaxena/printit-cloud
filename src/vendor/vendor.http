@@ -1,8 +1,8 @@
 ### 
 
-@base_url = http://{{hostname}}:{{port}}/api/v1
-@hostname = localhost
-@port = 3000
+@base_url = https://{{hostname}}:{{port}}/api/v1
+@hostname = api.print-ly.ink
+@port = 443
 
 
 ### Create a new vendor

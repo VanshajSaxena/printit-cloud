@@ -59,12 +59,15 @@ async function bootstrap() {
   const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
   server.disable('etag');
   server.disable('x-powered-by');
-  await app.listen(port ?? 3000, '0.0.0.0');
-  const url = await app.getUrl();
-  console.log('Application is running on: ', url);
-  const networkIp = getNetworkAddress();
-  console.log(`  ➜  Local:   http://localhost:${port}/`);
-  console.log(`  ➜  Network: http://${networkIp}:${port}/`);
+  app.enableShutdownHooks();
+  try {
+    const port = process.env.PORT ?? 3000;
+    await app.listen(port, '0.0.0.0');
+    console.log(`NestJS listening on port ${port}`);
+  } catch (err) {
+    console.error('Failed to start:', err);
+    process.exit(1);
+  }
 }
 bootstrap().catch((error: unknown) => {
   console.log(error);

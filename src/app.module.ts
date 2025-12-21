@@ -16,32 +16,31 @@ import { JobModule } from './job/job.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath:
-        process.env.NODE_ENV === 'production'
-          ? '.env.production'
-          : '.env.development',
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        retryAttempts: 3,
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize:
-          configService.get<string>('NODE_ENV') === 'development' &&
-          configService.get<boolean>('DB_SYNCHRONIZE'),
-        logging:
-          configService.get<string>('NODE_ENV') === 'development'
-            ? 'all'
-            : ['warn', 'error'],
-        maxQueryExecutionTime: 1000,
-        namingStrategy: new SnakeNamingStrategy(),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isProduction =
+          configService.get<string>('NODE_ENV') === 'production';
+        const shouldSync =
+          configService.get<string>('DB_SYNCHRONIZE') === 'true' ||
+          !isProduction;
+        return {
+          retryAttempts: 3,
+          type: 'postgres',
+          url: configService.get<string>('DATABASE_URL'),
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: shouldSync,
+          ssl: isProduction ? { rejectUnauthorized: false } : false,
+          logging:
+            configService.get<string>('NODE_ENV') !== 'production'
+              ? 'all'
+              : ['warn', 'error'],
+          maxQueryExecutionTime: 1000,
+          namingStrategy: new SnakeNamingStrategy(),
+        };
+      },
       inject: [ConfigService],
     }),
     VendorModule,

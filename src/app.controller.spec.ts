@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Juggler is running..."', () => {
-      expect(appController.ping()).toBe('Juggler is running...');
+    it('should return "Printly is running..."', () => {
+      expect(appController.ping()).toBe('Printly is running...');
     });
   });
 });

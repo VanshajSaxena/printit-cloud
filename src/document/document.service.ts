@@ -20,7 +20,7 @@ export class DocumentService {
     private readonly config: ConfigService,
   ) {
     this.logger.setContext(DocumentService.name);
-    this.env = this.config.getOrThrow('NODE_ENV');
+    this.env = this.config.get('NODE_ENV', 'devolopment');
   }
 
   async create(createDocumentDto: CreateDocumentDto) {
