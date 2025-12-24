@@ -36,8 +36,8 @@ import { JobModule } from './job/job.module';
           ssl: isProduction ? { rejectUnauthorized: false } : false,
           logging:
             configService.get<string>('NODE_ENV') !== 'production'
-              ? 'all'
-              : ['warn', 'error'],
+              ? ['warn', 'error']
+              : 'all',
           maxQueryExecutionTime: 1000,
           namingStrategy: new SnakeNamingStrategy(),
         };

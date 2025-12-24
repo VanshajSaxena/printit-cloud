@@ -35,11 +35,11 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
 
-  const origins = ['https://app.print-ly.ink'];
+  const origins = ['https://app.print-ly.ink']; // production
   const developmentOrigins = [
-    'http://localhost:8080',
-    'https://deploy-preview-40--printly-app.netlify.app',
-    'https://testing--printly-app.netlify.app',
+    'http://localhost:5173', // electron renderer
+    'http://localhost:8080', // pwa
+    'https://testing--printly-app.netlify.app', // testing pwa
   ];
 
   if (process.env.NODE_ENV === 'development') {
@@ -53,13 +53,8 @@ async function bootstrap() {
   server.disable('etag');
   server.disable('x-powered-by');
   app.enableShutdownHooks();
-  try {
-    const port = process.env.PORT ?? 3000;
-    await app.listen(port, '0.0.0.0');
-  } catch (err) {
-    console.error('Failed to start:', err);
-    process.exit(1);
-  }
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap().catch((error: unknown) => {
   console.log(error);
