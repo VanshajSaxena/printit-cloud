@@ -17,7 +17,7 @@
     "overlapSeconds": 30,
     "drainingSeconds": 3,
     "healthcheckPath": "/api/v1/ping",
-    "sleepApplication": true,
+    "sleepApplication": false,
     "useLegacyStacker": false,
     "multiRegionConfig": {
       "asia-southeast1-eqsg3a": {
