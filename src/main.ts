@@ -35,11 +35,13 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
 
-  const origins = ['https://app.print-ly.ink']; // production
+  const origins = [
+    'https://app.print-ly.ink',
+    'https://testing--printly-app.netlify.app',
+  ]; // production
   const developmentOrigins = [
     'http://localhost:5173', // electron renderer
     'http://localhost:8080', // pwa
-    'https://testing--printly-app.netlify.app', // testing pwa
   ];
 
   if (process.env.NODE_ENV === 'development') {
