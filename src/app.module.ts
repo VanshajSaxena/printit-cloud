@@ -34,10 +34,7 @@ import { JobModule } from './job/job.module';
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: shouldSync,
           ssl: isProduction ? { rejectUnauthorized: false } : false,
-          logging:
-            configService.get<string>('NODE_ENV') !== 'production'
-              ? ['warn', 'error']
-              : 'all',
+          logging: 'all',
           maxQueryExecutionTime: 1000,
           namingStrategy: new SnakeNamingStrategy(),
         };
