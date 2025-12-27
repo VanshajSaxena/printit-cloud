@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateJobDto } from 'src/job/dto/create-job.dto';
+import { CreateJobRequestDto } from 'src/job/dto/create-job-request.dto';
 import { OutputColor } from 'src/job/enums/job.enum';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -42,7 +42,7 @@ describe('TransactionController', () => {
       const createDto: CreateTransactionRequestDto = {
         vendorId: 1,
         jobs: [
-          new CreateJobDto({
+          new CreateJobRequestDto({
             documentId: 1,
             copyCount: 2,
             outputColor: OutputColor.COLOR,

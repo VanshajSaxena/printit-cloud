@@ -1,7 +1,7 @@
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
-export class JobResponseDto {
+export class CreateJobResponseDto {
   @Expose()
   id: number;
 }

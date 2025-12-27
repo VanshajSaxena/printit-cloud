@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
-import { CreateJobDto } from './dto/create-job.dto';
-import { JobResponseDto } from './dto/job-response.dto';
+import { CreateJobRequestDto } from './dto/create-job-request.dto';
+import { CreateJobResponseDto } from './dto/create-job-response.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
 import { DocumentService } from 'src/document/document.service';
@@ -16,7 +16,7 @@ export class JobService {
     private documentService: DocumentService,
   ) {}
 
-  async createMany(createJobDto: CreateJobDto[]) {
+  async createMany(createJobDto: CreateJobRequestDto[]) {
     const jobs = await Promise.all(
       createJobDto.map(async ({ copyCount, documentId, outputColor }) => {
         const document = await this.documentService.getEntityOne(documentId);
@@ -26,36 +26,36 @@ export class JobService {
 
     const newJobs = this.jobRepository.create(jobs);
     const savedJobs = await this.jobRepository.save(newJobs);
-    return plainToInstance(JobResponseDto, savedJobs);
+    return plainToInstance(CreateJobResponseDto, savedJobs);
   }
 
-  async create(createJobDto: CreateJobDto) {
+  async create(createJobDto: CreateJobRequestDto) {
     const newJob = this.jobRepository.create(createJobDto);
     const saved = await this.jobRepository.save(newJob);
-    return plainToInstance(JobResponseDto, saved);
+    return plainToInstance(CreateJobResponseDto, saved);
   }
 
   async findAll() {
     const jobs = await this.jobRepository.find();
-    return plainToInstance(JobResponseDto, jobs);
+    return plainToInstance(CreateJobResponseDto, jobs);
   }
 
   async findOne(id: number) {
     const job = await this.findOneEntity(id);
-    return plainToInstance(JobResponseDto, job);
+    return plainToInstance(CreateJobResponseDto, job);
   }
 
   async update(id: number, updateJobDto: UpdateJobDto) {
     const job = await this.findOneEntity(id);
     Object.assign(job, updateJobDto);
     const saved = await this.jobRepository.save(job);
-    return plainToInstance(JobResponseDto, saved);
+    return plainToInstance(CreateJobResponseDto, saved);
   }
 
   async remove(id: number) {
     const entityNeedRemoval = await this.findOneEntity(id);
     const removed = await this.jobRepository.softRemove(entityNeedRemoval);
-    return plainToInstance(JobResponseDto, removed);
+    return plainToInstance(CreateJobResponseDto, removed);
   }
 
   private async findOneEntity(id: number) {

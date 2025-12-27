@@ -5,7 +5,7 @@ import {
   IsOptional,
   ValidateNested,
 } from 'class-validator';
-import { CreateJobDto } from 'src/job/dto/create-job.dto';
+import { CreateJobRequestDto } from 'src/job/dto/create-job-request.dto';
 
 export class CreateTransactionRequestDto {
   @IsNotEmpty()
@@ -19,5 +19,5 @@ export class CreateTransactionRequestDto {
   @IsNotEmpty()
   @IsArray()
   @ValidateNested()
-  jobs: CreateJobDto[];
+  jobs: CreateJobRequestDto[];
 }

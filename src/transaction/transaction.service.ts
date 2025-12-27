@@ -3,7 +3,7 @@ import { CreateTransactionRequestDto } from './dto/create-transaction-request.dt
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { customAlphabet } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
@@ -11,6 +11,7 @@ import { CreateTransactionResponseDto } from './dto/create-transaction-response.
 import { VendorService } from 'src/vendor/vendor.service';
 import { PrinterService } from 'src/printer/printer.service';
 import { JobService } from 'src/job/job.service';
+import { FindTransactionResponseDto } from './dto/find-transaction-response.dto';
 
 @Injectable()
 export class TransactionService {
@@ -82,8 +83,10 @@ export class TransactionService {
   }
 
   async findOne(id: number) {
-    const transaction = await this.findOneEntity(id);
-    return plainToInstance(CreateTransactionResponseDto, transaction);
+    const transaction = await this.findOneEntity(id, {
+      relations: { jobs: true },
+    });
+    return plainToInstance(FindTransactionResponseDto, transaction);
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
@@ -99,13 +102,17 @@ export class TransactionService {
     return plainToInstance(CreateTransactionResponseDto, removed);
   }
 
-  private async findOneEntity(id: number) {
-    const transaction = await this.transactionRepository.findOneBy({
-      id,
-    });
-    if (!transaction) {
-      throw new NotFoundException(`Transaction not found for the id: ${id}`);
+  private async findOneEntity(
+    id: number,
+    options?: FindOneOptions<Transaction>,
+  ) {
+    try {
+      return await this.transactionRepository.findOneOrFail({
+        where: { id },
+        ...options,
+      });
+    } catch {
+      throw new NotFoundException(`Transaction not found for id: ${id}`);
     }
-    return transaction;
   }
 }
