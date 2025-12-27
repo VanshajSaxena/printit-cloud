@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { customAlphabet } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
-import { TransactionResponseDto } from './dto/transaction-response.dto';
+import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
 import { VendorService } from 'src/vendor/vendor.service';
 import { PrinterService } from 'src/printer/printer.service';
 import { JobService } from 'src/job/job.service';
@@ -27,7 +27,7 @@ export class TransactionService {
 
   private charSet: string = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-  async create(createTransactionDto: CreateTransactionDto) {
+  async create(createTransactionDto: CreateTransactionRequestDto) {
     const vendor = await this.vendorService.getEntityOne(
       createTransactionDto.vendorId,
     );
@@ -73,30 +73,30 @@ export class TransactionService {
     });
 
     const saved = await this.transactionRepository.save(newTransaction);
-    return plainToInstance(TransactionResponseDto, saved);
+    return plainToInstance(CreateTransactionResponseDto, saved);
   }
 
   async findAll() {
     const transactions = await this.transactionRepository.find();
-    return plainToInstance(TransactionResponseDto, transactions);
+    return plainToInstance(CreateTransactionResponseDto, transactions);
   }
 
   async findOne(id: number) {
     const transaction = await this.findOneEntity(id);
-    return plainToInstance(TransactionResponseDto, transaction);
+    return plainToInstance(CreateTransactionResponseDto, transaction);
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
     const transaction = await this.findOneEntity(id);
     Object.assign(transaction, updateTransactionDto);
     const saved = await this.transactionRepository.save(transaction);
-    return plainToInstance(TransactionResponseDto, saved);
+    return plainToInstance(CreateTransactionResponseDto, saved);
   }
 
   async remove(id: number) {
     const transaction = await this.findOneEntity(id);
     const removed = await this.transactionRepository.softRemove(transaction);
-    return plainToInstance(TransactionResponseDto, removed);
+    return plainToInstance(CreateTransactionResponseDto, removed);
   }
 
   private async findOneEntity(id: number) {

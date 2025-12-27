@@ -6,7 +6,7 @@ import { ApiHideProperty } from '@nestjs/swagger';
 import { Job } from 'src/job/entities/job.entity';
 
 @Exclude()
-export class TransactionResponseDto {
+export class CreateTransactionResponseDto {
   @Expose()
   id: number;
 

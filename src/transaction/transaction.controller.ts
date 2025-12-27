@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Controller({ path: 'transactions', version: '1' })
@@ -17,7 +17,7 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post()
-  async create(@Body() createTransactionDto: CreateTransactionDto) {
+  async create(@Body() createTransactionDto: CreateTransactionRequestDto) {
     return this.transactionService.create(createTransactionDto);
   }
 

@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { CreateJobDto } from 'src/job/dto/create-job.dto';
 
-export class CreateTransactionDto {
+export class CreateTransactionRequestDto {
   @IsNotEmpty()
   @IsNumber()
   vendorId: number;
