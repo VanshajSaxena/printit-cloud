@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateDocumentDto {
+export class CreateDocumentRequestDto {
   @IsNotEmpty()
   @IsString()
   filename: string;
@@ -8,7 +8,7 @@ export class CreateDocumentDto {
   @IsString()
   contentType: string;
 
-  constructor(partial: Partial<CreateDocumentDto>) {
+  constructor(partial: Partial<CreateDocumentRequestDto>) {
     Object.assign(this, partial);
   }
 }

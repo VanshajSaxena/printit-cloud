@@ -84,7 +84,7 @@ export class TransactionService {
 
   async findOne(id: number) {
     const transaction = await this.findOneEntity(id, {
-      relations: { jobs: true },
+      relations: { jobs: { document: true } },
     });
     return plainToInstance(FindTransactionResponseDto, transaction);
   }

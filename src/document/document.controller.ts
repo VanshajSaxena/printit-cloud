@@ -9,7 +9,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { DocumentService } from './document.service';
-import { CreateDocumentDto } from './dto/create-document-request.dto';
+import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
 
@@ -19,7 +19,7 @@ export class DocumentController {
 
   @Post()
   async create(
-    @Body() createDocumentDto: CreateDocumentDto,
+    @Body() createDocumentDto: CreateDocumentRequestDto,
   ): Promise<CreateDocumentResponseDto> {
     return this.documentService.create(createDocumentDto);
   }

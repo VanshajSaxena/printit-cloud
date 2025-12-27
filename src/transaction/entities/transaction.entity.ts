@@ -3,10 +3,12 @@ import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TransactionStatus } from '../enums/transaction-status.enum';
 
@@ -34,4 +36,10 @@ export class Transaction {
 
   @OneToMany(() => Job, (job) => job.transaction)
   jobs: Job[];
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
 }

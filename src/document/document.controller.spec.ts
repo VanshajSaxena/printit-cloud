@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
-import { CreateDocumentDto } from './dto/create-document-request.dto';
+import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 
 describe('DocumentController', () => {
@@ -41,7 +41,7 @@ describe('DocumentController', () => {
 
   describe('create', () => {
     it('should call the create method of the service with the correct DTO', async () => {
-      const createDto: CreateDocumentDto = {
+      const createDto: CreateDocumentRequestDto = {
         filename: 'Test Doc',
         contentType: 'application/pdf',
       };

@@ -5,7 +5,7 @@ import { plainToInstance } from 'class-transformer';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { UploadFileBatchRequestDto } from 'src/r2/dto/upload-file-batch-request.dto';
 import { In, Repository } from 'typeorm';
-import { CreateDocumentDto } from './dto/create-document-request.dto';
+import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
@@ -23,7 +23,7 @@ export class DocumentService {
     this.env = this.config.get('NODE_ENV', 'devolopment');
   }
 
-  async create(createDocumentDto: CreateDocumentDto) {
+  async create(createDocumentDto: CreateDocumentRequestDto) {
     const cleanedFilename = createDocumentDto.filename
       .trim()
       .toLowerCase()
@@ -89,7 +89,7 @@ export class DocumentService {
    * This is only partially guarantees creation order thus is not reliable for
    * creating documents in bulk.
    */
-  async createMany(createDocumentDto: CreateDocumentDto[]) {
+  async createMany(createDocumentDto: CreateDocumentRequestDto[]) {
     const newDocument = this.documentRepository.create(createDocumentDto);
     const saved = await this.documentRepository.save(newDocument);
     this.logger.log('Created multiple document objects', [saved.length, saved]);
