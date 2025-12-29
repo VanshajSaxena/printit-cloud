@@ -10,7 +10,9 @@ describe('VendorController', () => {
   const mockVendorService = {
     create: jest.fn(),
     findAll: jest.fn(),
-    findOne: jest.fn(),
+    findOneById: jest.fn(),
+    findOneByUsername: jest.fn(),
+    findOneBySlug: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
   };
@@ -75,18 +77,18 @@ describe('VendorController', () => {
 
   describe('findOne', () => {
     it('should call the findOne method of the service with the correct id', async () => {
-      const id = 'harrypotter';
+      const id = '1';
       const expectedResult = {
         id: 1,
         firstName: 'Harry',
         lastName: 'Potter',
         email: 'harrypotter@mail.com',
       };
-      mockVendorService.findOne.mockResolvedValue(expectedResult);
+      mockVendorService.findOneById.mockResolvedValue(expectedResult);
 
       const result = await controller.findOne(id);
 
-      expect(service.findOneById(1)).toHaveBeenCalledWith(id);
+      expect(service.findOneById).toHaveBeenCalledWith(Number(id));
       expect(result).toEqual(expectedResult);
     });
   });
