@@ -15,12 +15,12 @@ Content-Type: application/json
   "jobs": [
     {
       "copyCount": 1,
-      "documentId": 2,
-      "outputColor": "COLOR"
+      "documentId": 1,
+      "outputColor": "GRAYSCALE"
     },
     {
       "copyCount": 1,
-      "documentId": 64,
+      "documentId": 4,
       "outputColor": "COLOR"
     }
   ],
