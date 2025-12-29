@@ -17,6 +17,11 @@ Content-Type: application/json
       "copyCount": 1,
       "documentId": 2,
       "outputColor": "COLOR"
+    },
+    {
+      "copyCount": 1,
+      "documentId": 64,
+      "outputColor": "COLOR"
     }
   ],
   "vendorId": 1

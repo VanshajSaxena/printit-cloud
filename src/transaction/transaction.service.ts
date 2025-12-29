@@ -78,8 +78,10 @@ export class TransactionService {
   }
 
   async findAll() {
-    const transactions = await this.transactionRepository.find();
-    return plainToInstance(CreateTransactionResponseDto, transactions);
+    const transactions = await this.transactionRepository.find({
+      relations: { jobs: { document: true } },
+    });
+    return plainToInstance(FindTransactionResponseDto, transactions);
   }
 
   async findOne(id: number) {

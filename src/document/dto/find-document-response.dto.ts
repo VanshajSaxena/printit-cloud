@@ -20,4 +20,8 @@ export class FindDocumentResponseDto {
   @Exclude()
   @ApiHideProperty()
   transaction: Transaction;
+
+  constructor(partial: Partial<FindDocumentResponseDto>) {
+    Object.assign(this, partial);
+  }
 }

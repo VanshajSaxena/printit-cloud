@@ -23,7 +23,8 @@ export class FindTransactionResponseDto {
   @Expose()
   createdAt: Date;
 
-  @Expose()
+  @Exclude()
+  @ApiHideProperty()
   updatedAt: Date;
 
   @Exclude()
@@ -33,4 +34,8 @@ export class FindTransactionResponseDto {
   @Exclude()
   @ApiHideProperty()
   printer: Printer | null;
+
+  constructor(partial: Partial<FindTransactionResponseDto>) {
+    Object.assign(this, partial);
+  }
 }
