@@ -4,14 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategy';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LoggerModule } from './logger/logger.module';
-import { NotificationsGateway } from './notifications/notifications.gateway';
 import { DocumentModule } from './document/document.module';
-import { TransactionModule } from './transaction/transaction.module';
+import { JobModule } from './job/job.module';
+import { LoggerModule } from './logger/logger.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
+import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
-import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
@@ -48,8 +48,9 @@ import { JobModule } from './job/job.module';
     LoggerModule,
     R2Module,
     JobModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, NotificationsGateway],
+  providers: [AppService],
 })
 export class AppModule {}

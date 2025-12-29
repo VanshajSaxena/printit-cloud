@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TransactionService } from './transaction.service';
-import { TransactionController } from './transaction.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Transaction } from './entities/transaction.entity';
-import { PrinterModule } from 'src/printer/printer.module';
 import { DocumentModule } from 'src/document/document.module';
-import { VendorModule } from 'src/vendor/vendor.module';
-import { LoggerModule } from 'src/logger/logger.module';
 import { JobModule } from 'src/job/job.module';
+import { LoggerModule } from 'src/logger/logger.module';
+import { NotificationsModule } from 'src/notifications/notifications.module';
+import { PrinterModule } from 'src/printer/printer.module';
+import { VendorModule } from 'src/vendor/vendor.module';
+import { Transaction } from './entities/transaction.entity';
+import { TransactionController } from './transaction.controller';
+import { TransactionService } from './transaction.service';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { JobModule } from 'src/job/job.module';
     VendorModule,
     LoggerModule,
     JobModule,
+    NotificationsModule,
   ],
   controllers: [TransactionController],
   providers: [TransactionService],
