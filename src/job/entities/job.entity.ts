@@ -1,15 +1,16 @@
 import { Document } from 'src/document/entities/document.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
   Check,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { OutputColor } from '../enums/job.enum';
-import { Transaction } from 'src/transaction/entities/transaction.entity';
 
 @Entity()
 export class Job {
@@ -34,4 +35,7 @@ export class Job {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deletedAt: Date;
 }

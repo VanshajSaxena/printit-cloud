@@ -1,6 +1,6 @@
 ### 
 
-@base_url = https://{{hostname}}:{{port}}/api/v1
+@base_url = http://{{hostname}}:{{port}}/api/v1
 @hostname = localhost
 @port = 3000
 

@@ -1,6 +1,14 @@
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Vendor {
@@ -33,4 +41,13 @@ export class Vendor {
 
   @OneToMany(() => Transaction, (transaction) => transaction.vendor)
   transactions: Transaction[];
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamptz' })
+  deletedAt: Date;
 }

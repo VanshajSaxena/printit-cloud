@@ -2,8 +2,8 @@
 
 @base_url = http://{{hostname}}:{{port}}/api/v1
 @documentId = 1
-@documentName = New document
-@documentPath = /documents/my-new-document.pdf
+@documentName = Final Year Dissertation
+@documentPath = /documents/final-year-dissertation.pdf
 @hostname = localhost
 @port = 3000
 
@@ -42,4 +42,4 @@ Content-Type: application/json
 
 ### Delete a document
 
-DELETE {{base_url}}/documents/{{documentId}} HTTP/1.1
+DELETE {{base_url}}/documents/2 HTTP/1.1
