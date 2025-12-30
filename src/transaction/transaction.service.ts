@@ -1,27 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Transaction } from './entities/transaction.entity';
-import { FindOneOptions, Repository } from 'typeorm';
-import { customAlphabet } from 'nanoid';
-import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
-import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
-import { VendorService } from 'src/vendor/vendor.service';
-import { PrinterService } from 'src/printer/printer.service';
+import { customAlphabet } from 'nanoid';
 import { JobService } from 'src/job/job.service';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
+import { NotificationsGateway } from 'src/notifications/notifications.gateway';
+import { PrinterService } from 'src/printer/printer.service';
+import { VendorService } from 'src/vendor/vendor.service';
+import { FindOneOptions, Repository } from 'typeorm';
+import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
+import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
 import { FindTransactionResponseDto } from './dto/find-transaction-response.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transaction } from './entities/transaction.entity';
 
 @Injectable()
 export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
-    private transactionRepository: Repository<Transaction>,
-    private vendorService: VendorService,
-    private printerService: PrinterService,
-    private logger: ApplicationLogger,
-    private jobService: JobService,
+    private readonly transactionRepository: Repository<Transaction>,
+    private readonly vendorService: VendorService,
+    private readonly printerService: PrinterService,
+    private readonly logger: ApplicationLogger,
+    private readonly notificationsGateway: NotificationsGateway,
+    private readonly jobService: JobService,
   ) {
     this.logger.setContext(TransactionService.name);
   }
@@ -74,6 +76,9 @@ export class TransactionService {
     });
 
     const saved = await this.transactionRepository.save(newTransaction);
+    this.notificationsGateway.sendNewTransactionToVendor(vendor.id, {
+      id: saved.id,
+    });
     return plainToInstance(CreateTransactionResponseDto, saved);
   }
 
