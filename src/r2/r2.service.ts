@@ -11,6 +11,8 @@ import { DownloadFileResponseDto } from './dto/download-file-response.dto';
 import { UploadFileBatchRequestDto } from './dto/upload-file-batch-request.dto';
 import { UploadFileBatchResponseDto } from './dto/upload-file-batch-response.dto';
 import { UploadFileResponseDto } from './dto/upload-file-response.dto';
+import { DownloadFileBatchRequestDto } from './dto/download-file-batch-request.dto';
+import { DownloadFileBatchResponseDto } from './dto/download-file-batch-response.dto';
 
 @Injectable()
 export class R2Service {
@@ -54,12 +56,21 @@ export class R2Service {
     });
   }
 
-  async createDownloadURL(key: string) {
-    const command = new GetObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
+  async createDownloadURLs({ ids }: DownloadFileBatchRequestDto) {
+    const documents = await this.documentService.getEntitites(ids, {
+      select: { key: true },
     });
-    const url = await getSignedUrl(this.s3, command);
-    return new DownloadFileResponseDto({ url });
+
+    const signedUrls = await Promise.all(
+      documents.map(async ({ key, id }) => {
+        const command = new GetObjectCommand({
+          Bucket: this.bucketName,
+          Key: key,
+        });
+        const url = await getSignedUrl(this.s3, command);
+        return new DownloadFileResponseDto({ url, id });
+      }),
+    );
+    return new DownloadFileBatchResponseDto({ signedUrls });
   }
 }

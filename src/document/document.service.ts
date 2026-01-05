@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { UploadFileBatchRequestDto } from 'src/r2/dto/upload-file-batch-request.dto';
-import { In, Repository } from 'typeorm';
+import { FindManyOptions, In, Repository } from 'typeorm';
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
@@ -69,8 +69,8 @@ export class DocumentService {
     return plainToInstance(CreateDocumentResponseDto, removed);
   }
 
-  getEntitites(ids: number[]) {
-    return this.documentRepository.findBy({ id: In(ids) });
+  getEntitites(ids: number[], options?: FindManyOptions<Document>) {
+    return this.documentRepository.find({ where: { id: In(ids) }, ...options });
   }
 
   getEntityOne(id: number) {

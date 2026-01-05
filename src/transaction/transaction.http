@@ -20,8 +20,8 @@ Content-Type: application/json
     },
     {
       "copyCount": 1,
-      "documentId": 4,
-      "outputColor": "GRAYSCALE"
+      "documentId": 5,
+      "outputColor": "COLOR"
     }
   ],
   "vendorId": 1
@@ -54,4 +54,4 @@ Content-Type: application/json
 
 ### Delete a transaction
 
-DELETE {{base_url}}/transactions/1 HTTP/1.1
+DELETE {{base_url}}/transactions/2 HTTP/1.1

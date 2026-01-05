@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { DownloadFileRequestDto } from './dto/download-file-request.dto';
+import { DownloadFileBatchRequestDto } from './dto/download-file-batch-request.dto';
 import { UploadFileBatchRequestDto } from './dto/upload-file-batch-request.dto';
 import { R2Service } from './r2.service';
 
@@ -10,12 +10,14 @@ export class R2Controller {
   @Post()
   async requestUploadFiles(
     @Body()
-    uploadFileRequestBatchDto: UploadFileBatchRequestDto,
+    uploadFileBatchRequestDto: UploadFileBatchRequestDto,
   ) {
-    return this.r2Service.createUploadURLs(uploadFileRequestBatchDto);
+    return this.r2Service.createUploadURLs(uploadFileBatchRequestDto);
   }
   @Get()
-  async requestDownloadFile(@Body() { key }: DownloadFileRequestDto) {
-    return this.r2Service.createDownloadURL(key);
+  async requestDownloadFile(
+    @Body() downloadFileBatchRequestDto: DownloadFileBatchRequestDto,
+  ) {
+    return this.r2Service.createDownloadURLs(downloadFileBatchRequestDto);
   }
 }
