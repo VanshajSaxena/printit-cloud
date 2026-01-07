@@ -55,7 +55,7 @@ export class NotificationsGateway
     vendorId: number,
     payload: NewTransactionPayload,
   ): void {
-    this.server.to(`vendor-${vendorId}`).emit('new_transaction', payload);
+    this.server.to(`vendor-${vendorId}`).emit('transaction:new', payload);
   }
 
   sendUpdatesToCustomer(
