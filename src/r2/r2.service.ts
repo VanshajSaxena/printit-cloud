@@ -35,7 +35,9 @@ export class R2Service {
   }
 
   async createUploadURLs({ ids }: UploadFileBatchRequestDto) {
-    const documents = await this.documentService.findByIds({ ids });
+    const documents = await this.documentService.getEntitites(ids, {
+      select: { key: true, id: true, contentType: true },
+    });
 
     const signedUrls = await Promise.all(
       documents.map(async ({ key, id, contentType }) => {
@@ -58,7 +60,7 @@ export class R2Service {
 
   async createDownloadURLs({ ids }: DownloadFileBatchRequestDto) {
     const documents = await this.documentService.getEntitites(ids, {
-      select: { key: true },
+      select: { key: true, id: true },
     });
 
     const signedUrls = await Promise.all(
