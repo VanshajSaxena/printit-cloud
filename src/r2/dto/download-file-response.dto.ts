@@ -8,6 +8,9 @@ export class DownloadFileResponseDto {
   @Expose()
   id: number;
 
+  @Expose()
+  contentType: string;
+
   constructor(partial: Partial<DownloadFileResponseDto>) {
     Object.assign(this, partial);
   }

@@ -60,17 +60,17 @@ export class R2Service {
 
   async createDownloadURLs({ ids }: DownloadFileBatchRequestDto) {
     const documents = await this.documentService.getEntitites(ids, {
-      select: { key: true, id: true },
+      select: { key: true, id: true, contentType: true },
     });
 
     const signedUrls = await Promise.all(
-      documents.map(async ({ key, id }) => {
+      documents.map(async ({ key, id, contentType }) => {
         const command = new GetObjectCommand({
           Bucket: this.bucketName,
           Key: key,
         });
         const url = await getSignedUrl(this.s3, command);
-        return new DownloadFileResponseDto({ url, id });
+        return new DownloadFileResponseDto({ url, id, contentType });
       }),
     );
     return new DownloadFileBatchResponseDto({ signedUrls });
