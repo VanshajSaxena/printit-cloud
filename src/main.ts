@@ -38,15 +38,9 @@ async function bootstrap() {
   const origins = [
     'https://app.print-ly.ink',
     'https://testing--printly-app.netlify.app',
-  ]; // production
-  const developmentOrigins = [
     'http://localhost:5173', // electron renderer
     'http://localhost:8080', // pwa
   ];
-
-  if (process.env.NODE_ENV === 'development') {
-    origins.push(...developmentOrigins);
-  }
 
   app.enableCors({
     origin: origins,
