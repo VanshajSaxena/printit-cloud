@@ -7,10 +7,13 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { ApiQuery } from '@nestjs/swagger';
+import { TransactionStatus } from './enums/transaction-status.enum';
 
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {
@@ -22,8 +25,9 @@ export class TransactionController {
   }
 
   @Get()
-  async findAll() {
-    return this.transactionService.findAll();
+  @ApiQuery({ name: 'status', required: false, enum: TransactionStatus })
+  async findAll(@Query('status') status?: TransactionStatus) {
+    return this.transactionService.findAll(status);
   }
 
   @Get(':id')

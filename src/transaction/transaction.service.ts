@@ -13,6 +13,7 @@ import { CreateTransactionResponseDto } from './dto/create-transaction-response.
 import { FindTransactionResponseDto } from './dto/find-transaction-response.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
+import { TransactionStatus } from './enums/transaction-status.enum';
 
 @Injectable()
 export class TransactionService {
@@ -82,9 +83,10 @@ export class TransactionService {
     return plainToInstance(CreateTransactionResponseDto, saved);
   }
 
-  async findAll() {
+  async findAll(status?: TransactionStatus) {
     const transactions = await this.transactionRepository.find({
       relations: { jobs: { document: true } },
+      where: { status: status },
     });
     return plainToInstance(FindTransactionResponseDto, transactions);
   }
