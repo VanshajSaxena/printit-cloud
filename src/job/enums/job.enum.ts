@@ -3,7 +3,7 @@ export enum OutputColor {
   MONOCHROME = 'MONOCHROME',
   GRAYSCALE = 'GRAYSCALE',
 }
-export enum DocumentStatus {
+export enum JobStatus {
   PENDING = 'PENDING',
   QUEUED = 'QUEUED',
   PRINTING = 'PRINTING',

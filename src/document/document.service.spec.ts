@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { DocumentService } from './document.service';
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { Document } from './entities/document.entity';
-import { DocumentStatus } from '../job/enums/job.enum';
 
 describe('DocumentService', () => {
   let service: DocumentService;
@@ -38,7 +37,7 @@ describe('DocumentService', () => {
   });
 
   describe('create', () => {
-    it('should create a new print document and save it with PENDING status', async () => {
+    it('should create a new print document', async () => {
       const createDto: CreateDocumentRequestDto = {
         filename: 'Test Document',
         contentType: 'application/pdf',
@@ -46,7 +45,6 @@ describe('DocumentService', () => {
 
       const createdDocument = {
         ...createDto,
-        status: DocumentStatus.PENDING,
       };
 
       const savedDocument = {

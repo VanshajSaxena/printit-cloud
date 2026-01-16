@@ -1,6 +1,6 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { FindDocumentResponseDto } from 'src/document/dto/find-document-response.dto';
-import { OutputColor } from '../enums/job.enum';
+import { JobStatus, OutputColor } from '../enums/job.enum';
 
 @Exclude()
 export class FindJobResponseDto {
@@ -12,6 +12,9 @@ export class FindJobResponseDto {
 
   @Expose()
   copyCount: number;
+
+  @Expose()
+  status: JobStatus;
 
   @Expose()
   @Type(() => FindDocumentResponseDto)
