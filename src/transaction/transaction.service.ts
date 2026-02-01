@@ -5,7 +5,6 @@ import { customAlphabet } from 'nanoid';
 import { JobService } from 'src/job/job.service';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { NotificationsGateway } from 'src/notifications/notifications.gateway';
-import { PrinterService } from 'src/printer/printer.service';
 import { VendorService } from 'src/vendor/vendor.service';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
@@ -21,7 +20,6 @@ export class TransactionService {
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
     private readonly vendorService: VendorService,
-    private readonly printerService: PrinterService,
     private readonly logger: ApplicationLogger,
     private readonly notificationsGateway: NotificationsGateway,
     private readonly jobService: JobService,
