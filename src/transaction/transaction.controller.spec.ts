@@ -90,7 +90,7 @@ describe('TransactionController', () => {
   describe('update', () => {
     it('should call the update method of the service with correct DTO', async () => {
       const id = 1;
-      const updataDto: UpdateTransactionDto = { printerId: 1 };
+      const updataDto: UpdateTransactionDto = { vendorId: 1 };
       const expectedResult = {
         id: 1,
         vendorId: 1,

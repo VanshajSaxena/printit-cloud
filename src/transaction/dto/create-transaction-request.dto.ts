@@ -1,8 +1,8 @@
 import {
+  ArrayMinSize,
   IsArray,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   ValidateNested,
 } from 'class-validator';
 import { CreateJobRequestDto } from 'src/job/dto/create-job-request.dto';
@@ -12,11 +12,8 @@ export class CreateTransactionRequestDto {
   @IsNumber()
   vendorId: number;
 
-  @IsOptional()
-  @IsNumber()
-  printerId?: number;
-
   @IsNotEmpty()
+  @ArrayMinSize(1)
   @IsArray()
   @ValidateNested()
   jobs: CreateJobRequestDto[];

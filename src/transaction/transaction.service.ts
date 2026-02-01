@@ -49,18 +49,6 @@ export class TransactionService {
       );
     }
 
-    let printer = null;
-    if (createTransactionDto.printerId) {
-      printer = await this.printerService.getOptionalEntityOne(
-        createTransactionDto.printerId,
-      );
-      if (!printer) {
-        throw new NotFoundException(
-          `The printer with id ${createTransactionDto.printerId} was not found.`,
-        );
-      }
-    }
-
     const nanoid = customAlphabet(this.charSet, 8);
 
     let friendlyId: string = nanoid();
@@ -71,7 +59,6 @@ export class TransactionService {
 
     const newTransaction = this.transactionRepository.create({
       vendor,
-      printer,
       jobs,
       friendlyId,
     });
