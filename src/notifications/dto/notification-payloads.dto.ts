@@ -1,26 +1,26 @@
-import { IsIn, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsIn, IsNotEmpty, IsInt } from 'class-validator';
 
 export class JoinVendorPayload {
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   id: number;
 }
 
 export class JoinTransactionPayload {
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   id: number;
 }
 
 export class NewTransactionPayload {
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   id: number;
 }
 
 export class UpdateProgressPayload {
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   id: number;
   @IsIn(['pending', 'queued', 'printing', 'completed', 'error'])
   @IsNotEmpty()

@@ -1,15 +1,15 @@
 import {
   ArrayMinSize,
   IsArray,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   ValidateNested,
 } from 'class-validator';
 import { CreateJobRequestDto } from 'src/job/dto/create-job-request.dto';
 
 export class CreateTransactionRequestDto {
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   vendorId: number;
 
   @IsNotEmpty()

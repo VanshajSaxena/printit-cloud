@@ -1,4 +1,4 @@
-import { IsJSON, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsInt, IsJSON, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePrinterDto {
   @IsNotEmpty()
@@ -10,6 +10,6 @@ export class CreatePrinterDto {
   capabilities: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   vendorId: number;
 }
