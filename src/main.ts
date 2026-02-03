@@ -3,6 +3,7 @@ import {
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -35,16 +36,29 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
 
-  const origins = [
-    'https://app.print-ly.ink',
-    'https://testing--printly-app.netlify.app',
-    'http://localhost:5173', // electron renderer
-    'http://localhost:8080', // pwa
-  ];
+  const corsOptions: CorsOptions = {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      const whitelist = [
+        'https://app.print-ly.ink',
+        'https://dev--printly-app.netlify.app',
+        'http://localhost:5173',
+        'http://localhost:8100',
+      ];
 
-  app.enableCors({
-    origin: origins,
-  });
+      const netlifyRegex = /^https:\/\/.*--printly-app\.netlify\.app$/;
+
+      if (!origin || whitelist.includes(origin) || netlifyRegex.test(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+  };
+
+  app.enableCors(corsOptions);
   const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
   server.disable('etag');
   server.disable('x-powered-by');

@@ -35,7 +35,6 @@ export class DocumentService {
     const newDocument = this.documentRepository.create(createDocumentDto);
     newDocument.key = key;
     const saved = await this.documentRepository.save(newDocument);
-    this.logger.log('Created a new document object', [saved]);
     return plainToInstance(CreateDocumentResponseDto, saved);
   }
 
