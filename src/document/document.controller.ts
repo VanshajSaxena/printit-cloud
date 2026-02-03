@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
-import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
+import { CreateDocumentBatchResponseDto } from './dto/create-document-batch-response.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Controller({ path: 'documents', version: '1' })
@@ -20,7 +20,7 @@ export class DocumentController {
   @Post()
   async create(
     @Body() createDocumentBatchDto: CreateDocumentBatchRequestDto,
-  ): Promise<CreateDocumentResponseDto> {
+  ): Promise<CreateDocumentBatchResponseDto> {
     return this.documentService.create(createDocumentBatchDto);
   }
 

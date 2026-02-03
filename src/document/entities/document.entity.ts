@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { DocumentStatus } from '../enum/document-status.enum';
 
 @Entity()
 export class Document {
@@ -22,6 +23,9 @@ export class Document {
 
   @Column({ type: 'varchar', length: 255 })
   contentType: string;
+
+  @Column('enum', { enum: DocumentStatus, default: DocumentStatus.CREATED })
+  status: DocumentStatus;
 
   @OneToMany(() => Job, (job) => job.document)
   jobs: Job[];

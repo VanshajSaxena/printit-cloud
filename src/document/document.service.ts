@@ -23,15 +23,9 @@ export class DocumentService {
 
   async create(createDocumentDto: CreateDocumentBatchRequestDto) {
     const newDocuments = createDocumentDto.documents.map((document) => {
-      const cleanedFilename = document.filename
-        .trim()
-        .toLowerCase()
-        .normalize()
-        .replaceAll(' ', '-')
-        .replaceAll('/', '-');
-
+      const documentkey = this.getDocumentKey(document);
       const newDocument = this.documentRepository.create(document);
-      newDocument.key = cleanedFilename;
+      newDocument.key = documentkey;
       return newDocument;
     });
     const saved = await this.documentRepository.save(newDocuments);
@@ -82,6 +76,15 @@ export class DocumentService {
       throw new NotFoundException(`Document not found for the id: ${id}`);
     }
     return document;
+  }
+
+  private getDocumentKey(document: CreateDocumentRequestDto) {
+    return document.filename
+      .trim()
+      .toLowerCase()
+      .normalize()
+      .replaceAll(' ', '-')
+      .replaceAll('/', '-');
   }
 
   /**
