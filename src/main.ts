@@ -36,6 +36,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
 
+  // NOTE: these options will differ in production
   const corsOptions: CorsOptions = {
     origin: (
       origin: string | undefined,
