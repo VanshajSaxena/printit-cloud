@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
 } from '@nestjs/common';
 import { DocumentService } from './document.service';
-import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
+import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
 import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
+import { UpdateDocumentDto } from './dto/update-document.dto';
 
 @Controller({ path: 'documents', version: '1' })
 export class DocumentController {
@@ -19,9 +19,9 @@ export class DocumentController {
 
   @Post()
   async create(
-    @Body() createDocumentDto: CreateDocumentRequestDto,
+    @Body() createDocumentBatchDto: CreateDocumentBatchRequestDto,
   ): Promise<CreateDocumentResponseDto> {
-    return this.documentService.create(createDocumentDto);
+    return this.documentService.create(createDocumentBatchDto);
   }
 
   @Get()

@@ -1,12 +1,12 @@
-import { Expose, Exclude, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { CreateDocumentResponseDto } from './create-document-response.dto';
 
 @Exclude()
 export class CreateDocumentBatchResponseDto {
   @Expose()
-  @Type(() => CreateDocumentResponseDto)
+  @Type(() => CreateDocumentBatchResponseDto)
   documents: CreateDocumentResponseDto[];
-  constructor(partial: Partial<CreateDocumentResponseDto>) {
+  constructor(partial: Partial<CreateDocumentBatchResponseDto>) {
     Object.assign(this, partial);
   }
 }

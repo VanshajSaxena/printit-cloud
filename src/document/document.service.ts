@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { UploadFileBatchRequestDto } from 'src/r2/dto/upload-file-batch-request.dto';
 import { FindManyOptions, In, Repository } from 'typeorm';
+import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
+import { CreateDocumentBatchResponseDto } from './dto/create-document-batch-response.dto';
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
@@ -12,30 +13,29 @@ import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentService {
-  private readonly env: string;
   constructor(
     @InjectRepository(Document)
     private documentRepository: Repository<Document>,
     private logger: ApplicationLogger,
-    private readonly config: ConfigService,
   ) {
     this.logger.setContext(DocumentService.name);
-    this.env = this.config.get('NODE_ENV', 'devolopment');
   }
 
-  async create(createDocumentDto: CreateDocumentRequestDto) {
-    const cleanedFilename = createDocumentDto.filename
-      .trim()
-      .toLowerCase()
-      .normalize()
-      .replaceAll(' ', '-')
-      .replaceAll('/', '-');
-    const keyArr = [this.env, cleanedFilename];
-    const key = keyArr.join('/');
-    const newDocument = this.documentRepository.create(createDocumentDto);
-    newDocument.key = key;
-    const saved = await this.documentRepository.save(newDocument);
-    return plainToInstance(CreateDocumentResponseDto, saved);
+  async create(createDocumentDto: CreateDocumentBatchRequestDto) {
+    const newDocuments = createDocumentDto.documents.map((document) => {
+      const cleanedFilename = document.filename
+        .trim()
+        .toLowerCase()
+        .normalize()
+        .replaceAll(' ', '-')
+        .replaceAll('/', '-');
+
+      const newDocument = this.documentRepository.create(document);
+      newDocument.key = cleanedFilename;
+      return newDocument;
+    });
+    const saved = await this.documentRepository.save(newDocuments);
+    return new CreateDocumentBatchResponseDto({ documents: saved });
   }
 
   async findByIds({ ids }: UploadFileBatchRequestDto) {
