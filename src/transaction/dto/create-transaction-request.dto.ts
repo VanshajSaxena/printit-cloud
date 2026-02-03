@@ -15,6 +15,6 @@ export class CreateTransactionRequestDto {
   @IsNotEmpty()
   @ArrayMinSize(1)
   @IsArray()
-  @ValidateNested()
+  @ValidateNested({ each: true })
   jobs: CreateJobRequestDto[];
 }

@@ -12,7 +12,14 @@ export class CreateDocumentResponseDto {
   @Expose()
   contentType: string;
 
+  @Expose()
+  draftId: string;
+
   @Exclude()
   @ApiHideProperty()
   key: string;
+
+  constructor(partial: Partial<CreateDocumentResponseDto>) {
+    Object.assign(this, partial);
+  }
 }

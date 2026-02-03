@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
@@ -22,14 +26,28 @@ export class DocumentService {
   }
 
   async create(createDocumentDto: CreateDocumentBatchRequestDto) {
+    const draftIdMap = new Map<string, string>();
     const newDocuments = createDocumentDto.documents.map((document) => {
       const documentkey = this.getDocumentKey(document);
       const newDocument = this.documentRepository.create(document);
       newDocument.key = documentkey;
+      draftIdMap.set(newDocument.key, document.draftId);
       return newDocument;
     });
     const saved = await this.documentRepository.save(newDocuments);
-    return new CreateDocumentBatchResponseDto({ documents: saved });
+    const documents = saved.map((savedDocument) => {
+      const draftId = draftIdMap.get(savedDocument.key);
+      if (!draftId) {
+        this.logger.error(
+          'Document creation failed due to in-memory mapping failure',
+        );
+        throw new InternalServerErrorException(
+          `Mapping failed for key: ${savedDocument.key}`,
+        );
+      }
+      return new CreateDocumentResponseDto({ ...savedDocument, draftId });
+    });
+    return new CreateDocumentBatchResponseDto({ documents });
   }
 
   async findByIds({ ids }: UploadFileBatchRequestDto) {
@@ -79,6 +97,7 @@ export class DocumentService {
   }
 
   private getDocumentKey(document: CreateDocumentRequestDto) {
+    // NOTE: it should be using nanoid for uniqueness in key names
     return document.filename
       .trim()
       .toLowerCase()

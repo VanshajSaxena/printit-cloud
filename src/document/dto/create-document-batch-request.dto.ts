@@ -10,6 +10,6 @@ export class CreateDocumentBatchRequestDto {
   @IsNotEmpty()
   @IsArray()
   @ArrayMinSize(1)
-  @ValidateNested()
+  @ValidateNested({ each: true })
   documents: CreateDocumentRequestDto[];
 }
