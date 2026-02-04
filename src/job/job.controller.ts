@@ -11,7 +11,7 @@ import { JobService } from './job.service';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 
-@Controller('job')
+@Controller({ path: 'jobs', version: '1' })
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
