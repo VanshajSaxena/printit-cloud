@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
+import { UpdateDocumentRequestDto } from './dto/update-document.dto';
 
 describe('DocumentController', () => {
   let controller: DocumentController;
@@ -86,7 +86,7 @@ describe('DocumentController', () => {
   describe('update', () => {
     it('should call the update method of the service with the correct id and DTO', async () => {
       const id = 1;
-      const updateDto: UpdateDocumentDto = { filename: 'Updated Doc' };
+      const updateDto: UpdateDocumentRequestDto = { filename: 'Updated Doc' };
       const expectedResult = {
         id: 1,
         name: 'Updated Doc',

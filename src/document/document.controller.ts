@@ -11,7 +11,7 @@ import {
 import { DocumentService } from './document.service';
 import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
 import { CreateDocumentBatchResponseDto } from './dto/create-document-batch-response.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
+import { UpdateDocumentRequestDto } from './dto/update-document.dto';
 
 @Controller({ path: 'documents', version: '1' })
 export class DocumentController {
@@ -37,9 +37,9 @@ export class DocumentController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateDocumentDto: UpdateDocumentDto,
+    @Body() updateDocumentRequestDto: UpdateDocumentRequestDto,
   ) {
-    return this.documentService.update(id, updateDocumentDto);
+    return this.documentService.update(id, updateDocumentRequestDto);
   }
 
   @Delete(':id')

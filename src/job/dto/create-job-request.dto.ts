@@ -12,8 +12,4 @@ export class CreateJobRequestDto {
   @IsInt()
   @Min(1)
   copyCount: number;
-
-  constructor(partial: Partial<CreateJobRequestDto>) {
-    Object.assign(this, partial);
-  }
 }

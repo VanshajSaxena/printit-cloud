@@ -12,7 +12,7 @@ import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-reque
 import { CreateDocumentBatchResponseDto } from './dto/create-document-batch-response.dto';
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { CreateDocumentResponseDto } from './dto/create-document-response.dto';
-import { UpdateDocumentDto } from './dto/update-document.dto';
+import { UpdateDocumentRequestDto } from './dto/update-document.dto';
 import { Document } from './entities/document.entity';
 
 @Injectable()
@@ -67,7 +67,7 @@ export class DocumentService {
     return plainToInstance(CreateDocumentResponseDto, document);
   }
 
-  async update(id: number, updateDocumentDto: UpdateDocumentDto) {
+  async update(id: number, updateDocumentDto: UpdateDocumentRequestDto) {
     const document = await this.findOneEntity(id);
     Object.assign(document, updateDocumentDto);
     const saved = await this.documentRepository.save(document);

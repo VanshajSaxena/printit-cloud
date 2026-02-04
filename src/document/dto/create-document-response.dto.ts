@@ -15,6 +15,12 @@ export class CreateDocumentResponseDto {
   @Expose()
   draftId: string;
 
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
+
   @Exclude()
   @ApiHideProperty()
   key: string;

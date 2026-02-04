@@ -1,9 +1,9 @@
+import { ApiHideProperty } from '@nestjs/swagger';
+import { Exclude, Expose, Type } from 'class-transformer';
+import { CreateJobResponseDto } from 'src/job/dto/create-job-response.dto';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import { TransactionStatus } from '../enums/transaction-status.enum';
-import { Exclude, Expose } from 'class-transformer';
-import { ApiHideProperty } from '@nestjs/swagger';
-import { Job } from 'src/job/entities/job.entity';
 
 @Exclude()
 export class CreateTransactionResponseDto {
@@ -16,9 +16,15 @@ export class CreateTransactionResponseDto {
   @Expose()
   friendlyId: string;
 
-  @Exclude()
-  @ApiHideProperty()
-  jobs: Job[];
+  @Expose()
+  @Type(() => CreateJobResponseDto)
+  jobs: CreateJobResponseDto[];
+
+  @Expose()
+  createdAt: Date;
+
+  @Expose()
+  updatedAt: Date;
 
   @Exclude()
   @ApiHideProperty()
@@ -27,4 +33,8 @@ export class CreateTransactionResponseDto {
   @Exclude()
   @ApiHideProperty()
   printer: Printer | null;
+
+  constructor(partial: Partial<CreateTransactionResponseDto>) {
+    Object.assign(this, partial);
+  }
 }
