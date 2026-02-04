@@ -53,6 +53,16 @@ export class VendorService {
     return plainToInstance(VendorResponseDto, vendors);
   }
 
+  async findOne(selector: string) {
+    if (selector.startsWith('@')) {
+      return this.findOneByUsername(selector.substring(1));
+    }
+    if (/^\d+$/.test(selector)) {
+      return this.findOneById(Number(selector));
+    }
+    return this.findOneBySlug(selector);
+  }
+
   async findOneBySlug(slug: string) {
     const vendor = await this.findOneEntity({ slug });
     return plainToInstance(VendorResponseDto, vendor);

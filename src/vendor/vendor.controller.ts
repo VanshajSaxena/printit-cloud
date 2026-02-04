@@ -44,13 +44,7 @@ export class VendorController {
     },
   })
   async findOne(@Param('selector') selector: string) {
-    if (selector.startsWith('@')) {
-      return this.vendorService.findOneByUsername(selector.substring(1));
-    }
-    if (/^\d+$/.test(selector)) {
-      return this.vendorService.findOneById(Number(selector));
-    }
-    return this.vendorService.findOneBySlug(selector);
+    return this.vendorService.findOne(selector);
   }
 
   @Patch(':id')
