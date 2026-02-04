@@ -4,7 +4,7 @@ import { CreateDocumentResponseDto } from './create-document-response.dto';
 @Exclude()
 export class CreateDocumentBatchResponseDto {
   @Expose()
-  @Type(() => CreateDocumentBatchResponseDto)
+  @Type(() => CreateDocumentResponseDto)
   documents: CreateDocumentResponseDto[];
   constructor(partial: Partial<CreateDocumentBatchResponseDto>) {
     Object.assign(this, partial);
