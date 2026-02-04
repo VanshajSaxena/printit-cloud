@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentController } from './document.controller';
 import { DocumentService } from './document.service';
-import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
+import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
 import { UpdateDocumentRequestDto } from './dto/update-document.dto';
+import { DocumentStatus } from './enum/document-status.enum';
 
 describe('DocumentController', () => {
   let controller: DocumentController;
@@ -41,9 +42,14 @@ describe('DocumentController', () => {
 
   describe('create', () => {
     it('should call the create method of the service with the correct DTO', async () => {
-      const createDto: CreateDocumentRequestDto = {
-        filename: 'Test Doc',
-        contentType: 'application/pdf',
+      const createDto: CreateDocumentBatchRequestDto = {
+        documents: [
+          {
+            filename: 'Test Doc',
+            contentType: 'application/pdf',
+            draftId: '12342345356',
+          },
+        ],
       };
 
       const expectedResult = { id: 1, ...createDto };
@@ -86,7 +92,10 @@ describe('DocumentController', () => {
   describe('update', () => {
     it('should call the update method of the service with the correct id and DTO', async () => {
       const id = 1;
-      const updateDto: UpdateDocumentRequestDto = { filename: 'Updated Doc' };
+      const updateDto: UpdateDocumentRequestDto = {
+        filename: 'Updated Doc',
+        status: DocumentStatus.CREATED,
+      };
       const expectedResult = {
         id: 1,
         name: 'Updated Doc',
