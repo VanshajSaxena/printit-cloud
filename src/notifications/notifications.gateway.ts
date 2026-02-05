@@ -49,14 +49,14 @@ export class NotificationsGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: JoinTransactionPayload,
   ): Promise<void> {
-    await client.join(`transaction-${payload.id}`);
+    await client.join(`transaction:${payload.id}`);
   }
 
   sendNewTransactionToVendor(
     vendorId: number,
     payload: NewTransactionPayload,
   ): void {
-    this.server.to(`vendor-${vendorId}`).emit('transaction:new', payload);
+    this.server.to(`vendor:${vendorId}`).emit('transaction:new', payload);
   }
 
   sendUpdatesToCustomer(
@@ -64,7 +64,7 @@ export class NotificationsGateway
     payload: UpdateProgressPayload,
   ): void {
     this.server
-      .to(`transaction-${transactionId}`)
+      .to(`transaction:${transactionId}`)
       .emit('update_progress', payload);
   }
 }

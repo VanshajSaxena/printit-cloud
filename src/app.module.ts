@@ -12,6 +12,7 @@ import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
+import { PresenceService } from './presence/presence.service';
 
 @Module({
   imports: [
@@ -51,6 +52,6 @@ import { VendorModule } from './vendor/vendor.module';
     NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PresenceService],
 })
 export class AppModule {}
