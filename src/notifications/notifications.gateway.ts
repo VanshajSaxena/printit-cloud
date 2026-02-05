@@ -43,10 +43,13 @@ export class NotificationsGateway
       return;
     }
 
-    const { clientType, clientId } = auth;
-
+    const { clientType } = auth;
     if (clientType === 'vendor') {
-      this.presenceService.vendorConnected(clientId, socket.id);
+      const { clientId, username, slug } = auth;
+      this.presenceService.vendorConnected(
+        { id: clientId, username, slug },
+        socket.id,
+      );
     }
 
     this.logger.log(`Client connected: ${clientType} (${socket.id})`);

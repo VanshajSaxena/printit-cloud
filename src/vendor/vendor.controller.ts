@@ -1,21 +1,26 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { VendorService } from './vendor.service';
+import { ApiParam } from '@nestjs/swagger';
+import { PresenceService } from 'src/presence/presence.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { ApiParam } from '@nestjs/swagger';
+import { VendorPresenceDto } from './dto/vendor-presence.dto';
+import { VendorService } from './vendor.service';
 
 @Controller({ path: 'vendors', version: '1' })
 export class VendorController {
-  constructor(private readonly vendorService: VendorService) {}
+  constructor(
+    private readonly vendorService: VendorService,
+    private readonly presenceService: PresenceService,
+  ) {}
 
   @Post()
   async create(@Body() createVendorDto: CreateVendorDto) {
@@ -45,6 +50,26 @@ export class VendorController {
   })
   async findOne(@Param('selector') selector: string) {
     return this.vendorService.findOne(selector);
+  }
+
+  @Get(':selector/presence')
+  @ApiParam({
+    name: 'selector',
+    description: 'The unique identifier',
+    examples: {
+      id: { summary: 'Internal ID', value: 999 },
+      slug: { summary: 'Slug', value: 'xi28b2sg8d' },
+      username: { summary: 'Username', value: '@username' },
+    },
+    schema: {
+      oneOf: [
+        { type: 'string', description: 'Slug or Username' },
+        { type: 'integer', description: 'Internal Database ID' },
+      ],
+    },
+  })
+  vendorPresent(@Param('selector') selector: string): VendorPresenceDto {
+    return this.presenceService.getStatus(selector);
   }
 
   @Patch(':id')

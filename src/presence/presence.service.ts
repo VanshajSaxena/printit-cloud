@@ -1,52 +1,118 @@
 import { Injectable } from '@nestjs/common';
+import { UserStatus } from './enums/user-status.enum';
 
-export type UserStatus = 'online' | 'offline' | 'away';
+export interface VendorPresencePayload {
+  id: string;
+  username: string;
+  slug: string;
+}
+
+interface Vendor {
+  sockets: Set<string>;
+  status: UserStatus;
+  username: string;
+  slug: string;
+}
 
 @Injectable()
 export class PresenceService {
-  private readonly vendorToSockets = new Map<string, Set<string>>();
+  private readonly vendors = new Map<string, Vendor>();
   private readonly socketToVendor = new Map<string, string>();
-  private readonly vendorStatus = new Map<string, UserStatus>();
+  private readonly usernameToId = new Map<string, string>();
+  private readonly slugToId = new Map<string, string>();
 
-  vendorConnected(vendorId: string, socketId: string) {
-    let sockets = this.vendorToSockets.get(vendorId);
+  vendorConnected(payload: VendorPresencePayload, socketId: string) {
+    const { id, username, slug } = payload;
 
-    if (!sockets) {
-      sockets = new Set();
-      this.vendorToSockets.set(vendorId, sockets);
+    let vendor = this.vendors.get(id);
+    if (!vendor) {
+      vendor = {
+        sockets: new Set(),
+        status: UserStatus.OFFLINE,
+        username,
+        slug,
+      };
+      this.vendors.set(id, vendor);
+
+      this.usernameToId.set(username, id);
+      this.slugToId.set(slug, id);
+    } else {
+      if (vendor.username !== username) {
+        this.usernameToId.delete(vendor.username);
+        this.usernameToId.set(username, id);
+        vendor.username = username;
+      }
+      if (vendor.slug !== slug) {
+        this.slugToId.delete(vendor.slug);
+        this.slugToId.set(slug, id);
+        vendor.slug = slug;
+      }
     }
 
-    sockets.add(socketId);
-    this.socketToVendor.set(socketId, vendorId);
+    vendor.sockets.add(socketId);
+    this.socketToVendor.set(socketId, id);
 
-    if (sockets.size === 1) {
-      this.vendorStatus.set(vendorId, 'online');
-    }
+    vendor.status = UserStatus.ONLINE;
   }
 
   vendorDisconnected(socketId: string) {
-    const userId = this.socketToVendor.get(socketId);
-    if (!userId) return;
+    const vendorId = this.socketToVendor.get(socketId);
+    if (!vendorId) return;
 
-    const sockets = this.vendorToSockets.get(userId);
-    if (!sockets) return;
+    const vendor = this.vendors.get(vendorId);
+    if (!vendor) {
+      this.socketToVendor.delete(socketId);
+      return;
+    }
 
-    sockets.delete(socketId);
+    vendor.sockets.delete(socketId);
     this.socketToVendor.delete(socketId);
 
-    if (sockets.size === 0) {
-      this.vendorToSockets.delete(userId);
-      this.vendorStatus.set(userId, 'offline');
+    if (vendor.sockets.size === 0) {
+      vendor.status = UserStatus.OFFLINE;
+      this.usernameToId.delete(vendor.username);
+      this.slugToId.delete(vendor.slug);
+      this.vendors.delete(vendorId);
     }
   }
 
-  getUserStatus(userId: string) {
-    return this.vendorStatus.get(userId) ?? 'offline';
+  getStatusById(id: string): UserStatus {
+    return this.vendors.get(id)?.status ?? UserStatus.OFFLINE;
   }
 
-  getOnlineUsers() {
-    return [...this.vendorStatus.entries()]
-      .filter(([, status]) => status === 'online')
-      .map(([userId]) => userId);
+  getStatusByUsername(username: string): UserStatus {
+    const id = this.usernameToId.get(username);
+    return id ? this.getStatusById(id) : UserStatus.OFFLINE;
+  }
+
+  getStatusBySlug(slug: string): UserStatus {
+    const id = this.slugToId.get(slug);
+    return id ? this.getStatusById(id) : UserStatus.OFFLINE;
+  }
+
+  markAway(vendorId: string) {
+    const vendor = this.vendors.get(vendorId);
+    if (vendor && vendor.status === UserStatus.ONLINE) {
+      vendor.status = UserStatus.AWAY;
+    }
+  }
+
+  getStatus(selector: string) {
+    let status;
+    if (selector.startsWith('@')) {
+      status = this.getStatusByUsername(selector.substring(1));
+    }
+    if (/^\d+$/.test(selector)) {
+      status = this.getStatusById(selector);
+    }
+    status = this.getStatusBySlug(selector);
+
+    return { status };
+  }
+
+  getOnlineVendors(): string[] {
+    return [...this.vendors.entries()]
+      .filter(([, vendor]) => vendor.status === UserStatus.ONLINE)
+      .map(([id]) => id);
   }
 }
