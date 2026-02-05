@@ -80,16 +80,23 @@ export class PresenceService {
   }
 
   getStatusById(id: string): UserStatus {
-    return this.vendors.get(id)?.status ?? UserStatus.OFFLINE;
+    const status = this.vendors.get(id)?.status ?? UserStatus.OFFLINE;
+    // __AUTO_GENERATED_PRINT_VAR_START__
+    this.logger.log('PresenceService#getStatusById status:', status); // __AUTO_GENERATED_PRINT_VAR_END__
+    return status;
   }
 
   getStatusByUsername(username: string): UserStatus {
     const id = this.usernameToId.get(username);
+    // __AUTO_GENERATED_PRINT_VAR_START__
+    this.logger.log('PresenceService#getStatusByUsername id:', id); // __AUTO_GENERATED_PRINT_VAR_END__
     return id ? this.getStatusById(id) : UserStatus.OFFLINE;
   }
 
   getStatusBySlug(slug: string): UserStatus {
     const id = this.slugToId.get(slug);
+    // __AUTO_GENERATED_PRINT_VAR_START__
+    this.logger.log('PresenceService#getStatusBySlug id:', id); // __AUTO_GENERATED_PRINT_VAR_END__
     return id ? this.getStatusById(id) : UserStatus.OFFLINE;
   }
 
@@ -102,15 +109,23 @@ export class PresenceService {
 
   getStatus(selector: string) {
     // __AUTO_GENERATED_PRINT_VAR_START__
+    this.logger.log('PresenceService#getStatus selector:', selector); // __AUTO_GENERATED_PRINT_VAR_END__
+    // __AUTO_GENERATED_PRINT_VAR_START__
     this.logger.log('PresenceService vendors:', this.vendors); // __AUTO_GENERATED_PRINT_VAR_END__
     let status;
     if (selector.startsWith('@')) {
       status = this.getStatusByUsername(selector.substring(1));
+      // __AUTO_GENERATED_PRINT_VAR_START__
+      this.logger.log('PresenceService#getStatus#if username:', status); // __AUTO_GENERATED_PRINT_VAR_END__
     }
     if (/^\d+$/.test(selector)) {
       status = this.getStatusById(selector);
+      // __AUTO_GENERATED_PRINT_VAR_START__
+      this.logger.log('PresenceService#getStatus#if id:', status); // __AUTO_GENERATED_PRINT_VAR_END__
     }
     status = this.getStatusBySlug(selector);
+    // __AUTO_GENERATED_PRINT_VAR_START__
+    this.logger.log('PresenceService#getStatus slug:', status); // __AUTO_GENERATED_PRINT_VAR_END__
 
     return { status };
   }
