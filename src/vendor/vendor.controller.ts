@@ -69,8 +69,6 @@ export class VendorController {
     },
   })
   vendorPresent(@Param('selector') selector: string): VendorPresenceDto {
-    // __AUTO_GENERATED_PRINT_VAR_START__
-    console.log('VendorController#vendorPresent selector:', selector); // __AUTO_GENERATED_PRINT_VAR_END__
     return this.presenceService.getStatus(selector);
   }
 
