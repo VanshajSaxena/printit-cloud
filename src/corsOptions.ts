@@ -14,10 +14,8 @@ export const corsOptions: CorsOptions = {
     const netlifyRegex = /^https:\/\/.*--printly-app\.netlify\.app$/;
 
     if (!origin || whitelist.includes(origin) || netlifyRegex.test(origin)) {
-      console.log('CORS was allowed to', origin);
       callback(null, true);
     } else {
-      console.log('CORS was not allowed to', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
