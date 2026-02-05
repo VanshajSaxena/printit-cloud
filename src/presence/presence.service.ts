@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserStatus } from './enums/user-status.enum';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
 
 export interface VendorPresencePayload {
   id: string;
@@ -20,6 +21,8 @@ export class PresenceService {
   private readonly socketToVendor = new Map<string, string>();
   private readonly usernameToId = new Map<string, string>();
   private readonly slugToId = new Map<string, string>();
+
+  constructor(private readonly logger: ApplicationLogger) {}
 
   vendorConnected(payload: VendorPresencePayload, socketId: string) {
     const { id, username, slug } = payload;
@@ -98,6 +101,8 @@ export class PresenceService {
   }
 
   getStatus(selector: string) {
+    // __AUTO_GENERATED_PRINT_VAR_START__
+    this.logger.log('PresenceService vendors:', this.vendors); // __AUTO_GENERATED_PRINT_VAR_END__
     let status;
     if (selector.startsWith('@')) {
       status = this.getStatusByUsername(selector.substring(1));

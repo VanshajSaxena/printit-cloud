@@ -1,5 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PresenceService } from './presence.service';
+import { LoggerModule } from 'src/logger/logger.module';
 
-@Module({ providers: [PresenceService], exports: [PresenceService] })
+@Module({
+  imports: [LoggerModule],
+  providers: [PresenceService],
+  exports: [PresenceService],
+})
 export class PresenceModule {}
