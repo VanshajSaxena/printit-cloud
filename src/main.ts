@@ -36,8 +36,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({ type: VersioningType.URI });
 
-  // NOTE: these options will differ in production
-
   app.enableCors(corsOptions);
   const server = app.getHttpAdapter().getInstance() as ExpressAdapter;
   server.disable('etag');

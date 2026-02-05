@@ -18,11 +18,7 @@ import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { corsOptions } from 'src/corsOptions';
 import { PresenceService } from 'src/presence/presence.service';
-
-interface SocketAuthPayload {
-  clientType: string;
-  clientId: string;
-}
+import { isValidClient, SocketAuthPayload } from './isValidClient';
 
 @UsePipes(new ValidationPipe())
 @WebSocketGateway({ namespace: 'notifications', cors: corsOptions })
@@ -38,29 +34,40 @@ export class NotificationsGateway
     this.logger.setContext(NotificationsGateway.name);
   }
 
-  handleConnection(@ConnectedSocket() client: Socket) {
-    const auth = client.handshake.auth as Partial<SocketAuthPayload>;
+  handleConnection(@ConnectedSocket() socket: Socket) {
+    const auth = socket.handshake.auth as Partial<SocketAuthPayload>;
+    this.logger.log('NotificationsGateway#handleConnection:', auth);
 
-    if (!auth.clientType || !auth.clientId) {
-      client.disconnect();
+    if (!isValidClient(auth)) {
+      socket.disconnect();
       return;
     }
 
     const { clientType, clientId } = auth;
 
-    if (clientType !== 'vendor' && clientType !== 'user') {
-      this.logger.warn('Unknown client type, disconnecting', client.id);
-      return client.disconnect();
+    if (clientType === 'vendor') {
+      this.presenceService.vendorConnected(clientId, socket.id);
     }
 
-    if (clientType === 'user') {
-      this.presenceService.vendorConnected(clientId, client.id);
-    }
-
-    this.logger.log(`Client connected: ${clientType} (${client.id})`);
+    this.logger.log(`Client connected: ${clientType} (${socket.id})`);
   }
-  handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.logger.log('Client Disconnected', [client.id]);
+
+  handleDisconnect(@ConnectedSocket() socket: Socket) {
+    const auth = socket.handshake.auth as Partial<SocketAuthPayload>;
+    this.logger.log('NotificationsGateway#handleDisconnection:', auth);
+
+    if (!isValidClient(auth)) {
+      socket.disconnect();
+      return;
+    }
+
+    const { clientType } = auth;
+
+    if (clientType === 'vendor') {
+      this.presenceService.vendorDisconnected(socket.id);
+    }
+
+    this.logger.log(`Client disconnected: ${clientType} (${socket.id})`);
   }
 
   @SubscribeMessage('join_vendor')

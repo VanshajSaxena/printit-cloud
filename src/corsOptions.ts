@@ -1,4 +1,5 @@
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+// NOTE: these options will differ in production
 export const corsOptions: CorsOptions = {
   origin: (
     origin: string | undefined,

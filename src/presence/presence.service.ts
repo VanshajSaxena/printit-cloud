@@ -8,19 +8,19 @@ export class PresenceService {
   private readonly socketToVendor = new Map<string, string>();
   private readonly vendorStatus = new Map<string, UserStatus>();
 
-  vendorConnected(userId: string, socketId: string) {
-    let sockets = this.vendorToSockets.get(userId);
+  vendorConnected(vendorId: string, socketId: string) {
+    let sockets = this.vendorToSockets.get(vendorId);
 
     if (!sockets) {
       sockets = new Set();
-      this.vendorToSockets.set(userId, sockets);
+      this.vendorToSockets.set(vendorId, sockets);
     }
 
     sockets.add(socketId);
-    this.socketToVendor.set(socketId, userId);
+    this.socketToVendor.set(socketId, vendorId);
 
     if (sockets.size === 1) {
-      this.vendorStatus.set(userId, 'online');
+      this.vendorStatus.set(vendorId, 'online');
     }
   }
 
