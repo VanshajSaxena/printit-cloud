@@ -16,9 +16,10 @@ import {
 import { Server, Socket } from 'socket.io';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
+import { corsOptions } from 'src/corsOptions';
 
 @UsePipes(new ValidationPipe())
-@WebSocketGateway({ namespace: 'notifications' })
+@WebSocketGateway({ namespace: 'notifications', cors: corsOptions })
 export class NotificationsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
