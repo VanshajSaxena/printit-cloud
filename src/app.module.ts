@@ -13,6 +13,7 @@ import { R2Module } from './r2/r2.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
 import { PresenceService } from './presence/presence.service';
+import { PresenceModule } from './presence/presence.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { PresenceService } from './presence/presence.service';
     R2Module,
     JobModule,
     NotificationsModule,
+    PresenceModule,
   ],
   controllers: [AppController],
   providers: [AppService, PresenceService],

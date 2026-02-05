@@ -8,7 +8,7 @@ export class PresenceService {
   private readonly socketToVendor = new Map<string, string>();
   private readonly vendorStatus = new Map<string, UserStatus>();
 
-  userConnected(userId: string, socketId: string) {
+  vendorConnected(userId: string, socketId: string) {
     let sockets = this.vendorToSockets.get(userId);
 
     if (!sockets) {
@@ -21,11 +21,10 @@ export class PresenceService {
 
     if (sockets.size === 1) {
       this.vendorStatus.set(userId, 'online');
-      this.emitPresenceChange(userId, 'online');
     }
   }
 
-  userDisconnected(socketId: string) {
+  vendorDisconnected(socketId: string) {
     const userId = this.socketToVendor.get(socketId);
     if (!userId) return;
 
@@ -38,7 +37,6 @@ export class PresenceService {
     if (sockets.size === 0) {
       this.vendorToSockets.delete(userId);
       this.vendorStatus.set(userId, 'offline');
-      this.emitPresenceChange(userId, 'offline');
     }
   }
 
@@ -50,12 +48,5 @@ export class PresenceService {
     return [...this.vendorStatus.entries()]
       .filter(([, status]) => status === 'online')
       .map(([userId]) => userId);
-  }
-
-  private emitPresenceChange(
-    userId: string,
-    status: 'online' | 'offline' | 'away',
-  ) {
-    console.log(userId, status);
   }
 }
