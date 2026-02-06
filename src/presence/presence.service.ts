@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserStatus } from './enums/user-status.enum';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
+import { VendorPresenceDto } from 'src/vendor/dto/vendor-presence.dto';
 
 export interface VendorPresencePayload {
   id: string;
@@ -107,12 +108,20 @@ export class PresenceService {
     let status;
     if (selector.startsWith('@')) {
       status = this.getStatusByUsername(selector.substring(1));
+      return new VendorPresenceDto({
+        status,
+        id: Number(this.usernameToId.get(selector.substring(1))),
+      });
     } else if (/^\d+$/.test(selector)) {
       status = this.getStatusById(selector);
+      return new VendorPresenceDto({ status, id: Number(selector) });
     } else {
       status = this.getStatusBySlug(selector);
+      return new VendorPresenceDto({
+        status,
+        id: Number(this.slugToId.get(selector)),
+      });
     }
-    return { status };
   }
 
   getOnlineVendors(): string[] {

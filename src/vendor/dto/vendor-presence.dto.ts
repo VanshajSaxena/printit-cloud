@@ -5,4 +5,11 @@ import { UserStatus } from 'src/presence/enums/user-status.enum';
 export class VendorPresenceDto {
   @Expose()
   status: UserStatus;
+
+  @Expose()
+  id: number;
+
+  constructor(partial: Partial<VendorPresenceDto>) {
+    Object.assign(this, partial);
+  }
 }
