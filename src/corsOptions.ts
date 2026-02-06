@@ -6,13 +6,13 @@ export const corsOptions: CorsOptions = {
     callback: (err: Error | null, allow?: boolean) => void,
   ) => {
     const whitelist = [
-      'https://app.print-ly.ink',
-      'https://dev--printly-app.netlify.app',
+      'https://printit.ink',
+      'https://dev--printit-ink.netlify.app',
       'http://localhost:5173',
       'http://localhost:8100',
     ];
 
-    const netlifyRegex = /^https:\/\/.*--printly-app\.netlify\.app$/;
+    const netlifyRegex = /^https:\/\/.*--printit-ink\.netlify\.app$/;
 
     if (!origin || whitelist.includes(origin) || netlifyRegex.test(origin)) {
       callback(null, true);

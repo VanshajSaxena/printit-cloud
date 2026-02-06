@@ -36,7 +36,7 @@ export class NotificationsGateway
 
   handleConnection(@ConnectedSocket() socket: Socket) {
     const auth = socket.handshake.auth as Partial<SocketAuthPayload>;
-    this.logger.log('NotificationsGateway#handleConnection:', auth);
+    this.logger.log(auth);
 
     if (!isValidClient(auth)) {
       socket.disconnect();
@@ -57,7 +57,7 @@ export class NotificationsGateway
 
   handleDisconnect(@ConnectedSocket() socket: Socket) {
     const auth = socket.handshake.auth as Partial<SocketAuthPayload>;
-    this.logger.log('NotificationsGateway#handleDisconnection:', auth);
+    this.logger.log(auth);
 
     if (!isValidClient(auth)) {
       socket.disconnect();
