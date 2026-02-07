@@ -8,12 +8,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiParam } from '@nestjs/swagger';
 import { PresenceService } from 'src/presence/presence.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { VendorPresenceDto } from './dto/vendor-presence.dto';
 import { VendorService } from './vendor.service';
+import { NotFoundErrorDto } from 'src/common/dto/error-response.dto';
 
 @Controller({ path: 'vendors', version: '1' })
 export class VendorController {
@@ -48,6 +49,7 @@ export class VendorController {
       ],
     },
   })
+  @ApiNotFoundResponse({ type: NotFoundErrorDto })
   async findOne(@Param('selector') selector: string) {
     return this.vendorService.findOne(selector);
   }
