@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { customAlphabet } from 'nanoid';
@@ -27,7 +31,11 @@ export class TransactionService {
     this.logger.setContext(TransactionService.name);
   }
 
-  private charSet: string = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  private SHORT_SET: string = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  private LONG_SET: string = '0123456789abcdefghijklmnopqrstuvwxyz';
+
+  private readonly generateShort = customAlphabet(this.SHORT_SET, 8);
+  private readonly generateLong = customAlphabet(this.LONG_SET, 16);
 
   async create(createTransactionDto: CreateTransactionRequestDto) {
     const vendor = await this.vendorService.getEntityOne(
