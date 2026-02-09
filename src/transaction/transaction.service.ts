@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { customAlphabet } from 'nanoid';
@@ -10,7 +6,7 @@ import { JobService } from 'src/job/job.service';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 import { VendorService } from 'src/vendor/vendor.service';
-import { FindOneOptions, Repository } from 'typeorm';
+import { DataSource, FindOneOptions, Repository } from 'typeorm';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
 import { FindTransactionResponseDto } from './dto/find-transaction-response.dto';
@@ -20,9 +16,19 @@ import { TransactionStatus } from './enums/transaction-status.enum';
 
 @Injectable()
 export class TransactionService {
+  private readonly generateShort = customAlphabet(
+    'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
+    8,
+  );
+  private readonly generateLong = customAlphabet(
+    '0123456789abcdefghijklmnopqrstuvwxyz',
+    16,
+  );
+
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
+    private readonly dataSource: DataSource,
     private readonly vendorService: VendorService,
     private readonly logger: ApplicationLogger,
     private readonly notificationsGateway: NotificationsGateway,
@@ -31,49 +37,55 @@ export class TransactionService {
     this.logger.setContext(TransactionService.name);
   }
 
-  private SHORT_SET: string = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  private LONG_SET: string = '0123456789abcdefghijklmnopqrstuvwxyz';
-
-  private readonly generateShort = customAlphabet(this.SHORT_SET, 8);
-  private readonly generateLong = customAlphabet(this.LONG_SET, 16);
+  private generateFriendlyId(): string {
+    return `${this.generateShort()}-${this.generateLong()}`;
+  }
 
   async create(createTransactionDto: CreateTransactionRequestDto) {
     const vendor = await this.vendorService.getEntityOne(
       createTransactionDto.vendorId,
     );
 
-    const jobs = await this.jobService.createMany(createTransactionDto.jobs);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (createTransactionDto.jobs.length !== jobs.length) {
-      this.logger.error(
-        'Created Job count do not match with dto job count.',
+    try {
+      const jobs = await this.jobService.createMany(
         createTransactionDto.jobs,
-        createTransactionDto.jobs.length,
+        queryRunner.manager,
       );
-      throw new NotFoundException(
-        `One or more print documents were not found.`,
-      );
+
+      if (createTransactionDto.jobs.length !== jobs.length) {
+        throw new Error('JOB_COUNT_MISMATCH');
+      }
+
+      const newTransaction = queryRunner.manager.create(Transaction, {
+        vendor,
+        jobs,
+        friendlyId: this.generateFriendlyId(),
+      });
+
+      const saved = await queryRunner.manager.save(newTransaction);
+      await queryRunner.commitTransaction();
+      this.notificationsGateway.sendNewTransactionToVendor(vendor.id, {
+        id: saved.id,
+      });
+      return plainToInstance(CreateTransactionResponseDto, saved);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if ((error as Error).message === 'JOB_COUNT_MISMATCH') {
+        this.logger.error('Job count mismatch', createTransactionDto.jobs);
+        throw new NotFoundException(
+          'One or more print documents were not found.',
+        );
+      }
+      this.logger.error('Transaction creation failed', (error as Error).stack);
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    const nanoid = customAlphabet(this.charSet, 8);
-
-    let friendlyId: string = nanoid();
-    while (await this.transactionRepository.existsBy({ friendlyId })) {
-      friendlyId = nanoid();
-      this.logger.warn('An existing nanoid was generated.');
-    }
-
-    const newTransaction = this.transactionRepository.create({
-      vendor,
-      jobs,
-      friendlyId,
-    });
-
-    const saved = await this.transactionRepository.save(newTransaction);
-    this.notificationsGateway.sendNewTransactionToVendor(vendor.id, {
-      id: saved.id,
-    });
-    return plainToInstance(CreateTransactionResponseDto, saved);
   }
 
   async findAll(status?: TransactionStatus) {

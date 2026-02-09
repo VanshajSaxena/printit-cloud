@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
 import { CreateJobResponseDto } from './dto/create-job-response.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -16,16 +16,38 @@ export class JobService {
     private documentService: DocumentService,
   ) {}
 
-  async createMany(createJobDto: CreateJobRequestDto[]) {
-    const jobs = await Promise.all(
-      createJobDto.map(async ({ copyCount, documentId, outputColor }) => {
-        const document = await this.documentService.getEntityOne(documentId);
-        return this.jobRepository.create({ document, copyCount, outputColor });
-      }),
+  async createMany(
+    createJobDtos: CreateJobRequestDto[],
+    manager?: EntityManager,
+  ): Promise<CreateJobResponseDto[]> {
+    const repository = manager
+      ? manager.getRepository(Job)
+      : this.jobRepository;
+
+    const documentIds = [
+      ...new Set(createJobDtos.map((dto) => dto.documentId)),
+    ];
+    const documents = await this.documentService.findManyByIds(documentIds);
+
+    const documentIdMap = new Map(
+      documents.map((document) => [document.id, document]),
     );
 
-    const newJobs = this.jobRepository.create(jobs);
-    const savedJobs = await this.jobRepository.save(newJobs);
+    const jobEntities = createJobDtos.flatMap((dto) => {
+      const document = documentIdMap.get(dto.documentId);
+
+      return document
+        ? [
+            repository.create({
+              document,
+              copyCount: dto.copyCount,
+              outputColor: dto.outputColor,
+            }),
+          ]
+        : [];
+    });
+
+    const savedJobs = await repository.save(jobEntities);
     return plainToInstance(CreateJobResponseDto, savedJobs);
   }
 

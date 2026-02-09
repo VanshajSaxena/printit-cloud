@@ -50,6 +50,15 @@ export class DocumentService {
     return new CreateDocumentBatchResponseDto({ documents });
   }
 
+  async findManyByIds(ids: number[]) {
+    if (!ids.length) return [];
+    return this.documentRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+  }
+
   async findByIds({ ids }: UploadFileBatchRequestDto) {
     const documents = await this.documentRepository.findBy({ id: In(ids) });
     return documents.map(({ filename, contentType, key, id }) => {
