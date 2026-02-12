@@ -42,8 +42,15 @@ export class VendorService {
       slug = nanoid(this.#ID_LENGTH);
       this.logger.warn('An existing nanoid was generated.');
     }
-
     newVendor.slug = slug;
+
+    if (createVendorDto.latitude && createVendorDto.longitude) {
+      newVendor.location = {
+        type: 'Point',
+        coordinates: [createVendorDto.longitude, createVendorDto.latitude],
+      };
+    }
+
     const saved = await this.vendorRepository.save(newVendor);
     return plainToInstance(VendorResponseDto, saved);
   }
@@ -80,9 +87,44 @@ export class VendorService {
 
   async update(id: number, updateVendorDto: UpdateVendorDto) {
     const vendor = await this.findOneEntity({ id });
+
+    if (updateVendorDto.latitude && updateVendorDto.longitude) {
+      vendor.location = {
+        type: 'Point',
+        coordinates: [updateVendorDto.longitude, updateVendorDto.latitude],
+      };
+    }
+
     Object.assign(vendor, updateVendorDto);
     const saved = await this.vendorRepository.save(vendor);
     return plainToInstance(VendorResponseDto, saved);
+  }
+
+  async findNearby(lat: number, long: number, rangeInMeters: number = 5000) {
+    const vendors = await this.vendorRepository
+      .createQueryBuilder('vendor')
+      .where(
+        `ST_DWithin(
+          vendor.location,
+          ST_SetSRID(ST_MakePoint(:long, :lat), 4326),
+          :range
+        )`,
+      )
+      .orderBy(
+        `ST_Distance(
+          vendor.location,
+          ST_SetSRID(ST_MakePoint(:long, :lat), 4326)
+        )`,
+        'ASC',
+      )
+      .setParameters({
+        lat,
+        long,
+        range: rangeInMeters,
+      })
+      .getMany();
+
+    return plainToInstance(VendorResponseDto, vendors);
   }
 
   async remove(id: number) {

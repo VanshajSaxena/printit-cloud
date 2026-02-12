@@ -1,10 +1,13 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Length,
   Matches,
+  Max,
+  Min,
 } from 'class-validator';
 
 export class CreateVendorDto {
@@ -24,6 +27,10 @@ export class CreateVendorDto {
   })
   username: string;
 
+  @IsEmail()
+  @IsString()
+  email: string;
+
   @IsOptional()
   @IsString()
   givenName?: string;
@@ -32,7 +39,15 @@ export class CreateVendorDto {
   @IsString()
   address?: string;
 
-  @IsEmail()
-  @IsString()
-  email: string;
+  @IsOptional()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  latitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  longitude?: number;
 }

@@ -37,6 +37,7 @@ export class Vendor {
 
   @Column({ unique: true })
   slug: string;
+
   @Index({ spatial: true })
   @Column({
     type: 'geography',
