@@ -12,6 +12,12 @@ import { nanoid } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
 import { VendorResponseDto } from './dto/vendor-response.dto';
+import { LocationDto } from './dto/location.dto';
+
+interface VendorRawResult {
+  vendor_id: number;
+  distance: string;
+}
 
 @Injectable()
 export class VendorService {
@@ -44,7 +50,7 @@ export class VendorService {
     }
     newVendor.slug = slug;
 
-    if (createVendorDto.latitude && createVendorDto.longitude) {
+    if (createVendorDto.latitude != null && createVendorDto.longitude != null) {
       newVendor.location = {
         type: 'Point',
         coordinates: [createVendorDto.longitude, createVendorDto.latitude],
@@ -52,7 +58,18 @@ export class VendorService {
     }
 
     const saved = await this.vendorRepository.save(newVendor);
-    return plainToInstance(VendorResponseDto, saved);
+
+    const dto = plainToInstance(VendorResponseDto, saved);
+
+    if (saved.location) {
+      dto.location = new LocationDto();
+      dto.location.latitude = saved.location.coordinates[1];
+      dto.location.longitude = saved.location.coordinates[0];
+    } else {
+      dto.location = null;
+    }
+
+    return dto;
   }
 
   async findAll() {
@@ -101,30 +118,38 @@ export class VendorService {
   }
 
   async findNearby(lat: number, long: number, rangeInMeters: number = 5000) {
-    const vendors = await this.vendorRepository
+    const origin = `ST_SetSRID(ST_MakePoint(:long, :lat), 4326)`;
+
+    const { entities, raw } = await this.vendorRepository
       .createQueryBuilder('vendor')
-      .where(
-        `ST_DWithin(
-          vendor.location,
-          ST_SetSRID(ST_MakePoint(:long, :lat), 4326),
-          :range
-        )`,
-      )
-      .orderBy(
-        `ST_Distance(
-          vendor.location,
-          ST_SetSRID(ST_MakePoint(:long, :lat), 4326)
-        )`,
-        'ASC',
-      )
+      .addSelect(`ST_Distance(vendor.location, ${origin})`, 'distance')
+      .where(`ST_DWithin(vendor.location, ${origin}, :range)`)
+      .orderBy('distance', 'ASC')
       .setParameters({
         lat,
         long,
         range: rangeInMeters,
       })
-      .getMany();
+      .getRawAndEntities<VendorRawResult>();
 
-    return plainToInstance(VendorResponseDto, vendors);
+    const distanceMap = new Map<number, number>();
+
+    raw.forEach((item) => {
+      distanceMap.set(item.vendor_id, Math.round(parseFloat(item.distance)));
+    });
+
+    const results = entities.map((vendor) => {
+      return {
+        ...vendor,
+        distance: distanceMap.get(vendor.id) ?? 0,
+        location: {
+          latitude: vendor.location?.coordinates[1],
+          longitude: vendor.location?.coordinates[0],
+        },
+      };
+    });
+
+    return plainToInstance(VendorResponseDto, results);
   }
 
   async remove(id: number) {

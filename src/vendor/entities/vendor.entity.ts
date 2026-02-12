@@ -45,7 +45,7 @@ export class Vendor {
     srid: 4326,
     nullable: true,
   })
-  location: Point;
+  location: Point | null;
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];

@@ -1,8 +1,7 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
-import { Transaction } from 'src/transaction/entities/transaction.entity';
+import { ApiHideProperty } from '@nestjs/swagger';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { Printer } from 'src/printer/entities/printer.entity';
-import { type Point } from 'typeorm';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { LocationDto } from './location.dto';
 
 @Exclude()
@@ -28,8 +27,12 @@ export class VendorResponseDto {
   @Expose()
   slug: string;
 
-  @ApiProperty({ type: LocationDto, nullable: true })
+  @Expose()
+  @Type(() => LocationDto)
   location: LocationDto | null;
+
+  @Expose()
+  distance: number; // <--- This is the new field
 
   @Exclude()
   @ApiHideProperty()
