@@ -1,11 +1,13 @@
-import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
+import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   OneToMany,
+  type Point,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,6 +37,14 @@ export class Vendor {
 
   @Column({ unique: true })
   slug: string;
+  @Index({ spatial: true })
+  @Column({
+    type: 'geography',
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true,
+  })
+  location: Point;
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];
