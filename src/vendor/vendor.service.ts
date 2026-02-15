@@ -13,6 +13,7 @@ import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { plainToInstance } from 'class-transformer';
 import { VendorResponseDto } from './dto/vendor-response.dto';
 import { LocationDto } from './dto/location.dto';
+import { NearbyQueryDto } from './dto/vendor-nearby.dto';
 
 interface VendorRawResult {
   vendor_id: number;
@@ -117,8 +118,9 @@ export class VendorService {
     return plainToInstance(VendorResponseDto, saved);
   }
 
-  async findNearby(lat: number, long: number, rangeInMeters: number = 5000) {
-    const origin = `ST_SetSRID(ST_MakePoint(:long, :lat), 4326)`;
+  async findNearby(nearbyQueryDto: NearbyQueryDto) {
+    const { lat, lng, range = 50000 } = nearbyQueryDto;
+    const origin = `ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)`;
 
     const { entities, raw } = await this.vendorRepository
       .createQueryBuilder('vendor')
@@ -127,8 +129,8 @@ export class VendorService {
       .orderBy('distance', 'ASC')
       .setParameters({
         lat,
-        long,
-        range: rangeInMeters,
+        lng,
+        range,
       })
       .getRawAndEntities<VendorRawResult>();
 

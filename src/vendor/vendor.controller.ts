@@ -1,11 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
-  ParseFloatPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -16,6 +14,7 @@ import { NotFoundErrorDto } from 'src/common/dto/error-response.dto';
 import { PresenceService } from 'src/presence/presence.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { NearbyQueryDto } from './dto/vendor-nearby.dto';
 import { VendorPresenceDto } from './dto/vendor-presence.dto';
 import { VendorService } from './vendor.service';
 
@@ -37,16 +36,8 @@ export class VendorController {
   }
 
   @Get('/nearby')
-  async findNearby(
-    @Query('lat', ParseFloatPipe) lat: number,
-    @Query('lng', ParseFloatPipe) lng: number,
-    @Query('range', ParseIntPipe) range: number = 5000,
-  ) {
-    if (!lat || !lng) {
-      throw new BadRequestException('Latitude and Longitude are required');
-    }
-
-    return this.vendorService.findNearby(lat, lng, range);
+  async findNearby(@Query() nearbyQueryDto: NearbyQueryDto) {
+    return this.vendorService.findNearby(nearbyQueryDto);
   }
 
   @Get(':selector')
