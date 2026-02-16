@@ -1,7 +1,7 @@
 export enum OutputColor {
-  COLOR = 'COLOR',
-  MONOCHROME = 'MONOCHROME',
-  GRAYSCALE = 'GRAYSCALE',
+  COLOR = 'Color',
+  MONOCHROME = 'Monochrome',
+  GRAYSCALE = 'Grayscale',
 }
 export enum JobStatus {
   PENDING = 'PENDING',
