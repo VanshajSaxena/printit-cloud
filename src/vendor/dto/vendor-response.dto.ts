@@ -16,7 +16,7 @@ export class VendorResponseDto {
   lastName: string;
 
   @Expose()
-  givenName: string | null;
+  displayName: string | null;
 
   @Expose()
   username: string;

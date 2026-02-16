@@ -33,7 +33,7 @@ export class CreateVendorDto {
 
   @IsOptional()
   @IsString()
-  givenName?: string;
+  displayName?: string;
 
   @IsOptional()
   @IsString()

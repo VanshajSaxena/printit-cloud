@@ -24,7 +24,7 @@ export class Vendor {
   lastName: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  givenName: string | null;
+  displayName: string | null;
 
   @Column({ unique: true, length: 255 })
   username: string;
