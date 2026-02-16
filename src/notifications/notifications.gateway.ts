@@ -35,7 +35,7 @@ export class NotificationsGateway
   }
 
   handleConnection(@ConnectedSocket() socket: Socket) {
-    const auth = socket.handshake.auth as Partial<SocketAuthPayload>;
+    const auth = socket.handshake.auth satisfies Partial<SocketAuthPayload>;
     this.logger.log(auth);
 
     if (!isValidClient(auth)) {
@@ -47,7 +47,7 @@ export class NotificationsGateway
     if (clientType === 'vendor') {
       const { clientId, username, slug } = auth;
       this.presenceService.vendorConnected(
-        { id: clientId, username, slug },
+        { id: String(clientId), username, slug },
         socket.id,
       );
     }
@@ -56,7 +56,7 @@ export class NotificationsGateway
   }
 
   handleDisconnect(@ConnectedSocket() socket: Socket) {
-    const auth = socket.handshake.auth as Partial<SocketAuthPayload>;
+    const auth = socket.handshake.auth satisfies Partial<SocketAuthPayload>;
     this.logger.log(auth);
 
     if (!isValidClient(auth)) {

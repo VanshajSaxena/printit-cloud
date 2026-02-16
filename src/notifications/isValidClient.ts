@@ -1,13 +1,13 @@
 interface VendorAuth {
   clientType: 'vendor';
-  clientId: string;
+  clientId: number;
   username: string;
   slug: string;
 }
 
 interface UserAuth {
   clientType: 'user';
-  clientId: string;
+  clientId: number;
 }
 
 export type SocketAuthPayload = VendorAuth | UserAuth;

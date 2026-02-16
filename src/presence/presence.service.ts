@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserStatus } from './enums/user-status.enum';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { VendorPresenceDto } from 'src/vendor/dto/vendor-presence.dto';
+import { UserStatus } from './enums/user-status.enum';
 
 export interface VendorPresencePayload {
   id: string;

@@ -24,6 +24,11 @@ Content-Type: application/json
 GET {{base_url}}/vendors HTTP/1.1
 
 
+### Get vendor presence
+
+GET {{base_url}}/vendors/1/presence HTTP/1.1
+
+
 ### Get nearyby vendors
 
 GET {{base_url}}/vendors/nearby?lat=0.0&lng=0.0&range=5000 HTTP/1.1
