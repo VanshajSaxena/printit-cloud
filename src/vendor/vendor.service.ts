@@ -119,7 +119,7 @@ export class VendorService {
   }
 
   async findNearby(nearbyQueryDto: NearbyQueryDto) {
-    const { lat, lng, range = 50000 } = nearbyQueryDto;
+    const { lat, lng, range = 500000 } = nearbyQueryDto;
     const origin = `ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)`;
 
     const { entities, raw } = await this.vendorRepository
