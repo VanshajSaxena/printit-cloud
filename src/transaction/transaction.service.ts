@@ -71,7 +71,10 @@ export class TransactionService {
       this.notificationsGateway.sendNewTransactionToVendor(vendor.id, {
         id: saved.id,
       });
-      return plainToInstance(CreateTransactionResponseDto, saved);
+      return plainToInstance(CreateTransactionResponseDto, {
+        ...saved,
+        vendorId: saved.vendor.id,
+      });
     } catch (error) {
       await queryRunner.rollbackTransaction();
 

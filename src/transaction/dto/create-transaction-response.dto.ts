@@ -26,6 +26,9 @@ export class CreateTransactionResponseDto {
   @Expose()
   updatedAt: Date;
 
+  @Expose()
+  vendorId: number;
+
   @Exclude()
   @ApiHideProperty()
   vendor: Vendor;
