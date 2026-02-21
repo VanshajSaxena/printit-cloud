@@ -32,7 +32,7 @@ export class VendorResponseDto {
   location: LocationDto | null;
 
   @Expose()
-  distance: number; // <--- This is the new field
+  distance: number;
 
   @Exclude()
   @ApiHideProperty()
