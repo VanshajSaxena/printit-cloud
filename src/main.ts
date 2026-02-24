@@ -17,8 +17,8 @@ async function bootstrap() {
   app.useLogger(new ApplicationLogger());
 
   const config = new DocumentBuilder()
-    .setTitle('Printly')
-    .setDescription('Printly Cloud API.')
+    .setTitle('Printit')
+    .setDescription('Printit Cloud API.')
     .setVersion('0.1.0')
     .build();
 

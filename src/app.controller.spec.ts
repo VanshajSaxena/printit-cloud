@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Printly is running..."', () => {
-      expect(appController.ping()).toBe('Printly is running...');
+    it('should return "Printit is running..."', () => {
+      expect(appController.ping()).toBe('Printit is running...');
     });
   });
 });

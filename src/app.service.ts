@@ -11,6 +11,6 @@ export class AppService {
   }
   ping(): string {
     this.logger.log(`Application running in ${this.environment} mode.`);
-    return 'Printly is running...';
+    return 'Printit is running...';
   }
 }
