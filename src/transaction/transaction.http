@@ -16,12 +16,12 @@ Content-Type: application/json
     {
       "copyCount": 1,
       "documentId": 1,
-      "outputColor": "GRAYSCALE"
+      "outputColor": "Grayscale"
     },
     {
       "copyCount": 1,
       "documentId": 5,
-      "outputColor": "COLOR"
+      "outputColor": "Color"
     }
   ],
   "vendorId": 1

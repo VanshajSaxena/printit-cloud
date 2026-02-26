@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -16,5 +17,6 @@ export class CreateTransactionRequestDto {
   @ArrayMinSize(1)
   @IsArray()
   @ValidateNested({ each: true })
+  @Type(() => CreateJobRequestDto)
   jobs: CreateJobRequestDto[];
 }

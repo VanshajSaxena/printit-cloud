@@ -18,6 +18,7 @@ import { FindTransactionResponseDto } from './dto/find-transaction-response.dto'
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
 import { TransactionStatus } from './enums/transaction-status.enum';
+import { TransactionStatusResponseDto } from './dto/transaction-status-response.dto';
 
 @Injectable()
 export class TransactionService {
@@ -112,10 +113,10 @@ export class TransactionService {
   }
 
   async findTransactionStatus(id: number) {
-    const status = await this.findOneEntity(id, {
+    const transactionStatus = await this.findOneEntity(id, {
       select: { status: true },
     });
-    return status;
+    return plainToInstance(TransactionStatusResponseDto, transactionStatus);
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
