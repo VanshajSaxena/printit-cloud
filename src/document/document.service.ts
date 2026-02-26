@@ -7,7 +7,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { UploadFileBatchRequestDto } from 'src/r2/dto/upload-file-batch-request.dto';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import {
+  EntityNotFoundError,
+  FindManyOptions,
+  FindOneOptions,
+  In,
+  Repository,
+} from 'typeorm';
 import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
 import { CreateDocumentBatchResponseDto } from './dto/create-document-batch-response.dto';
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
@@ -97,12 +103,18 @@ export class DocumentService {
     return this.findOneEntity(id);
   }
 
-  private async findOneEntity(id: number) {
-    const document = await this.documentRepository.findOneBy({ id });
-    if (!document) {
-      throw new NotFoundException(`Document not found for the id: ${id}`);
+  private async findOneEntity(id: number, options?: FindOneOptions<Document>) {
+    try {
+      return await this.documentRepository.findOneOrFail({
+        where: { id },
+        ...options,
+      });
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(`Document not found for the id: ${id}`);
+      }
+      throw error;
     }
-    return document;
   }
 
   private getDocumentKey(document: CreateDocumentRequestDto) {

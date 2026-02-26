@@ -1,7 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
-import { EntityManager, Repository } from 'typeorm';
+import {
+  EntityManager,
+  EntityNotFoundError,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
 import { CreateJobResponseDto } from './dto/create-job-response.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -80,11 +85,17 @@ export class JobService {
     return plainToInstance(CreateJobResponseDto, removed);
   }
 
-  private async findOneEntity(id: number) {
-    const job = await this.jobRepository.findOneBy({ id });
-    if (!job) {
-      throw new NotFoundException(`Document not found for the id: ${id}`);
+  private async findOneEntity(id: number, options?: FindOneOptions<Job>) {
+    try {
+      return await this.jobRepository.findOneOrFail({
+        where: { id },
+        ...options,
+      });
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(`Document not found for the id: ${id}`);
+      }
+      throw error;
     }
-    return job;
   }
 }

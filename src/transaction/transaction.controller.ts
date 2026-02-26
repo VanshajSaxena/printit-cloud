@@ -30,6 +30,11 @@ export class TransactionController {
     return this.transactionService.findAll(status);
   }
 
+  @Get(':id/status')
+  async findTransactionStatus(@Param('id', ParseIntPipe) id: number) {
+    return this.transactionService.findTransactionStatus(id);
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.transactionService.findOne(id);

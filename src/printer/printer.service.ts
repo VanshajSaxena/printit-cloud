@@ -2,7 +2,7 @@ import { CreatePrinterDto } from './dto/create-printer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Printer } from './entities/printer.entity';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 import { UpdatePrinterDto } from './dto/update-printer.dto';
 import { plainToInstance } from 'class-transformer';
 import { PrinterResponseDto } from './dto/printer-response.dto';
@@ -62,11 +62,17 @@ export class PrinterService {
     return this.findOneEntity(id);
   }
 
-  private async findOneEntity(id: number) {
-    const printer = await this.printerRepository.findOneBy({ id });
-    if (!printer) {
-      throw new NotFoundException(`Printer not found for the id: ${id}`);
+  private async findOneEntity(id: number, options?: FindOneOptions<Printer>) {
+    try {
+      return await this.printerRepository.findOneOrFail({
+        where: { id },
+        ...options,
+      });
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(`Printer not found for the id: ${id}`);
+      }
+      throw error;
     }
-    return printer;
   }
 }

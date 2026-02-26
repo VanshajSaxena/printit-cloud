@@ -6,7 +6,12 @@ import { JobService } from 'src/job/job.service';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 import { VendorService } from 'src/vendor/vendor.service';
-import { DataSource, FindOneOptions, Repository } from 'typeorm';
+import {
+  DataSource,
+  EntityNotFoundError,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
 import { FindTransactionResponseDto } from './dto/find-transaction-response.dto';
@@ -106,6 +111,13 @@ export class TransactionService {
     return plainToInstance(FindTransactionResponseDto, transaction);
   }
 
+  async findTransactionStatus(id: number) {
+    const status = await this.findOneEntity(id, {
+      select: { status: true },
+    });
+    return status;
+  }
+
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
     const transaction = await this.findOneEntity(id);
     Object.assign(transaction, updateTransactionDto);
@@ -128,8 +140,11 @@ export class TransactionService {
         where: { id },
         ...options,
       });
-    } catch {
-      throw new NotFoundException(`Transaction not found for id: ${id}`);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(`Transaction not found for id: ${id}`);
+      }
+      throw error;
     }
   }
 }

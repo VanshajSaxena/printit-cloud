@@ -5,7 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import {
+  EntityNotFoundError,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { Vendor } from './entities/vendor.entity';
 import { nanoid } from 'nanoid';
@@ -164,16 +169,26 @@ export class VendorService {
     return this.findOneEntity({ id });
   }
 
-  private async findOneEntity(where: FindOptionsWhere<Vendor>) {
-    const vendor = await this.vendorRepository.findOneBy(where);
-    if (!vendor) {
-      const key = Object.keys(where)[0];
-      const value = Object.values(where)[0];
-      throw new NotFoundException(
-        `Vendor with ${key} '${this.safeToString(value)}' not found.`,
-      );
+  private async findOneEntity(
+    where: FindOptionsWhere<Vendor>,
+    options?: FindOneOptions<Vendor>,
+  ) {
+    try {
+      return await this.vendorRepository.findOneOrFail({
+        where,
+        ...options,
+      });
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        const key = Object.keys(where)[0];
+        const value = Object.values(where)[0];
+
+        throw new NotFoundException(
+          `Vendor with ${key} '${this.safeToString(value)}' not found.`,
+        );
+      }
+      throw error;
     }
-    return vendor;
   }
 
   safeToString(value: unknown): string {
