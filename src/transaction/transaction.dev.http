@@ -1,0 +1,53 @@
+### 
+
+@base_url = https://{{hostname}}:{{port}}/api/v1
+@hostname = dev.api.printit.ink
+@port = 443
+@vendorId = 1
+
+
+### Create a new transaction
+
+POST {{base_url}}/transactions HTTP/1.1
+Content-Type: application/json
+
+{
+  "jobs": [
+    {
+      "copyCount": 1,
+      "documentId": 1,
+      "outputColor": "Grayscale"
+    },
+    {
+      "copyCount": 1,
+      "documentId": 5,
+      "outputColor": "Color"
+    }
+  ],
+  "vendorId": 1
+}
+
+
+### Get all transactions
+
+GET {{base_url}}/transactions HTTP/1.1
+
+
+### Get a single transaction by ID
+
+GET {{base_url}}/transactions/30 HTTP/1.1
+
+
+### Update an existing transaction
+
+PATCH {{base_url}}/transactions/30 HTTP/1.1
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+
+
+### Delete a transaction
+
+DELETE {{base_url}}/transactions/2 HTTP/1.1
