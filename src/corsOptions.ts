@@ -10,6 +10,8 @@ export const corsOptions: CorsOptions = {
       'https://dev--printit-ink.netlify.app',
       'http://localhost:5173',
       'http://localhost:8100',
+      'http://192.168.1.8:8100',
+      'https://192.168.1.8:8100',
     ];
 
     const netlifyRegex = /^https:\/\/.*--printit-ink\.netlify\.app$/;
