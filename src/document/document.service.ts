@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
+import { customAlphabet } from 'nanoid';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { UploadFileBatchRequestDto } from 'src/r2/dto/upload-file-batch-request.dto';
 import {
@@ -23,6 +24,10 @@ import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentService {
+  private readonly id = customAlphabet(
+    'abcdefghijklmnopqrstuvwxyz0123456789',
+    10,
+  );
   constructor(
     @InjectRepository(Document)
     private documentRepository: Repository<Document>,
@@ -117,14 +122,31 @@ export class DocumentService {
     }
   }
 
-  private getDocumentKey(document: CreateDocumentRequestDto) {
-    // NOTE: it should be using nanoid for uniqueness in key names
-    return document.filename
-      .trim()
+  private getDocumentKey(document: CreateDocumentRequestDto): string {
+    const original = document.filename.trim();
+
+    const extMatch = original.match(/\.[^/.]+$/);
+    const extension = extMatch ? extMatch[0].toLowerCase() : '';
+
+    const nameWithoutExt = original.replace(/\.[^/.]+$/, '');
+
+    const slug = nameWithoutExt
       .toLowerCase()
-      .normalize()
-      .replaceAll(' ', '-')
-      .replaceAll('/', '-');
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
+
+    const now = new Date();
+
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+
+    const id = this.id();
+
+    return `${year}/${month}/${day}/${slug}-${id}${extension}`;
   }
 
   /**
