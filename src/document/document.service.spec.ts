@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DocumentService } from './document.service';
-import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
+import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
 import { Document } from './entities/document.entity';
 
 describe('DocumentService', () => {
@@ -38,9 +38,14 @@ describe('DocumentService', () => {
 
   describe('create', () => {
     it('should create a new print document', async () => {
-      const createDto: CreateDocumentRequestDto = {
-        filename: 'Test Document',
-        contentType: 'application/pdf',
+      const createDto: CreateDocumentBatchRequestDto = {
+        documents: [
+          {
+            filename: 'Test Document',
+            contentType: 'application/pdf',
+            draftId: 'abc',
+          },
+        ],
       };
 
       const createdDocument = {
