@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateDocumentRequestDto {
   @IsNotEmpty()
@@ -12,6 +12,10 @@ export class CreateDocumentRequestDto {
   @IsString()
   @IsNotEmpty()
   draftId: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  pageCount: number;
 
   constructor(partial: Partial<CreateDocumentRequestDto>) {
     Object.assign(this, partial);

@@ -16,6 +16,9 @@ export class CreateDocumentResponseDto {
   draftId: string;
 
   @Expose()
+  pageCount: number;
+
+  @Expose()
   createdAt: Date;
 
   @Expose()

@@ -13,6 +13,9 @@ export class FindDocumentResponseDto {
   @Expose()
   contentType: string;
 
+  @Expose()
+  pageCount: number;
+
   @Exclude()
   @ApiHideProperty()
   key: string;

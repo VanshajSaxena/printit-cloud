@@ -24,6 +24,9 @@ export class Document {
   @Column({ type: 'varchar', length: 255 })
   contentType: string;
 
+  @Column({ type: 'int' })
+  pageCount: number;
+
   @Column('enum', { enum: DocumentStatus, default: DocumentStatus.CREATED })
   status: DocumentStatus;
 
