@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
@@ -31,12 +32,15 @@ export class JobController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobService.update(+id, updateJobDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateJobDto: UpdateJobDto,
+  ) {
+    return this.jobService.update(id, updateJobDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.jobService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.jobService.remove(id);
   }
 }
