@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
+import { DocumentService } from 'src/document/document.service';
+import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 import {
   EntityManager,
   EntityNotFoundError,
@@ -11,13 +13,13 @@ import { CreateJobRequestDto } from './dto/create-job-request.dto';
 import { CreateJobResponseDto } from './dto/create-job-response.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
-import { DocumentService } from 'src/document/document.service';
 
 @Injectable()
 export class JobService {
   constructor(
     @InjectRepository(Job)
     private jobRepository: Repository<Job>,
+    private notificationsGateway: NotificationsGateway,
     private documentService: DocumentService,
   ) {}
 

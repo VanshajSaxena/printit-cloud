@@ -1,4 +1,10 @@
-import { IsIn, IsNotEmpty, IsInt } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class JoinVendorPayload {
   @IsNotEmpty()
@@ -18,11 +24,105 @@ export class NewTransactionPayload {
   id: number;
 }
 
-export class UpdateProgressPayload {
-  @IsNotEmpty()
-  @IsInt()
-  id: number;
-  @IsIn(['pending', 'queued', 'printing', 'completed', 'error'])
-  @IsNotEmpty()
-  progress: 'pending' | 'queued' | 'printing' | 'completed' | 'error';
+export class JobStatusUpdatedPayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsNumber()
+  jobId: number;
+
+  @IsString()
+  status: string;
+
+  @IsString()
+  timestamp: string;
+}
+
+export class JobCompletedPayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsNumber()
+  jobId: number;
+
+  @IsString()
+  timestamp: string;
+}
+
+export class JobFailedPayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsNumber()
+  jobId: number;
+
+  @IsString()
+  timestamp: string;
+}
+
+export class JobIncompletePayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsNumber()
+  jobId: number;
+
+  @IsOptional()
+  @IsNumber()
+  pagesPrinted?: number;
+
+  @IsOptional()
+  @IsNumber()
+  totalPages?: number;
+
+  @IsString()
+  timestamp: string;
+}
+
+export class TransactionStatusUpdatedPayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsString()
+  status: string;
+
+  @IsString()
+  timestamp: string;
+}
+
+export class TransactionCompletedPayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsString()
+  timestamp: string;
+}
+
+export class TransactionFailedPayload {
+  @IsNumber()
+  vendorId: number;
+
+  @IsNumber()
+  transactionId: number;
+
+  @IsString()
+  timestamp: string;
 }

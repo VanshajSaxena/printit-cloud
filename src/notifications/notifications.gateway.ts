@@ -1,3 +1,4 @@
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,17 +8,22 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { corsOptions } from 'src/corsOptions';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
+import { PresenceService } from 'src/presence/presence.service';
 import {
+  JobCompletedPayload,
+  JobFailedPayload,
+  JobIncompletePayload,
+  JobStatusUpdatedPayload,
   JoinTransactionPayload,
   JoinVendorPayload,
   NewTransactionPayload,
-  UpdateProgressPayload,
+  TransactionCompletedPayload,
+  TransactionFailedPayload,
+  TransactionStatusUpdatedPayload,
 } from './dto/notification-payloads.dto';
-import { Server, Socket } from 'socket.io';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApplicationLogger } from 'src/logger/application-logger.service';
-import { corsOptions } from 'src/corsOptions';
-import { PresenceService } from 'src/presence/presence.service';
 import { isValidClient, SocketAuthPayload } from './isValidClient';
 
 @UsePipes(new ValidationPipe())
@@ -73,35 +79,112 @@ export class NotificationsGateway
     this.logger.log(`Client disconnected: ${clientType} (${socket.id})`);
   }
 
-  @SubscribeMessage('join_vendor')
+  @SubscribeMessage('vendor:join')
   async handleJoinVendor(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: JoinVendorPayload,
   ): Promise<void> {
-    await client.join(`vendor:${payload.id}`);
+    await client.join(`vendor-${payload.id}`);
+    this.logger.log(`Client ${client.id} joined vendor-${payload.id}`);
   }
 
-  @SubscribeMessage('join_transaction')
+  @SubscribeMessage('transaction:join')
   async handleJoinTransaction(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: JoinTransactionPayload,
   ): Promise<void> {
-    await client.join(`transaction:${payload.id}`);
+    await client.join(`transaction-${payload.id}`);
+    this.logger.log(`Client ${client.id} joined transaction-${payload.id}`);
   }
 
-  sendNewTransactionToVendor(
+  emitNewTransactionToVendor(
     vendorId: number,
     payload: NewTransactionPayload,
   ): void {
-    this.server.to(`vendor:${vendorId}`).emit('transaction:new', payload);
+    this.server.to(`vendor-${vendorId}`).emit('transaction:new', payload);
   }
 
-  sendUpdatesToCustomer(
-    transactionId: number,
-    payload: UpdateProgressPayload,
-  ): void {
+  emitJobStatusUpdated(payload: JobStatusUpdatedPayload): void {
     this.server
-      .to(`transaction:${transactionId}`)
-      .emit('update_progress', payload);
+      .to(`vendor-${payload.vendorId}`)
+      .emit('job:status:updated', payload);
+
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('job:status:updated', payload);
+
+    this.logger.debug(
+      `Emitted job:status:updated for job ${payload.jobId} in transaction ${payload.transactionId}`,
+    );
+  }
+
+  emitJobCompleted(payload: JobCompletedPayload): void {
+    this.server.to(`vendor-${payload.vendorId}`).emit('job:completed', payload);
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('job:completed', payload);
+
+    this.logger.log(
+      `Job ${payload.jobId} completed in transaction ${payload.transactionId}`,
+    );
+  }
+
+  emitJobFailed(payload: JobFailedPayload): void {
+    this.server.to(`vendor-${payload.vendorId}`).emit('job:failed', payload);
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('job:failed', payload);
+
+    this.logger.warn(
+      `Job ${payload.jobId} failed in transaction ${payload.transactionId}`,
+    );
+  }
+
+  emitJobIncomplete(payload: JobIncompletePayload): void {
+    this.server
+      .to(`vendor-${payload.vendorId}`)
+      .emit('job:incomplete', payload);
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('job:incomplete', payload);
+
+    this.logger.warn(
+      `Job ${payload.jobId} incomplete in transaction ${payload.transactionId} (${payload.pagesPrinted}/${payload.totalPages} pages)`,
+    );
+  }
+
+  emitTransactionStatusUpdated(payload: TransactionStatusUpdatedPayload): void {
+    this.server
+      .to(`vendor-${payload.vendorId}`)
+      .emit('transaction:status:updated', payload);
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('transaction:status:updated', payload);
+
+    this.logger.debug(
+      `Emitted transaction:status:updated for transaction ${payload.transactionId}`,
+    );
+  }
+
+  emitTransactionCompleted(payload: TransactionCompletedPayload): void {
+    this.server
+      .to(`vendor-${payload.vendorId}`)
+      .emit('transaction:completed', payload);
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('transaction:completed', payload);
+
+    this.logger.log(`Transaction ${payload.transactionId} completed`);
+  }
+
+  emitTransactionFailed(payload: TransactionFailedPayload): void {
+    this.server
+      .to(`vendor-${payload.vendorId}`)
+      .emit('transaction:failed', payload);
+    this.server
+      .to(`transaction-${payload.transactionId}`)
+      .emit('transaction:failed', payload);
+
+    this.logger.warn(`Transaction ${payload.transactionId} failed`);
   }
 }

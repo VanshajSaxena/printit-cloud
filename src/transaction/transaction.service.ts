@@ -74,7 +74,7 @@ export class TransactionService {
 
       const saved = await queryRunner.manager.save(newTransaction);
       await queryRunner.commitTransaction();
-      this.notificationsGateway.sendNewTransactionToVendor(vendor.id, {
+      this.notificationsGateway.emitNewTransactionToVendor(vendor.id, {
         id: saved.id,
       });
       return plainToInstance(CreateTransactionResponseDto, {
