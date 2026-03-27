@@ -120,9 +120,16 @@ export class TransactionService {
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    const transaction = await this.findOneEntity(id);
+    const transaction = await this.findOneEntity(id, {
+      relations: { vendor: true },
+    });
     Object.assign(transaction, updateTransactionDto);
     const saved = await this.transactionRepository.save(transaction);
+    this.notificationsGateway.emitTransactionCompleted({
+      transactionId: transaction.id,
+      vendorId: transaction.vendor.id,
+      timestamp: new Date().toISOString(),
+    });
     return plainToInstance(CreateTransactionResponseDto, saved);
   }
 
