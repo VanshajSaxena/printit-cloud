@@ -75,9 +75,18 @@ export class JobService {
   }
 
   async update(id: number, updateJobDto: UpdateJobDto) {
-    const job = await this.findOneEntity(id);
+    // PERF: this is very expensive, will optimize this on the dedicated endpoint
+    const job = await this.findOneEntity(id, {
+      relations: { transaction: { vendor: true } },
+    });
     Object.assign(job, updateJobDto);
     const saved = await this.jobRepository.save(job);
+    this.notificationsGateway.emitJobCompleted({
+      transactionId: saved.transaction.id,
+      vendorId: saved.transaction.vendor.id,
+      jobId: saved.id,
+      timestamp: new Date().toISOString(),
+    });
     return plainToInstance(CreateJobResponseDto, saved);
   }
 

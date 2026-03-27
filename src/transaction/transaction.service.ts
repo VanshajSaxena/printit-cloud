@@ -120,6 +120,7 @@ export class TransactionService {
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {
+    // PERF: Later this method event should be emitted in a dedicated endpoint like PATCH transactions/:id/status
     const transaction = await this.findOneEntity(id, {
       relations: { vendor: true },
     });
