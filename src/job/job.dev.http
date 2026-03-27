@@ -1,0 +1,42 @@
+### 
+
+@base_url = https://{{hostname}}:{{port}}/api/v1
+@hostname = dev.api.printit.ink
+@port = 443
+
+
+### Create a new job
+
+POST {{base_url}}/jobs HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "This is a sample job description",
+  "salary": 50000,
+  "title": "Sample Job"
+}
+
+
+### Get all jobs
+
+GET {{base_url}}/jobs HTTP/1.1
+
+
+### Get a single job by ID
+
+GET {{base_url}}/jobs/1 HTTP/1.1
+
+
+### Update an existing job
+
+PATCH {{base_url}}/jobs/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+
+
+### Delete a job
+
+DELETE {{base_url}}/jobs/1 HTTP/1.1
