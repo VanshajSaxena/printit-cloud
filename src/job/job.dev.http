@@ -37,6 +37,16 @@ Content-Type: application/json
 }
 
 
+### Update status of an existing job
+
+PATCH {{base_url}}/jobs/1/status HTTP/1.1
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+
+
 ### Delete a job
 
 DELETE {{base_url}}/jobs/1 HTTP/1.1
