@@ -140,10 +140,7 @@ export class TransactionService {
     return plainToInstance(CreateTransactionResponseDto, removed);
   }
 
-  private async findOneEntity(
-    id: number,
-    options?: FindOneOptions<Transaction>,
-  ) {
+  async findOneEntity(id: number, options?: FindOneOptions<Transaction>) {
     try {
       return await this.transactionRepository.findOneOrFail({
         where: { id },

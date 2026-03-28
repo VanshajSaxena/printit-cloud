@@ -11,9 +11,10 @@ import {
 } from 'typeorm';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
 import { CreateJobResponseDto } from './dto/create-job-response.dto';
+import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
-
+import { JobStatusRawResult } from './types/job-status-raw-result';
 @Injectable()
 export class JobService {
   constructor(
@@ -75,19 +76,37 @@ export class JobService {
   }
 
   async update(id: number, updateJobDto: UpdateJobDto) {
-    // PERF: this is very expensive, will optimize this on the dedicated endpoint
-    const job = await this.findOneEntity(id, {
-      relations: { transaction: { vendor: true } },
-    });
+    const job = await this.findOneEntity(id);
     Object.assign(job, updateJobDto);
     const saved = await this.jobRepository.save(job);
+    return plainToInstance(CreateJobResponseDto, saved);
+  }
+
+  async updateStatus(id: number, updateJobStatusDto: UpdateJobStatusDto) {
+    const result = await this.jobRepository
+      .createQueryBuilder('job')
+      .leftJoin('job.transaction', 'transaction')
+      .leftJoin('transaction.vendor', 'vendor')
+      .select([
+        'job.id AS job_id',
+        'transaction.id AS transaction_id',
+        'vendor.id AS vendor_id',
+      ])
+      .where('job.id = :id', { id })
+      .getRawOne<JobStatusRawResult>();
+
+    if (!result) {
+      throw new NotFoundException(`Job not found for the id: ${id}`);
+    }
+
+    await this.jobRepository.update({ id }, updateJobStatusDto);
+
     this.notificationsGateway.emitJobCompleted({
-      transactionId: saved.transaction.id,
-      vendorId: saved.transaction.vendor.id,
-      jobId: saved.id,
+      transactionId: result.transaction_id,
+      vendorId: result.vendor_id,
+      jobId: result.job_id,
       timestamp: new Date().toISOString(),
     });
-    return plainToInstance(CreateJobResponseDto, saved);
   }
 
   async remove(id: number) {
@@ -104,7 +123,7 @@ export class JobService {
       });
     } catch (error) {
       if (error instanceof EntityNotFoundError) {
-        throw new NotFoundException(`Document not found for the id: ${id}`);
+        throw new NotFoundException(`Job not found for the id: ${id}`);
       }
       throw error;
     }

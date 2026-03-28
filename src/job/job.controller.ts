@@ -1,16 +1,19 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { JobService } from './job.service';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
+import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { JobService } from './job.service';
 
 @Controller({ path: 'jobs', version: '1' })
 export class JobController {
@@ -37,6 +40,15 @@ export class JobController {
     @Body() updateJobDto: UpdateJobDto,
   ) {
     return this.jobService.update(id, updateJobDto);
+  }
+
+  @Patch(':id/status')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateJobStatusDto: UpdateJobStatusDto,
+  ) {
+    return this.jobService.updateStatus(id, updateJobStatusDto);
   }
 
   @Delete(':id')
