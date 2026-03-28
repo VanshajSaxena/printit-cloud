@@ -15,6 +15,7 @@ import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
 import { JobStatusRawResult } from './types/job-status-raw-result';
+import { JobStatus } from './enums/job.enum';
 @Injectable()
 export class JobService {
   constructor(
@@ -101,12 +102,14 @@ export class JobService {
 
     await this.jobRepository.update({ id }, updateJobStatusDto);
 
-    this.notificationsGateway.emitJobCompleted({
-      transactionId: result.transaction_id,
-      vendorId: result.vendor_id,
-      jobId: result.job_id,
-      timestamp: new Date().toISOString(),
-    });
+    if (updateJobStatusDto.status === JobStatus.COMPLETED) {
+      this.notificationsGateway.emitJobCompleted({
+        transactionId: result.transaction_id,
+        vendorId: result.vendor_id,
+        jobId: result.job_id,
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 
   async remove(id: number) {
