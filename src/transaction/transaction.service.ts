@@ -131,15 +131,15 @@ export class TransactionService {
     >(
       `
       with updated_tx as (
-        update transactions
-        set status = $2
+        update transaction
+        set status = $2,
         updated_at = NOW()
         where id = $1
         returning id, vendor_id
       ),
       updated_jobs as (
-        update jobs
-        set status = $2
+        update job
+        set status = $2,
         updated_at = NOW()
         where transaction_id = $1
       )
