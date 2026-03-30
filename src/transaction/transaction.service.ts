@@ -19,6 +19,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
 import { TransactionStatus } from './enums/transaction-status.enum';
 import { TransactionStatusResponseDto } from './dto/transaction-status-response.dto';
+import { UpdateTransactionResultRow } from './types/update-transaction-result-row';
 
 @Injectable()
 export class TransactionService {
@@ -117,6 +118,49 @@ export class TransactionService {
       select: { status: true },
     });
     return plainToInstance(TransactionStatusResponseDto, transactionStatus);
+  }
+
+  async updateTransactionAndJobsStatus(
+    id: number,
+    updateTransactionDto: UpdateTransactionDto,
+  ): Promise<void> {
+    const status = updateTransactionDto.status;
+
+    const rows = await this.dataSource.query<
+      (UpdateTransactionResultRow | undefined)[]
+    >(
+      `
+      with updated_tx as (
+        update transactions
+        set status = $2
+        updated_at = NOW()
+        where id = $1
+        returning id, vendor_id
+      ),
+      updated_jobs as (
+        update jobs
+        set status = $2
+        updated_at = NOW()
+        where transaction_id = $1
+      )
+      select id, vendor_id from updated_tx;
+    `,
+      [id, status],
+    );
+
+    const row = rows[0];
+
+    if (!row) {
+      throw new NotFoundException(`Transaction not found for id: ${id}`);
+    }
+
+    if (updateTransactionDto.status === TransactionStatus.COMPLETED) {
+      this.notificationsGateway.emitTransactionCompleted({
+        transactionId: row.id,
+        vendorId: row.vendor_id,
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 
   async update(id: number, updateTransactionDto: UpdateTransactionDto) {

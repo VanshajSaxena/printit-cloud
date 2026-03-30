@@ -1,19 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { TransactionService } from './transaction.service';
+import { ApiQuery } from '@nestjs/swagger';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { ApiQuery } from '@nestjs/swagger';
 import { TransactionStatus } from './enums/transaction-status.enum';
+import { TransactionService } from './transaction.service';
 
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {
@@ -46,6 +48,18 @@ export class TransactionController {
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
     return this.transactionService.update(id, updateTransactionDto);
+  }
+
+  @Patch(':id/status')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateTransactionAndJobStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTransactionDto: UpdateTransactionDto,
+  ) {
+    return this.transactionService.updateTransactionAndJobsStatus(
+      id,
+      updateTransactionDto,
+    );
   }
 
   @Delete(':id')
