@@ -14,8 +14,8 @@ import { CreateJobResponseDto } from './dto/create-job-response.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
-import { JobStatusRawResult } from './types/job-status-raw-result';
 import { JobStatus } from './enums/job.enum';
+import { JobStatusRawResult } from './types/job-status-raw-result';
 @Injectable()
 export class JobService {
   constructor(
@@ -89,9 +89,9 @@ export class JobService {
       .leftJoin('job.transaction', 'transaction')
       .leftJoin('transaction.vendor', 'vendor')
       .select([
-        'job.id AS job_id',
-        'transaction.id AS transaction_id',
-        'vendor.id AS vendor_id',
+        'job.id AS jobId',
+        'transaction.id AS transactionId',
+        'vendor.id AS vendorId',
       ])
       .where('job.id = :id', { id })
       .getRawOne<JobStatusRawResult>();
@@ -104,9 +104,9 @@ export class JobService {
 
     if (updateJobStatusDto.status === JobStatus.COMPLETED) {
       this.notificationsGateway.emitJobCompleted({
-        transactionId: result.transaction_id,
-        vendorId: result.vendor_id,
-        jobId: result.job_id,
+        transactionId: result.transactionId,
+        vendorId: result.vendorId,
+        jobId: result.jobId,
         timestamp: new Date().toISOString(),
       });
     }
