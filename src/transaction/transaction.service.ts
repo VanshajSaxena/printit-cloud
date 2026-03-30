@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { customAlphabet } from 'nanoid';
+import { StatusEnum } from 'src/common/types/status-enum';
 import { JobService } from 'src/job/job.service';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { NotificationsGateway } from 'src/notifications/notifications.gateway';
@@ -15,10 +16,9 @@ import {
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { CreateTransactionResponseDto } from './dto/create-transaction-response.dto';
 import { FindTransactionResponseDto } from './dto/find-transaction-response.dto';
+import { TransactionStatusResponseDto } from './dto/transaction-status-response.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
-import { TransactionStatus } from './enums/transaction-status.enum';
-import { TransactionStatusResponseDto } from './dto/transaction-status-response.dto';
 import { UpdateTransactionResultRow } from './types/update-transaction-result-row';
 
 @Injectable()
@@ -98,7 +98,7 @@ export class TransactionService {
     }
   }
 
-  async findAll(status?: TransactionStatus) {
+  async findAll(status?: StatusEnum) {
     const transactions = await this.transactionRepository.find({
       relations: { jobs: { document: true } },
       where: { status: status },
@@ -154,7 +154,7 @@ export class TransactionService {
       throw new NotFoundException(`Transaction not found for id: ${id}`);
     }
 
-    if (updateTransactionDto.status === TransactionStatus.COMPLETED) {
+    if (updateTransactionDto.status === StatusEnum.COMPLETED) {
       this.notificationsGateway.emitTransactionCompleted({
         transactionId: row.id,
         vendorId: row.vendor_id,

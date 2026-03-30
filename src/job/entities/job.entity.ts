@@ -1,3 +1,4 @@
+import { StatusEnum } from 'src/common/types/status-enum';
 import { Document } from 'src/document/entities/document.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import {
@@ -10,7 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { JobStatus, OutputColor } from '../enums/job.enum';
+import { OutputColor } from '../enums/job.enum';
 
 @Entity()
 export class Job {
@@ -25,10 +26,10 @@ export class Job {
   copyCount: number;
 
   @Column('enum', {
-    enum: JobStatus,
-    default: JobStatus.PENDING,
+    enum: StatusEnum,
+    default: StatusEnum.PENDING,
   })
-  status: JobStatus;
+  status: StatusEnum;
 
   @ManyToOne(() => Transaction)
   transaction: Transaction;

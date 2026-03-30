@@ -1,8 +1,8 @@
 import { Exclude, Expose } from 'class-transformer';
-import { TransactionStatus } from '../enums/transaction-status.enum';
+import { StatusEnum } from 'src/common/types/status-enum';
 
 @Exclude()
 export class TransactionStatusResponseDto {
   @Expose()
-  status: TransactionStatus;
+  status: StatusEnum;
 }

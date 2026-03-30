@@ -1,9 +1,9 @@
 import { ApiHideProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
+import { StatusEnum } from 'src/common/types/status-enum';
 import { CreateJobResponseDto } from 'src/job/dto/create-job-response.dto';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
-import { TransactionStatus } from '../enums/transaction-status.enum';
 
 @Exclude()
 export class CreateTransactionResponseDto {
@@ -11,7 +11,7 @@ export class CreateTransactionResponseDto {
   id: number;
 
   @Expose()
-  status: TransactionStatus;
+  status: StatusEnum;
 
   @Expose()
   friendlyId: string;

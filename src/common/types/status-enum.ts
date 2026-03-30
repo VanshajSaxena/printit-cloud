@@ -1,4 +1,4 @@
-export enum TransactionStatus {
+export enum StatusEnum {
   PENDING = 'PENDING',
   QUEUED = 'QUEUED',
   PRINTING = 'PRINTING',

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
+import { StatusEnum } from 'src/common/types/status-enum';
 import { DocumentService } from 'src/document/document.service';
 import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 import {
@@ -14,7 +15,6 @@ import { CreateJobResponseDto } from './dto/create-job-response.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { Job } from './entities/job.entity';
-import { JobStatus } from './enums/job.enum';
 import { JobStatusRawResult } from './types/job-status-raw-result';
 @Injectable()
 export class JobService {
@@ -102,7 +102,7 @@ export class JobService {
 
     await this.jobRepository.update({ id }, updateJobStatusDto);
 
-    if (updateJobStatusDto.status === JobStatus.COMPLETED) {
+    if (updateJobStatusDto.status === StatusEnum.COMPLETED) {
       this.notificationsGateway.emitJobCompleted({
         transactionId: result.transactionId,
         vendorId: result.vendorId,

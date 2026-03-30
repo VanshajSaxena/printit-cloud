@@ -1,8 +1,8 @@
 import { IsEnum, IsOptional } from 'class-validator';
-import { JobStatus } from '../enums/job.enum';
+import { StatusEnum } from 'src/common/types/status-enum';
 
 export class UpdateJobStatusDto {
   @IsOptional()
-  @IsEnum(JobStatus)
-  status: JobStatus;
+  @IsEnum(StatusEnum)
+  status: StatusEnum;
 }

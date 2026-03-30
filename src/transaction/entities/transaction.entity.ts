@@ -1,3 +1,4 @@
+import { StatusEnum } from 'src/common/types/status-enum';
 import { Job } from 'src/job/entities/job.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
@@ -11,7 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TransactionStatus } from '../enums/transaction-status.enum';
 
 @Entity()
 export class Transaction {
@@ -19,10 +19,10 @@ export class Transaction {
   id: number;
 
   @Column('enum', {
-    enum: TransactionStatus,
-    default: TransactionStatus.PENDING,
+    enum: StatusEnum,
+    default: StatusEnum.PENDING,
   })
-  status: TransactionStatus;
+  status: StatusEnum;
 
   @Column({ unique: true })
   friendlyId: string;
