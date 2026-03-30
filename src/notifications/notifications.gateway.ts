@@ -19,6 +19,8 @@ import {
   JobStatusUpdatedPayload,
   JoinTransactionPayload,
   JoinVendorPayload,
+  MilestoneTransactionPrinting,
+  MilestoneTransactionQueued,
   NewTransactionPayload,
   TransactionCompletedPayload,
   TransactionFailedPayload,
@@ -95,6 +97,30 @@ export class NotificationsGateway
   ): Promise<void> {
     await client.join(`transaction-${payload.id}`);
     this.logger.log(`Client ${client.id} joined transaction-${payload.id}`);
+  }
+
+  @SubscribeMessage('milestone:transaction:printing')
+  handleMilestoneTransactionPrinting(
+    @MessageBody() payload: MilestoneTransactionPrinting,
+  ): void {
+    this.server
+      .to(`transaction-${payload.vendorId}`)
+      .emit('milestone:transaction:printing', payload);
+    this.logger.log(
+      `Milestone: Printing from vendor ${payload.vendorId} for transaction-${payload.transactionId}`,
+    );
+  }
+
+  @SubscribeMessage('milestone:transaction:queued')
+  handleMilestoneTransactionQueued(
+    @MessageBody() payload: MilestoneTransactionQueued,
+  ): void {
+    this.server
+      .to(`transaction-${payload.vendorId}`)
+      .emit('milestone:transaction:queued', payload);
+    this.logger.log(
+      `Milestone: Queued from vendor ${payload.vendorId} for transaction-${payload.transactionId}`,
+    );
   }
 
   emitNewTransactionToVendor(

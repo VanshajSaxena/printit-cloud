@@ -12,6 +12,18 @@ export class JoinVendorPayload {
   id: number;
 }
 
+export class MilestoneTransactionPrinting {
+  vendorId: number;
+  transactionId: number;
+  timestamp: string;
+}
+
+export class MilestoneTransactionQueued {
+  vendorId: number;
+  transactionId: number;
+  timestamp: string;
+}
+
 export class JoinTransactionPayload {
   @IsNotEmpty()
   @IsInt()
