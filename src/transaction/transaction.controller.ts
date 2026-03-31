@@ -16,11 +16,13 @@ import { CreateTransactionRequestDto } from './dto/create-transaction-request.dt
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionService } from './transaction.service';
 import { StatusEnum } from 'src/common/types/status-enum';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
+  @Public()
   @Post()
   async create(@Body() createTransactionDto: CreateTransactionRequestDto) {
     return this.transactionService.create(createTransactionDto);
@@ -32,6 +34,7 @@ export class TransactionController {
     return this.transactionService.findAll(status);
   }
 
+  @Public()
   @Get(':id/status')
   async findTransactionStatus(@Param('id', ParseIntPipe) id: number) {
     return this.transactionService.findTransactionStatus(id);

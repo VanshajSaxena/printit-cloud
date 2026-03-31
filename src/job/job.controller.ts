@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { Public } from 'src/decorators/public.decorator';
 import { CreateJobRequestDto } from './dto/create-job-request.dto';
 import { UpdateJobStatusDto } from './dto/update-job-status.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -19,6 +20,7 @@ import { JobService } from './job.service';
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 
+  @Public()
   @Post()
   create(@Body() createJobDto: CreateJobRequestDto) {
     return this.jobService.create(createJobDto);
@@ -29,6 +31,7 @@ export class JobController {
     return this.jobService.findAll();
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.jobService.findOne(+id);

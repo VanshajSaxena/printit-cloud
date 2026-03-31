@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiParam } from '@nestjs/swagger';
 import { NotFoundErrorDto } from 'src/common/dto/error-response.dto';
+import { Public } from 'src/decorators/public.decorator';
 import { PresenceService } from 'src/presence/presence.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
@@ -35,11 +36,13 @@ export class VendorController {
     return this.vendorService.findAll();
   }
 
+  @Public()
   @Get('/nearby')
   async findNearby(@Query() nearbyQueryDto: NearbyQueryDto) {
     return this.vendorService.findNearby(nearbyQueryDto);
   }
 
+  @Public()
   @Get(':selector')
   @ApiParam({
     name: 'selector',
@@ -61,6 +64,7 @@ export class VendorController {
     return this.vendorService.findOne(selector);
   }
 
+  @Public()
   @Get(':selector/presence')
   @ApiParam({
     name: 'selector',

@@ -12,11 +12,13 @@ import { DocumentService } from './document.service';
 import { CreateDocumentBatchRequestDto } from './dto/create-document-batch-request.dto';
 import { CreateDocumentBatchResponseDto } from './dto/create-document-batch-response.dto';
 import { UpdateDocumentRequestDto } from './dto/update-document.dto';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller({ path: 'documents', version: '1' })
 export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
 
+  @Public()
   @Post()
   async create(
     @Body() createDocumentBatchDto: CreateDocumentBatchRequestDto,
@@ -34,6 +36,7 @@ export class DocumentController {
     return this.documentService.findOne(id);
   }
 
+  @Public()
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
