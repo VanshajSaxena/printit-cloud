@@ -49,7 +49,7 @@ export class Vendor {
   })
   location: Point | null;
 
-  @Column({ nullable: true, select: false })
+  @Column({ type: 'varchar', nullable: true, select: false })
   passwordHash: string | null;
 
   @Column({ default: false })
