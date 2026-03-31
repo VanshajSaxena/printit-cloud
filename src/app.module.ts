@@ -1,19 +1,21 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategy';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DocumentModule } from './document/document.module';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JobModule } from './job/job.module';
 import { LoggerModule } from './logger/logger.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { PresenceModule } from './presence/presence.module';
+import { PresenceService } from './presence/presence.service';
 import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
-import { PresenceService } from './presence/presence.service';
-import { PresenceModule } from './presence/presence.module';
 
 @Module({
   imports: [
@@ -54,6 +56,10 @@ import { PresenceModule } from './presence/presence.module';
     PresenceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PresenceService],
+  providers: [
+    AppService,
+    PresenceService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+  ],
 })
 export class AppModule {}
