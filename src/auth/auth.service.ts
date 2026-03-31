@@ -54,7 +54,7 @@ export class AuthService {
   private issueAccessToken(user: RequestUser): string {
     return this.jwtService.sign(
       { sub: user.sub, email: user.email },
-      { expiresIn: '15m', secret: this.config.get('JWT_SECRET') },
+      { expiresIn: '6h', secret: this.config.get('JWT_SECRET') },
     );
   }
 
