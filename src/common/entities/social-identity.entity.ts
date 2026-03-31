@@ -13,10 +13,10 @@ export class SocialIdentity {
   id: number;
 
   @Column()
-  provider: string; // 'google' | 'microsoft'
+  provider: string;
 
   @Column()
-  providerId: string; // subject from OAuth
+  providerId: string;
 
   @Column({ nullable: true })
   email: string;
