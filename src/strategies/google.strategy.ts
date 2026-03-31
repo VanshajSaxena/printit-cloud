@@ -28,9 +28,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 }
 
 export interface OAuthProfile {
-  provider: string; // e.g., 'google' or 'microsoft'
-  providerId: string; // the unique ID from the OAuth provider
+  provider: 'google' | 'microsoft';
+  providerId: string;
   email: string;
   displayName: string;
 }
-// Microsoft strategy is identical shape, use PassportStrategy(MicrosoftStrategy, 'microsoft')

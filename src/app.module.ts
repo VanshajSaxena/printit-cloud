@@ -16,6 +16,7 @@ import { PrinterModule } from './printer/printer.module';
 import { R2Module } from './r2/r2.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { VendorModule } from './vendor/vendor.module';
     JobModule,
     NotificationsModule,
     PresenceModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
