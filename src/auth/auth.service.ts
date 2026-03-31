@@ -19,22 +19,23 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Vendor) private vendorRepo: Repository<Vendor>,
+    @InjectRepository(Vendor)
+    private readonly vendorRepository: Repository<Vendor>,
     @InjectRepository(SocialIdentity)
-    private socialRepo: Repository<SocialIdentity>,
+    private readonly socialRepository: Repository<SocialIdentity>,
     @InjectRepository(RefreshToken)
-    private refreshRepo: Repository<RefreshToken>,
+    private readonly refreshRepository: Repository<RefreshToken>,
     @InjectRepository(OneTimeCode)
-    private oneTimeCodeRepo: Repository<OneTimeCode>,
-    private jwtService: JwtService,
-    private config: ConfigService,
+    private readonly oneTimeCodeRepository: Repository<OneTimeCode>,
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService,
   ) {}
 
   async validateCredentials(
     email: string,
     password: string,
   ): Promise<Vendor | null> {
-    const vendor = await this.vendorRepo.findOne({
+    const vendor = await this.vendorRepository.findOne({
       where: { email },
       select: ['id', 'email', 'passwordHash'],
     });
@@ -61,7 +62,7 @@ export class AuthService {
   private async issueRefreshToken(vendorId: number): Promise<string> {
     const raw = randomBytes(40).toString('hex');
     const hash = createHash('sha256').update(raw).digest('hex');
-    await this.refreshRepo.save({
+    await this.refreshRepository.save({
       tokenHash: hash,
       vendorId,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -71,7 +72,7 @@ export class AuthService {
 
   async refreshTokens(rawToken: string) {
     const hash = createHash('sha256').update(rawToken).digest('hex');
-    const stored = await this.refreshRepo.findOne({
+    const stored = await this.refreshRepository.findOne({
       where: { tokenHash: hash, revoked: false },
       relations: ['vendor'],
     });
@@ -81,20 +82,20 @@ export class AuthService {
     }
 
     // Rotate: revoke old, issue new pair
-    await this.refreshRepo.update(stored.id, { revoked: true });
+    await this.refreshRepository.update(stored.id, { revoked: true });
     return this.login({ sub: stored.vendor.id, email: stored.vendor.email });
   }
 
   async findOrLinkSocialIdentity(profile: OAuthProfile): Promise<Vendor> {
     // 1. Existing identity?
-    const existing = await this.socialRepo.findOne({
+    const existing = await this.socialRepository.findOne({
       where: { provider: profile.provider, providerId: profile.providerId },
       relations: ['vendor'],
     });
     if (existing) return existing.vendor;
 
     // 2. Vendor with matching email?
-    const vendor = await this.vendorRepo.findOne({
+    const vendor = await this.vendorRepository.findOne({
       where: { email: profile.email },
     });
     if (!vendor)
@@ -103,16 +104,16 @@ export class AuthService {
       );
 
     // 3. Link and return
-    await this.socialRepo.save({ ...profile, vendor });
+    await this.socialRepository.save({ ...profile, vendor });
     return vendor;
   }
 
   async issueOneTimeCode(vendorId: number): Promise<string> {
     // Clean up any stale codes for this vendor before issuing a new one
-    await this.oneTimeCodeRepo.delete({ vendorId });
+    await this.oneTimeCodeRepository.delete({ vendorId });
 
     const code = randomUUID();
-    await this.oneTimeCodeRepo.save({
+    await this.oneTimeCodeRepository.save({
       code,
       vendorId,
       expiresAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes
@@ -121,14 +122,16 @@ export class AuthService {
   }
 
   async consumeOneTimeCode(code: string): Promise<number> {
-    const record = await this.oneTimeCodeRepo.findOne({ where: { code } });
+    const record = await this.oneTimeCodeRepository.findOne({
+      where: { code },
+    });
 
     if (!record) {
       throw new UnauthorizedException('Invalid authorization code');
     }
 
     // Always delete first — prevents any race condition on double-use
-    await this.oneTimeCodeRepo.delete({ id: record.id });
+    await this.oneTimeCodeRepository.delete({ id: record.id });
 
     if (record.expiresAt < new Date()) {
       throw new UnauthorizedException('Authorization code expired');
@@ -142,6 +145,6 @@ export class AuthService {
   async revokeRefreshToken(rawToken: string): Promise<void> {
     const hash = createHash('sha256').update(rawToken).digest('hex');
     // Silently ignore if token doesn't exist — idempotent logout
-    await this.refreshRepo.update({ tokenHash: hash }, { revoked: true });
+    await this.refreshRepository.update({ tokenHash: hash }, { revoked: true });
   }
 }
