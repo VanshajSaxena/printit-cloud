@@ -11,6 +11,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SocialIdentity } from '../../common/entities/social-identity.entity';
+import { RefreshToken } from 'src/common/entities/refresh-token.entity';
 
 @Entity()
 export class Vendor {
@@ -46,6 +48,18 @@ export class Vendor {
     nullable: true,
   })
   location: Point | null;
+
+  @Column({ nullable: true, select: false })
+  passwordHash: string | null;
+
+  @Column({ default: false })
+  emailVerified: boolean;
+
+  @OneToMany(() => SocialIdentity, (s) => s.vendor)
+  socialIdentities: SocialIdentity[];
+
+  @OneToMany(() => RefreshToken, (r) => r.vendor)
+  refreshTokens: RefreshToken[];
 
   @OneToMany(() => Printer, (printer) => printer.vendor)
   printers: Printer[];
