@@ -55,6 +55,7 @@ export class VendorService {
       throw new ConflictException(`Email ${email} is already in use.`);
 
     const newVendor = this.vendorRepository.create(createVendorDto);
+    newVendor.username = username;
 
     let slug = this.generateSlug();
     while (await this.vendorRepository.existsBy({ slug })) {
