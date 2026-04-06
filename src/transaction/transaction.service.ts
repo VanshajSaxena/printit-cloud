@@ -20,6 +20,7 @@ import { TransactionStatusResponseDto } from './dto/transaction-status-response.
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
 import { UpdateTransactionResultRow } from './types/update-transaction-result-row';
+import { RequestUser } from 'src/decorators/public.decorator';
 
 @Injectable()
 export class TransactionService {
@@ -98,10 +99,10 @@ export class TransactionService {
     }
   }
 
-  async findAll(status?: StatusEnum) {
+  async findAll(user: RequestUser, status?: StatusEnum) {
     const transactions = await this.transactionRepository.find({
       relations: { jobs: { document: true } },
-      where: { status: status },
+      where: { status: status, vendor: { id: user.sub } },
     });
     return plainToInstance(FindTransactionResponseDto, transactions);
   }

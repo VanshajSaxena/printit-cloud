@@ -12,11 +12,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiQuery } from '@nestjs/swagger';
+import { StatusEnum } from 'src/common/types/status-enum';
+import {
+  CurrentUser,
+  Public,
+  type RequestUser,
+} from 'src/decorators/public.decorator';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { TransactionService } from './transaction.service';
-import { StatusEnum } from 'src/common/types/status-enum';
-import { Public } from 'src/decorators/public.decorator';
 
 @Controller({ path: 'transactions', version: '1' })
 export class TransactionController {
@@ -30,8 +34,11 @@ export class TransactionController {
 
   @Get()
   @ApiQuery({ name: 'status', required: false, enum: StatusEnum })
-  async findAll(@Query('status') status?: StatusEnum) {
-    return this.transactionService.findAll(status);
+  async findAll(
+    @CurrentUser() currentUser: RequestUser,
+    @Query('status') status?: StatusEnum,
+  ) {
+    return this.transactionService.findAll(currentUser, status);
   }
 
   @Public()
