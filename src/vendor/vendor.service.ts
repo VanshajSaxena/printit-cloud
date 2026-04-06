@@ -1,24 +1,24 @@
-import { CreateVendorDto } from './dto/create-vendor.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { hash } from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+import { nanoid } from 'nanoid';
+import { ApplicationLogger } from 'src/logger/application-logger.service';
 import {
   EntityNotFoundError,
   FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
+import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { Vendor } from './entities/vendor.entity';
-import { nanoid } from 'nanoid';
-import { ApplicationLogger } from 'src/logger/application-logger.service';
-import { plainToInstance } from 'class-transformer';
-import { VendorResponseDto } from './dto/vendor-response.dto';
-import { LocationDto } from './dto/location.dto';
 import { NearbyQueryDto } from './dto/vendor-nearby.dto';
+import { VendorResponseDto } from './dto/vendor-response.dto';
+import { Vendor } from './entities/vendor.entity';
 
 interface VendorRawResult {
   vendor_id: number;
@@ -38,22 +38,35 @@ export class VendorService {
   #ID_LENGTH = 10;
 
   async create(createVendorDto: CreateVendorDto) {
-    const { email, username } = createVendorDto;
-    const isTaken = await this.vendorRepository.existsBy([
-      { email },
-      { username },
-    ]);
-    if (isTaken) {
-      throw new ConflictException(`The email ${email} already exists.`);
+    const { email } = createVendorDto;
+    let { username } = createVendorDto;
+
+    if (!username) {
+      username = await this.generateUsername(email);
+    } else {
+      const taken = await this.vendorRepository.existsBy({ username });
+      if (taken)
+        throw new ConflictException(`Username ${username} is already taken.`);
     }
+
+    const emailTaken = await this.vendorRepository.existsBy({ email });
+
+    if (emailTaken)
+      throw new ConflictException(`Email ${email} is already in use.`);
 
     const newVendor = this.vendorRepository.create(createVendorDto);
 
-    let slug = nanoid(this.#ID_LENGTH);
-    while (await this.vendorRepository.existsBy({ slug: slug })) {
-      slug = nanoid(this.#ID_LENGTH);
+    let slug = this.generateSlug();
+    while (await this.vendorRepository.existsBy({ slug })) {
+      slug = this.generateSlug();
       this.logger.warn('An existing nanoid was generated.');
     }
+
+    if (createVendorDto.password) {
+      const passwordHash = await hash(createVendorDto.password, 12);
+      newVendor.passwordHash = passwordHash;
+    }
+
     newVendor.slug = slug;
 
     if (createVendorDto.latitude != null && createVendorDto.longitude != null) {
@@ -65,17 +78,26 @@ export class VendorService {
 
     const saved = await this.vendorRepository.save(newVendor);
 
-    const dto = plainToInstance(VendorResponseDto, saved);
+    return plainToInstance(VendorResponseDto, saved);
+  }
 
-    if (saved.location) {
-      dto.location = new LocationDto();
-      dto.location.latitude = saved.location.coordinates[1];
-      dto.location.longitude = saved.location.coordinates[0];
-    } else {
-      dto.location = null;
-    }
+  private generateSlug() {
+    return nanoid(this.#ID_LENGTH);
+  }
 
-    return dto;
+  private async generateUsername(email: string): Promise<string> {
+    const base = email
+      .split('@')[0]
+      .replace(/[^a-zA-Z0-9_]/g, '')
+      .slice(0, 15)
+      .toLowerCase();
+
+    let username: string;
+    do {
+      username = `${base}_${nanoid(4)}`;
+    } while (await this.vendorRepository.existsBy({ username }));
+
+    return username;
   }
 
   async findAll() {

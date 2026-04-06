@@ -11,6 +11,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
   ApiExcludeEndpoint,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -35,6 +37,7 @@ import { LoginDto } from './dto/login-request.dto';
 import { RefreshRequestDto } from './dto/refresh-request.dto';
 
 import { TokenResponseDto } from './dto/token-response.dto';
+import { RegisterVendorDto } from './dto/register-vendor.dto';
 
 @ApiTags('Auth')
 @Controller({ path: 'auth', version: '1' })
@@ -43,6 +46,18 @@ export class AuthController {
     private readonly authService: AuthService,
     @InjectRepository(Vendor) private vendorRepo: Repository<Vendor>,
   ) {}
+
+  @Public()
+  @Post('register')
+  @ApiOperation({
+    summary: 'Create a new vendor account with email and password',
+  })
+  @ApiBody({ type: RegisterVendorDto })
+  @ApiCreatedResponse({ type: TokenResponseDto })
+  @ApiConflictResponse({ description: 'Email or username already in use' })
+  async register(@Body() dto: RegisterVendorDto): Promise<TokenResponseDto> {
+    return this.authService.register(dto);
+  }
 
   @Public()
   @UseGuards(LocalGuard)

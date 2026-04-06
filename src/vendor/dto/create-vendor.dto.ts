@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsStrongPassword,
   Length,
   Matches,
   Max,
@@ -15,17 +16,22 @@ export class CreateVendorDto {
   @IsString()
   firstName: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  lastName: string;
+  lastName?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @Length(3, 20)
   @Matches(/^[a-zA-Z0-9_]+$/, {
     message: 'Username can only contain letters, numbers, and underscores',
   })
-  username: string;
+  username?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsStrongPassword()
+  password?: string;
 
   @IsEmail()
   @IsString()

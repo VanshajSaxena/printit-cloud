@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { OneTimeCode } from 'src/common/entities/one-time-code.entity';
 import { RefreshToken } from 'src/common/entities/refresh-token.entity';
 import { SocialIdentity } from 'src/common/entities/social-identity.entity';
@@ -12,8 +14,7 @@ import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { LocalStrategy } from 'src/strategies/local.strategy';
 import { MicrosoftStrategy } from 'src/strategies/microsoft.strategy';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
-import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
+import { VendorModule } from 'src/vendor/vendor.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
       RefreshToken,
       OneTimeCode,
     ]),
+    VendorModule,
     ConfigModule,
     JwtModule.register({}),
   ],

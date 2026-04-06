@@ -14,7 +14,10 @@ import { SocialIdentity } from 'src/common/entities/social-identity.entity';
 import { RequestUser } from 'src/decorators/public.decorator';
 import { OAuthProfile } from 'src/strategies/google.strategy';
 import { Vendor } from 'src/vendor/entities/vendor.entity';
+import { VendorService } from 'src/vendor/vendor.service';
 import { Repository } from 'typeorm';
+import { RegisterVendorDto } from './dto/register-vendor.dto';
+import { TokenResponseDto } from './dto/token-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,9 +30,15 @@ export class AuthService {
     private readonly refreshRepository: Repository<RefreshToken>,
     @InjectRepository(OneTimeCode)
     private readonly oneTimeCodeRepository: Repository<OneTimeCode>,
+    private readonly vendorService: VendorService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
   ) {}
+
+  async register(dto: RegisterVendorDto): Promise<TokenResponseDto> {
+    const vendor = await this.vendorService.create({ ...dto });
+    return this.login({ sub: vendor.id, email: vendor.email });
+  }
 
   async validateCredentials(
     email: string,
@@ -87,25 +96,40 @@ export class AuthService {
   }
 
   async findOrLinkSocialIdentity(profile: OAuthProfile): Promise<Vendor> {
-    // 1. Existing identity?
     const existing = await this.socialRepository.findOne({
       where: { provider: profile.provider, providerId: profile.providerId },
       relations: ['vendor'],
     });
     if (existing) return existing.vendor;
 
-    // 2. Vendor with matching email?
-    const vendor = await this.vendorRepository.findOne({
+    let vendor = await this.vendorRepository.findOne({
       where: { email: profile.email },
     });
-    if (!vendor)
-      throw new NotFoundException(
-        `No vendor account for ${profile.email}. Contact admin.`,
-      );
 
-    // 3. Link and return
-    await this.socialRepository.save({ ...profile, vendor });
+    if (!vendor) {
+      vendor = await this.createVendorFromOAuth(profile);
+    }
+
+    await this.socialRepository.save({
+      provider: profile.provider,
+      providerId: profile.providerId,
+      email: profile.email,
+      vendor,
+    });
+
     return vendor;
+  }
+
+  private async createVendorFromOAuth(profile: OAuthProfile) {
+    const [firstName, ...rest] = (profile.displayName ?? profile.email).split(
+      ' ',
+    );
+    return this.vendorService.create({
+      email: profile.email,
+      firstName: firstName,
+      lastName: rest.join(' ') || undefined,
+      displayName: profile.displayName ?? undefined,
+    });
   }
 
   async issueOneTimeCode(vendorId: number): Promise<string> {

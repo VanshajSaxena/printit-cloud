@@ -31,5 +31,5 @@ export interface OAuthProfile {
   provider: 'google' | 'microsoft';
   providerId: string;
   email: string;
-  displayName: string;
+  displayName?: string;
 }
