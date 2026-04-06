@@ -1,6 +1,6 @@
-import { IsUUID } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class ExchangeRequestDto {
-  @IsUUID()
+  @IsString()
   code: string;
 }
