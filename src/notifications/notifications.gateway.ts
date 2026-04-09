@@ -23,6 +23,7 @@ import {
   MilestoneTransactionPrinting,
   MilestoneTransactionQueued,
   NewTransactionPayload,
+  PresenceUpdate,
   TransactionCompletedPayload,
   TransactionFailedPayload,
   TransactionStatusUpdatedPayload,
@@ -91,6 +92,17 @@ export class NotificationsGateway
   ): Promise<void> {
     await client.join(`vendor-${payload.id}`);
     this.logger.log(`Client ${client.id} joined vendor-${payload.id}`);
+  }
+
+  @SubscribeMessage('presence:update')
+  handlePresenceUpdate(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: PresenceUpdate,
+  ): void {
+    this.presenceService.markAway(client.id);
+    this.logger.log(
+      `Client ${client.id} presence updated to ${payload.status}`,
+    );
   }
 
   @SubscribeMessage('transaction:join')

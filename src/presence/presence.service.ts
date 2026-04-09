@@ -97,7 +97,9 @@ export class PresenceService {
     return id ? this.getStatusById(id) : UserStatus.OFFLINE;
   }
 
-  markAway(vendorId: string) {
+  markAway(socketId: string) {
+    const vendorId = this.socketToVendor.get(socketId);
+    if (!vendorId) return;
     const vendor = this.vendors.get(vendorId);
     if (vendor && vendor.status === UserStatus.ONLINE) {
       vendor.status = UserStatus.AWAY;

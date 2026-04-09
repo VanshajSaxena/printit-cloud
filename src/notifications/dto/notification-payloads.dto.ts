@@ -18,6 +18,10 @@ export class MilestoneTransactionPrinting {
   timestamp: string;
 }
 
+export class PresenceUpdate {
+  status: 'online' | 'offline' | 'away';
+}
+
 export class MilestoneTransactionQueued {
   vendorId: number;
   transactionId: number;
