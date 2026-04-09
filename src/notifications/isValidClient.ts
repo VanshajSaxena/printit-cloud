@@ -1,8 +1,6 @@
 interface VendorAuth {
   clientType: 'vendor';
-  clientId: number;
-  username: string;
-  slug: string;
+  token: string;
 }
 
 interface UserAuth {
@@ -16,7 +14,7 @@ export function isValidClient(
   auth: Partial<SocketAuthPayload>,
 ): auth is SocketAuthPayload {
   if (auth.clientType === 'vendor') {
-    return !!auth.clientId && !!auth.username && !!auth.slug;
+    return !!auth.token;
   }
 
   if (auth.clientType === 'user') {

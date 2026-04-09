@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -37,7 +33,12 @@ export class AuthService {
 
   async register(dto: RegisterVendorDto): Promise<TokenResponseDto> {
     const vendor = await this.vendorService.create({ ...dto });
-    return this.login({ sub: vendor.id, email: vendor.email });
+    return this.login({
+      sub: vendor.id,
+      email: vendor.email,
+      username: vendor.username,
+      slug: vendor.slug,
+    });
   }
 
   async validateCredentials(
@@ -46,7 +47,7 @@ export class AuthService {
   ): Promise<Vendor | null> {
     const vendor = await this.vendorRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'passwordHash'],
+      select: ['id', 'email', 'passwordHash', 'username', 'slug'],
     });
     if (!vendor?.passwordHash) return null;
     const valid = await compare(password, vendor.passwordHash);
@@ -63,8 +64,13 @@ export class AuthService {
 
   private issueAccessToken(user: RequestUser): string {
     return this.jwtService.sign(
-      { sub: user.sub, email: user.email },
-      { expiresIn: '6h', secret: this.config.get('JWT_SECRET') },
+      {
+        sub: user.sub,
+        email: user.email,
+        username: user.username,
+        slug: user.slug,
+      },
+      { expiresIn: '24h', secret: this.config.get('JWT_SECRET') },
     );
   }
 
@@ -90,9 +96,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
 
-    // Rotate: revoke old, issue new pair
     await this.refreshRepository.update(stored.id, { revoked: true });
-    return this.login({ sub: stored.vendor.id, email: stored.vendor.email });
+    return this.login({
+      sub: stored.vendor.id,
+      email: stored.vendor.email,
+      username: stored.vendor.username,
+      slug: stored.vendor.slug,
+    });
   }
 
   async findOrLinkSocialIdentity(profile: OAuthProfile): Promise<Vendor> {
@@ -133,14 +143,13 @@ export class AuthService {
   }
 
   async issueOneTimeCode(vendorId: number): Promise<string> {
-    // Clean up any stale codes for this vendor before issuing a new one
     await this.oneTimeCodeRepository.delete({ vendorId });
 
     const code = randomUUID();
     await this.oneTimeCodeRepository.save({
       code,
       vendorId,
-      expiresAt: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes
+      expiresAt: new Date(Date.now() + 2 * 60 * 1000),
     });
     return code;
   }
@@ -154,7 +163,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid authorization code');
     }
 
-    // Always delete first — prevents any race condition on double-use
     await this.oneTimeCodeRepository.delete({ id: record.id });
 
     if (record.expiresAt < new Date()) {
@@ -164,11 +172,15 @@ export class AuthService {
     return record.vendorId;
   }
 
-  // ─── Refresh Token ────────────────────────────────────────────────────────────
-
   async revokeRefreshToken(rawToken: string): Promise<void> {
     const hash = createHash('sha256').update(rawToken).digest('hex');
-    // Silently ignore if token doesn't exist — idempotent logout
+
     await this.refreshRepository.update({ tokenHash: hash }, { revoked: true });
+  }
+
+  verifyToken(token: string): RequestUser {
+    return this.jwtService.verify(token, {
+      secret: this.config.get('JWT_SECRET'),
+    });
   }
 }

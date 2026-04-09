@@ -44,7 +44,7 @@ import { RegisterVendorDto } from './dto/register-vendor.dto';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    @InjectRepository(Vendor) private vendorRepo: Repository<Vendor>,
+    @InjectRepository(Vendor) private vendorRepository: Repository<Vendor>,
   ) {}
 
   @Public()
@@ -96,10 +96,15 @@ export class AuthController {
     @Body() { code }: ExchangeRequestDto,
   ): Promise<TokenResponseDto> {
     const vendorId = await this.authService.consumeOneTimeCode(code);
-    const vendor = await this.vendorRepo.findOneOrFail({
+    const vendor = await this.vendorRepository.findOneOrFail({
       where: { id: vendorId },
     });
-    return this.authService.login({ sub: vendor.id, email: vendor.email });
+    return this.authService.login({
+      sub: vendor.id,
+      email: vendor.email,
+      username: vendor.username,
+      slug: vendor.slug,
+    });
   }
 
   @Post('logout')

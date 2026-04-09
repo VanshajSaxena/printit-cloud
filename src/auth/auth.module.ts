@@ -36,5 +36,6 @@ import { VendorModule } from 'src/vendor/vendor.module';
     GoogleStrategy,
     MicrosoftStrategy,
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

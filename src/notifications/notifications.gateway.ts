@@ -9,6 +9,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { AuthService } from 'src/auth/auth.service';
 import { corsOptions } from 'src/corsOptions';
 import { ApplicationLogger } from 'src/logger/application-logger.service';
 import { PresenceService } from 'src/presence/presence.service';
@@ -38,6 +39,7 @@ export class NotificationsGateway
   constructor(
     private logger: ApplicationLogger,
     private presenceService: PresenceService,
+    private authService: AuthService,
   ) {
     this.logger.setContext(NotificationsGateway.name);
   }
@@ -53,9 +55,10 @@ export class NotificationsGateway
 
     const { clientType } = auth;
     if (clientType === 'vendor') {
-      const { clientId, username, slug } = auth;
+      const { token } = auth;
+      const { sub, username, slug } = this.authService.verifyToken(token);
       this.presenceService.vendorConnected(
-        { id: String(clientId), username, slug },
+        { id: String(sub), username, slug },
         socket.id,
       );
     }
