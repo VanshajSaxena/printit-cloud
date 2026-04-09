@@ -99,9 +99,24 @@ export class NotificationsGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PresenceUpdate,
   ): void {
-    this.presenceService.markAway(client.id);
+    switch (payload.presence) {
+      case 'online':
+        this.presenceService.markOnline(client.id);
+        break;
+      case 'away':
+        this.presenceService.markAway(client.id);
+        break;
+      case 'offline':
+        this.presenceService.markOffline(client.id);
+        break;
+      default:
+        this.logger.error(
+          `Received an unknown status from notifications service ${payload.presence}`,
+        );
+        break;
+    }
     this.logger.log(
-      `Client ${client.id} presence updated to ${payload.status}`,
+      `Client ${client.id} presence updated to ${payload.presence}`,
     );
   }
 

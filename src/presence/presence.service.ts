@@ -106,6 +106,24 @@ export class PresenceService {
     }
   }
 
+  markOnline(socketId: string) {
+    const vendorId = this.socketToVendor.get(socketId);
+    if (!vendorId) return;
+    const vendor = this.vendors.get(vendorId);
+    if (vendor && vendor.status !== UserStatus.ONLINE) {
+      vendor.status = UserStatus.ONLINE;
+    }
+  }
+
+  markOffline(socketId: string) {
+    const vendorId = this.socketToVendor.get(socketId);
+    if (!vendorId) return;
+    const vendor = this.vendors.get(vendorId);
+    if (vendor && vendor.status !== UserStatus.OFFLINE) {
+      vendor.status = UserStatus.OFFLINE;
+    }
+  }
+
   getStatus(selector: string) {
     let status;
     if (selector.startsWith('@')) {
