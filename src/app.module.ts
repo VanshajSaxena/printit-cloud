@@ -18,6 +18,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
 import { AuthModule } from './auth/auth.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { AnonUserModule } from './anon-user/anon-user.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     PresenceModule,
     AuthModule,
     AnalyticsModule,
+    AnonUserModule,
   ],
   controllers: [AppController],
   providers: [
