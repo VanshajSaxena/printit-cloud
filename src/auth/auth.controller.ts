@@ -103,7 +103,6 @@ export class AuthController {
       sub: vendor.id,
       email: vendor.email,
       username: vendor.username,
-      slug: vendor.slug,
     });
   }
 

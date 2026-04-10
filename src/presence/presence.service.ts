@@ -6,14 +6,12 @@ import { UserStatus } from './enums/user-status.enum';
 export interface VendorPresencePayload {
   id: string;
   username: string;
-  slug: string;
 }
 
 interface Vendor {
   sockets: Set<string>;
   status: UserStatus;
   username: string;
-  slug: string;
 }
 
 @Injectable()
@@ -21,14 +19,13 @@ export class PresenceService {
   private readonly vendors = new Map<string, Vendor>();
   private readonly socketToVendor = new Map<string, string>();
   private readonly usernameToId = new Map<string, string>();
-  private readonly slugToId = new Map<string, string>();
 
   constructor(private readonly logger: ApplicationLogger) {
     this.logger.setContext(PresenceService.name);
   }
 
   vendorConnected(payload: VendorPresencePayload, socketId: string) {
-    const { id, username, slug } = payload;
+    const { id, username } = payload;
 
     let vendor = this.vendors.get(id);
     if (!vendor) {
@@ -36,22 +33,15 @@ export class PresenceService {
         sockets: new Set(),
         status: UserStatus.OFFLINE,
         username,
-        slug,
       };
       this.vendors.set(id, vendor);
 
       this.usernameToId.set(username, id);
-      this.slugToId.set(slug, id);
     } else {
       if (vendor.username !== username) {
         this.usernameToId.delete(vendor.username);
         this.usernameToId.set(username, id);
         vendor.username = username;
-      }
-      if (vendor.slug !== slug) {
-        this.slugToId.delete(vendor.slug);
-        this.slugToId.set(slug, id);
-        vendor.slug = slug;
       }
     }
 
@@ -77,7 +67,6 @@ export class PresenceService {
     if (vendor.sockets.size === 0) {
       vendor.status = UserStatus.OFFLINE;
       this.usernameToId.delete(vendor.username);
-      this.slugToId.delete(vendor.slug);
       this.vendors.delete(vendorId);
     }
   }
@@ -89,11 +78,6 @@ export class PresenceService {
 
   getStatusByUsername(username: string): UserStatus {
     const id = this.usernameToId.get(username);
-    return id ? this.getStatusById(id) : UserStatus.OFFLINE;
-  }
-
-  getStatusBySlug(slug: string): UserStatus {
-    const id = this.slugToId.get(slug);
     return id ? this.getStatusById(id) : UserStatus.OFFLINE;
   }
 
@@ -132,15 +116,9 @@ export class PresenceService {
         status,
         id: Number(this.usernameToId.get(selector.substring(1))),
       });
-    } else if (/^\d+$/.test(selector)) {
+    } else {
       status = this.getStatusById(selector);
       return new VendorPresenceDto({ status, id: Number(selector) });
-    } else {
-      status = this.getStatusBySlug(selector);
-      return new VendorPresenceDto({
-        status,
-        id: Number(this.slugToId.get(selector)),
-      });
     }
   }
 

@@ -57,9 +57,9 @@ export class NotificationsGateway
     const { clientType } = auth;
     if (clientType === 'vendor') {
       const { token } = auth;
-      const { sub, username, slug } = this.authService.verifyToken(token);
+      const { sub, username } = this.authService.verifyToken(token);
       this.presenceService.vendorConnected(
-        { id: String(sub), username, slug },
+        { id: String(sub), username },
         socket.id,
       );
     }

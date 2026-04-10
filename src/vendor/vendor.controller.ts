@@ -49,12 +49,11 @@ export class VendorController {
     description: 'The unique identifier',
     examples: {
       id: { summary: 'Internal ID', value: 999 },
-      slug: { summary: 'Slug', value: 'xi28b2sg8d' },
       username: { summary: 'Username', value: '@username' },
     },
     schema: {
       oneOf: [
-        { type: 'string', description: 'Slug or Username' },
+        { type: 'string', description: 'Username' },
         { type: 'integer', description: 'Internal Database ID' },
       ],
     },
@@ -71,12 +70,11 @@ export class VendorController {
     description: 'The unique identifier',
     examples: {
       id: { summary: 'Internal ID', value: 999 },
-      slug: { summary: 'Slug', value: 'xi28b2sg8d' },
       username: { summary: 'Username', value: '@username' },
     },
     schema: {
       oneOf: [
-        { type: 'string', description: 'Slug or Username' },
+        { type: 'string', description: 'Username' },
         { type: 'integer', description: 'Internal Database ID' },
       ],
     },

@@ -16,7 +16,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     return {
       sub: vendor.id,
       email: vendor.email,
-      slug: vendor.slug,
       username: vendor.username,
     };
   }

@@ -18,5 +18,4 @@ export interface RequestUser {
   sub: number;
   email: string;
   username: string;
-  slug: string;
 }

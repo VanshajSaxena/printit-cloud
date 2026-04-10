@@ -21,13 +21,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     sub: number;
     email: string;
     username: string;
-    slug: string;
   }): RequestUser {
     return {
       sub: payload.sub,
       email: payload.email,
       username: payload.username,
-      slug: payload.slug,
     };
   }
 }

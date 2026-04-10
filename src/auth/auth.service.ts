@@ -37,7 +37,6 @@ export class AuthService {
       sub: vendor.id,
       email: vendor.email,
       username: vendor.username,
-      slug: vendor.slug,
     });
   }
 
@@ -47,7 +46,7 @@ export class AuthService {
   ): Promise<Vendor | null> {
     const vendor = await this.vendorRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'passwordHash', 'username', 'slug'],
+      select: ['id', 'email', 'passwordHash', 'username'],
     });
     if (!vendor?.passwordHash) return null;
     const valid = await compare(password, vendor.passwordHash);
@@ -68,7 +67,6 @@ export class AuthService {
         sub: user.sub,
         email: user.email,
         username: user.username,
-        slug: user.slug,
       },
       { expiresIn: '24h', secret: this.config.get('JWT_SECRET') },
     );
@@ -101,7 +99,6 @@ export class AuthService {
       sub: stored.vendor.id,
       email: stored.vendor.email,
       username: stored.vendor.username,
-      slug: stored.vendor.slug,
     });
   }
 

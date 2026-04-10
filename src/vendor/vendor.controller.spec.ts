@@ -12,7 +12,6 @@ describe('VendorController', () => {
     findAll: jest.fn(),
     findOneById: jest.fn(),
     findOneByUsername: jest.fn(),
-    findOneBySlug: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
   };

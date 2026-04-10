@@ -1,10 +1,9 @@
 import { ApiHideProperty } from '@nestjs/swagger';
-import { Exclude, Expose, Type } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { RefreshToken } from 'src/common/entities/refresh-token.entity';
 import { SocialIdentity } from 'src/common/entities/social-identity.entity';
 import { Printer } from 'src/printer/entities/printer.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
-import { LocationDto } from './location.dto';
 import { Point } from 'typeorm';
 
 @Exclude()
@@ -26,9 +25,6 @@ export class VendorResponseDto {
 
   @Expose()
   address: string;
-
-  @Expose()
-  slug: string;
 
   @Expose()
   distance: number;

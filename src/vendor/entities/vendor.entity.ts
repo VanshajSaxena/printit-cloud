@@ -37,9 +37,6 @@ export class Vendor {
   @Column({ type: 'varchar', length: 255, nullable: true })
   address: string | null;
 
-  @Column({ unique: true })
-  slug: string;
-
   @Index({ spatial: true })
   @Column({
     type: 'geography',

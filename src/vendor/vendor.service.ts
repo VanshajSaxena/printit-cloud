@@ -35,8 +35,6 @@ export class VendorService {
     this.logger.setContext(VendorService.name);
   }
 
-  #ID_LENGTH = 10;
-
   async create(createVendorDto: CreateVendorDto) {
     const { email } = createVendorDto;
     let { username } = createVendorDto;
@@ -57,18 +55,10 @@ export class VendorService {
     const newVendor = this.vendorRepository.create(createVendorDto);
     newVendor.username = username;
 
-    let slug = this.generateSlug();
-    while (await this.vendorRepository.existsBy({ slug })) {
-      slug = this.generateSlug();
-      this.logger.warn('An existing nanoid was generated.');
-    }
-
     if (createVendorDto.password) {
       const passwordHash = await hash(createVendorDto.password, 12);
       newVendor.passwordHash = passwordHash;
     }
-
-    newVendor.slug = slug;
 
     if (createVendorDto.latitude != null && createVendorDto.longitude != null) {
       newVendor.location = {
@@ -80,10 +70,6 @@ export class VendorService {
     const saved = await this.vendorRepository.save(newVendor);
 
     return plainToInstance(VendorResponseDto, saved);
-  }
-
-  private generateSlug() {
-    return nanoid(this.#ID_LENGTH);
   }
 
   private async generateUsername(email: string): Promise<string> {
@@ -113,12 +99,6 @@ export class VendorService {
     if (/^\d+$/.test(selector)) {
       return this.findOneById(Number(selector));
     }
-    return this.findOneBySlug(selector);
-  }
-
-  async findOneBySlug(slug: string) {
-    const vendor = await this.findOneEntity({ slug });
-    return plainToInstance(VendorResponseDto, vendor);
   }
 
   async findOneByUsername(username: string) {
