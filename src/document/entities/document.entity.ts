@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { DocumentStatus } from '../enum/document-status.enum';
 
-@Entity()
+@Entity('documents')
 export class Document {
   @PrimaryGeneratedColumn()
   id: number;

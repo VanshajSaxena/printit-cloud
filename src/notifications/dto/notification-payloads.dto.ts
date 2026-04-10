@@ -19,7 +19,7 @@ export class MilestoneTransactionPrinting {
 }
 
 export class PresenceUpdate {
-  presence: 'online' | 'offline' | 'away';
+  presence: 'online' | 'offline' | 'away' | (string & {});
 }
 
 export class MilestoneTransactionQueued {

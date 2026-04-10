@@ -14,7 +14,7 @@ import {
 import { SocialIdentity } from '../../common/entities/social-identity.entity';
 import { RefreshToken } from 'src/common/entities/refresh-token.entity';
 
-@Entity()
+@Entity('vendors')
 export class Vendor {
   @PrimaryGeneratedColumn()
   id: number;

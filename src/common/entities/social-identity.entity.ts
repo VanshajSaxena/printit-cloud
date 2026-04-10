@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('social_identitites')
 export class SocialIdentity {
   @PrimaryGeneratedColumn()
   id: number;

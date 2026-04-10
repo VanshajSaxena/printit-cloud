@@ -80,7 +80,7 @@ export class AuthService {
     await this.refreshRepository.save({
       tokenHash: hash,
       vendorId,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week
     });
     return raw;
   }

@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 import { OutputColor } from '../enums/job.enum';
 
-@Entity()
+@Entity('jobs')
 export class Job {
   @PrimaryGeneratedColumn()
   id: number;

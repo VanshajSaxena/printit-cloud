@@ -1,7 +1,7 @@
 import { Vendor } from 'src/vendor/entities/vendor.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('one_time_codes')
 export class OneTimeCode {
   @PrimaryGeneratedColumn()
   id: number;

@@ -11,7 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('printers')
 export class Printer {
   @PrimaryGeneratedColumn()
   id: number;
