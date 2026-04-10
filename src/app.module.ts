@@ -17,6 +17,7 @@ import { R2Module } from './r2/r2.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { VendorModule } from './vendor/vendor.module';
 import { AuthModule } from './auth/auth.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { AuthModule } from './auth/auth.module';
     NotificationsModule,
     PresenceModule,
     AuthModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [
