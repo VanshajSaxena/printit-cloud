@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare } from 'bcrypt';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
@@ -176,8 +176,16 @@ export class AuthService {
   }
 
   verifyToken(token: string): RequestUser {
-    return this.jwtService.verify(token, {
-      secret: this.config.get('JWT_SECRET'),
-    });
+    try {
+      return this.jwtService.verify(token, {
+        secret: this.config.get('JWT_SECRET'),
+      });
+    } catch (err) {
+      if (err instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Token expired');
+      }
+
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

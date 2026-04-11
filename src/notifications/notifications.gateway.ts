@@ -46,25 +46,28 @@ export class NotificationsGateway
   }
 
   handleConnection(@ConnectedSocket() socket: Socket) {
-    const auth = socket.handshake.auth satisfies Partial<SocketAuthPayload>;
-    this.logger.log(auth);
+    try {
+      const auth = socket.handshake.auth satisfies Partial<SocketAuthPayload>;
+      this.logger.log(auth);
 
-    if (!isValidClient(auth)) {
+      if (!isValidClient(auth)) {
+        socket.disconnect();
+        return;
+      }
+
+      const { clientType } = auth;
+      if (clientType === 'vendor') {
+        const { token } = auth;
+        const { sub, username } = this.authService.verifyToken(token);
+        this.presenceService.vendorConnected(
+          { id: String(sub), username },
+          socket.id,
+        );
+      }
+      this.logger.log(`Client connected: ${clientType} (${socket.id})`);
+    } catch {
       socket.disconnect();
-      return;
     }
-
-    const { clientType } = auth;
-    if (clientType === 'vendor') {
-      const { token } = auth;
-      const { sub, username } = this.authService.verifyToken(token);
-      this.presenceService.vendorConnected(
-        { id: String(sub), username },
-        socket.id,
-      );
-    }
-
-    this.logger.log(`Client connected: ${clientType} (${socket.id})`);
   }
 
   handleDisconnect(@ConnectedSocket() socket: Socket) {
