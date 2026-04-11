@@ -10,9 +10,12 @@ export class DashboardCardAnalytics {
   yesterdayOrders: number;
   orderPercentageChange: number | null;
 
+  totalUsers: number;
   todayUsers: number;
   yesterdayUsers: number;
   userPercentageChange: number | null;
+  todayNewUsers: number;
+  yesterdayNewUsers: number;
   constructor(partial: Partial<DashboardCardAnalytics>) {
     Object.assign(this, partial);
   }

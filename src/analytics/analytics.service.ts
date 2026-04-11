@@ -77,38 +77,55 @@ export class AnalyticsService {
 
       this.dataSource.query<
         {
+          totalUsers: number;
           todayUsers: number;
           yesterdayUsers: number;
-          percentageUsers: number | null;
+          todayNewUsers: number;
+          yesterdayNewUsers: number;
+          userPercentageChange: number | null;
         }[]
       >(
-        `
-        WITH stats AS (
-          SELECT
-            COUNT(DISTINCT a.id) FILTER (
-              WHERE a.last_seen >= date_trunc('day', now())
-            ) AS "todayUsers",
+        `WITH stats AS (
+      SELECT 
+        COUNT(*) AS "totalUsers",
 
-            COUNT(DISTINCT a.id) FILTER (
-              WHERE a.last_seen < date_trunc('day', now())
-            ) AS "yesterdayUsers"
-
-          FROM anon_users a
-          WHERE
-            a.vendor_id = $1
-            AND a.last_seen >= date_trunc('day', now()) - interval '1 day'
+        COUNT(*) FILTER (
+          WHERE a.last_seen >= date_trunc('day', now())
             AND a.last_seen < date_trunc('day', now()) + interval '1 day'
-        )
+        ) AS "todayUsers",
 
-        SELECT
-          "todayUsers",
-          "yesterdayUsers",
-          CASE
-            WHEN "yesterdayUsers" = 0 THEN NULL
-            ELSE ("todayUsers" - "yesterdayUsers") * 100.0 / "yesterdayUsers"
-          END AS "percentageUsers"
-        FROM stats;
-        `,
+        COUNT(*) FILTER (
+          WHERE a.last_seen >= date_trunc('day', now()) - interval '1 day'
+            AND a.last_seen < date_trunc('day', now())
+        ) AS "yesterdayUsers",
+
+        COUNT(*) FILTER (
+          WHERE a.first_seen >= date_trunc('day', now())
+            AND a.first_seen < date_trunc('day', now()) + interval '1 day'
+        ) AS "todayNewUsers",
+
+        COUNT(*) FILTER (
+          WHERE a.first_seen >= date_trunc('day', now()) - interval '1 day'
+            AND a.first_seen < date_trunc('day', now())
+        ) AS "yesterdayNewUsers"
+
+      FROM anon_users a
+      WHERE a.vendor_id = $1
+    )
+
+    SELECT
+      "totalUsers",
+      "todayUsers",
+      "yesterdayUsers",
+      "todayNewUsers",
+      "yesterdayNewUsers",
+
+      CASE
+        WHEN "yesterdayUsers" = 0 THEN NULL
+        ELSE ("todayUsers" - "yesterdayUsers") * 100.0 / "yesterdayUsers"
+      END AS "userPercentageChange"
+
+    FROM stats;`,
         [vendorId],
       ),
     ]);
@@ -116,7 +133,7 @@ export class AnalyticsService {
     const sheetOrder = sheetOrderResult[0];
     const users = userResult[0];
 
-    return {
+    return new DashboardCardAnalytics({
       todaySheets: sheetOrder.todaySheets,
       yesterdaySheets: sheetOrder.yesterdaySheets,
       sheetPercentageChange:
@@ -131,10 +148,15 @@ export class AnalyticsService {
           ? sheetOrder.orderPercentageChange
           : null,
 
+      totalUsers: users.totalUsers,
+
       todayUsers: users.todayUsers,
       yesterdayUsers: users.yesterdayUsers,
       userPercentageChange:
-        users.percentageUsers !== null ? users.percentageUsers : null,
-    };
+        users.userPercentageChange !== null ? users.userPercentageChange : null,
+
+      todayNewUsers: users.todayNewUsers,
+      yesterdayNewUsers: users.yesterdayNewUsers,
+    });
   }
 }
