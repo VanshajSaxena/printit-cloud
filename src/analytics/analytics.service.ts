@@ -8,50 +8,133 @@ export class AnalyticsService {
   async getDashboardCardAnalytics(
     vendorId: number,
   ): Promise<DashboardCardAnalytics> {
-    const result = await this.dataSource.query<DashboardCardAnalytics[]>(
-      `
-      with stats as (
-        select
-          coalesce(
-            sum(
-              case when j.created_at >= date_trunc('day', now()) then j.copy_count * d.page_count else 0 end
-            ),
-            0
-          ) as "todaySheets",
-          coalesce(
-            sum(
-              case when j.created_at < date_trunc('day', now()) then j.copy_count * d.page_count else 0 end
-            ),
-            0
-          ) as "yesterdaySheets"
-        from
-          job j
-          join transaction t on j.transaction_id = t.id
-          join document d on j.document_id = d.id
-        where
-          t.vendor_id = $1
-          and j.created_at >= date_trunc('day', now()) - interval '1 day'
-          and j.created_at < date_trunc('day', now()) + interval '1 day'
-      )
-      select
-        "todaySheets",
-        "yesterdaySheets",
-        case when "yesterdaySheets" = 0 then null else (
-          "todaySheets" - "yesterdaySheets"
-        ) * 100.0 / "yesterdaySheets" end as "percentageChange"
-      from
-        stats;
-      `,
-      [vendorId],
-    );
+    const [sheetOrderResult, userResult] = await Promise.all([
+      this.dataSource.query<
+        {
+          todaySheets: number;
+          yesterdaySheets: number;
+          todayOrders: number;
+          yesterdayOrders: number;
+          sheetPercentageChange: number | null;
+          orderPercentageChange: number | null;
+        }[]
+      >(
+        `
+        WITH stats AS (
+          SELECT
+            COALESCE(
+              SUM(j.copy_count * d.page_count) FILTER (
+                WHERE j.created_at >= date_trunc('day', now())
+              ),
+              0
+            ) AS "todaySheets",
 
-    const row = result[0];
+            COALESCE(
+              SUM(j.copy_count * d.page_count) FILTER (
+                WHERE j.created_at < date_trunc('day', now())
+              ),
+              0
+            ) AS "yesterdaySheets",
 
-    return new DashboardCardAnalytics({
-      todaySheets: row.todaySheets,
-      yesterdaySheets: row.yesterdaySheets,
-      percentageChange:
-        row.percentageChange !== null ? row.percentageChange : null,
-    });
+            COUNT(DISTINCT t.id) FILTER (
+              WHERE t.created_at >= date_trunc('day', now())
+            ) AS "todayOrders",
+
+            COUNT(DISTINCT t.id) FILTER (
+              WHERE t.created_at < date_trunc('day', now())
+            ) AS "yesterdayOrders"
+
+          FROM transaction t
+          JOIN job j ON j.transaction_id = t.id
+          JOIN document d ON j.document_id = d.id
+
+          WHERE
+            t.vendor_id = $1
+            AND t.created_at >= date_trunc('day', now()) - interval '1 day'
+            AND t.created_at < date_trunc('day', now()) + interval '1 day'
+        )
+
+        SELECT
+          "todaySheets",
+          "yesterdaySheets",
+          "todayOrders",
+          "yesterdayOrders",
+
+          CASE
+            WHEN "yesterdaySheets" = 0 THEN NULL
+            ELSE ("todaySheets" - "yesterdaySheets") * 100.0 / "yesterdaySheets"
+          END AS "sheetPercentageChange",
+
+          CASE
+            WHEN "yesterdayOrders" = 0 THEN NULL
+            ELSE ("todayOrders" - "yesterdayOrders") * 100.0 / "yesterdayOrders"
+          END AS "orderPercentageChange"
+
+        FROM stats;
+        `,
+        [vendorId],
+      ),
+
+      this.dataSource.query<
+        {
+          todayUsers: number;
+          yesterdayUsers: number;
+          percentageUsers: number | null;
+        }[]
+      >(
+        `
+        WITH stats AS (
+          SELECT
+            COUNT(DISTINCT a.id) FILTER (
+              WHERE a.last_seen >= date_trunc('day', now())
+            ) AS "todayUsers",
+
+            COUNT(DISTINCT a.id) FILTER (
+              WHERE a.last_seen < date_trunc('day', now())
+            ) AS "yesterdayUsers"
+
+          FROM anon_users a
+          WHERE
+            a.vendor_id = $1
+            AND a.last_seen >= date_trunc('day', now()) - interval '1 day'
+            AND a.last_seen < date_trunc('day', now()) + interval '1 day'
+        )
+
+        SELECT
+          "todayUsers",
+          "yesterdayUsers",
+          CASE
+            WHEN "yesterdayUsers" = 0 THEN NULL
+            ELSE ("todayUsers" - "yesterdayUsers") * 100.0 / "yesterdayUsers"
+          END AS "percentageUsers"
+        FROM stats;
+        `,
+        [vendorId],
+      ),
+    ]);
+
+    const sheetOrder = sheetOrderResult[0];
+    const users = userResult[0];
+
+    return {
+      todaySheets: sheetOrder.todaySheets,
+      yesterdaySheets: sheetOrder.yesterdaySheets,
+      sheetPercentageChange:
+        sheetOrder.sheetPercentageChange !== null
+          ? sheetOrder.sheetPercentageChange
+          : null,
+
+      todayOrders: sheetOrder.todayOrders,
+      yesterdayOrders: sheetOrder.yesterdayOrders,
+      orderPercentageChange:
+        sheetOrder.orderPercentageChange !== null
+          ? sheetOrder.orderPercentageChange
+          : null,
+
+      todayUsers: users.todayUsers,
+      yesterdayUsers: users.yesterdayUsers,
+      userPercentageChange:
+        users.percentageUsers !== null ? users.percentageUsers : null,
+    };
   }
 }

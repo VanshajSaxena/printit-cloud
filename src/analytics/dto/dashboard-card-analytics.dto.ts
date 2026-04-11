@@ -4,8 +4,15 @@ import { Expose } from 'class-transformer';
 export class DashboardCardAnalytics {
   todaySheets: number;
   yesterdaySheets: number;
-  percentageChange: number | null;
+  sheetPercentageChange: number | null;
 
+  todayOrders: number;
+  yesterdayOrders: number;
+  orderPercentageChange: number | null;
+
+  todayUsers: number;
+  yesterdayUsers: number;
+  userPercentageChange: number | null;
   constructor(partial: Partial<DashboardCardAnalytics>) {
     Object.assign(this, partial);
   }
