@@ -11,7 +11,11 @@ import {
 } from '@nestjs/common';
 import { ApiNotFoundResponse, ApiParam } from '@nestjs/swagger';
 import { NotFoundErrorDto } from 'src/common/dto/error-response.dto';
-import { Public } from 'src/decorators/public.decorator';
+import {
+  CurrentUser,
+  Public,
+  type RequestUser,
+} from 'src/decorators/public.decorator';
 import { PresenceService } from 'src/presence/presence.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
@@ -34,6 +38,11 @@ export class VendorController {
   @Get()
   async findAll() {
     return this.vendorService.findAll();
+  }
+
+  @Get('/me')
+  async getVendorProfile(@CurrentUser() user: RequestUser) {
+    return this.vendorService.getVendorProfile(user);
   }
 
   @Public()

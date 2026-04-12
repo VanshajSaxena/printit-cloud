@@ -19,6 +19,7 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { NearbyQueryDto } from './dto/vendor-nearby.dto';
 import { VendorResponseDto } from './dto/vendor-response.dto';
 import { Vendor } from './entities/vendor.entity';
+import { RequestUser } from 'src/decorators/public.decorator';
 
 interface VendorRawResult {
   vendor_id: number;
@@ -99,6 +100,10 @@ export class VendorService {
     if (/^\d+$/.test(selector)) {
       return this.findOneById(Number(selector));
     }
+  }
+
+  getVendorProfile(user: RequestUser) {
+    return this.findOne(String(user.sub));
   }
 
   async findOneByUsername(username: string) {
