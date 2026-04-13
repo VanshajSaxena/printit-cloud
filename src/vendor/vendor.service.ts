@@ -20,6 +20,7 @@ import { NearbyQueryDto } from './dto/vendor-nearby.dto';
 import { VendorResponseDto } from './dto/vendor-response.dto';
 import { Vendor } from './entities/vendor.entity';
 import { RequestUser } from 'src/decorators/public.decorator';
+import { CheckUsernameResponseDto } from './dto/check-username-response.dto';
 
 interface VendorRawResult {
   vendor_id: number;
@@ -71,6 +72,16 @@ export class VendorService {
     const saved = await this.vendorRepository.save(newVendor);
 
     return plainToInstance(VendorResponseDto, saved);
+  }
+
+  async checkUsernameAvailability(
+    username: string,
+  ): Promise<CheckUsernameResponseDto> {
+    const exists = await this.vendorRepository.exists({
+      where: { username: username.toLowerCase() },
+    });
+
+    return plainToInstance(CheckUsernameResponseDto, { available: !exists });
   }
 
   private async generateUsername(email: string): Promise<string> {

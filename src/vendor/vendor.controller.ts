@@ -22,6 +22,7 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { NearbyQueryDto } from './dto/vendor-nearby.dto';
 import { VendorPresenceDto } from './dto/vendor-presence.dto';
 import { VendorService } from './vendor.service';
+import { CheckUsernameRequestDto } from './dto/check-username-request.dto';
 
 @Controller({ path: 'vendors', version: '1' })
 export class VendorController {
@@ -43,6 +44,16 @@ export class VendorController {
   @Get('/me')
   async getVendorProfile(@CurrentUser() user: RequestUser) {
     return this.vendorService.getVendorProfile(user);
+  }
+
+  @Public()
+  @Get('/username')
+  async checkUsernameAvailability(
+    @Query() checkUsernameRequestDto: CheckUsernameRequestDto,
+  ) {
+    return this.vendorService.checkUsernameAvailability(
+      checkUsernameRequestDto.username,
+    );
   }
 
   @Public()
