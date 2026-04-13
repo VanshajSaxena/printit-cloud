@@ -93,22 +93,30 @@ export class NotificationsGateway
   handlePresenceUpdate(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: PresenceUpdate,
-  ): void {
-    switch (payload.presence) {
-      case 'online':
-        this.presenceService.markOnline(client.id);
-        break;
-      case 'away':
-        this.presenceService.markAway(client.id);
-        break;
-      case 'offline':
-        this.presenceService.markOffline(client.id);
-        break;
-      default:
-        this.logger.error(
-          `Received an unknown status from notifications service ${payload.presence}`,
-        );
-        break;
+  ) {
+    try {
+      switch (payload.presence) {
+        case 'online':
+          this.presenceService.markOnline(client.id);
+          break;
+        case 'away':
+          this.presenceService.markAway(client.id);
+          break;
+        case 'offline':
+          this.presenceService.markOffline(client.id);
+          break;
+        default:
+          throw new Error(`Unknown presence: ${payload.presence}`);
+      }
+
+      return {
+        success: true,
+      };
+    } catch {
+      this.logger.error('Failed to update presence status');
+      return {
+        success: false,
+      };
     }
   }
 
