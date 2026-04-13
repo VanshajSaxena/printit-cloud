@@ -19,7 +19,6 @@ import {
   JobIncompletePayload,
   JobStatusUpdatedPayload,
   JoinTransactionPayload,
-  JoinVendorPayload,
   MilestoneTransactionPrinting,
   MilestoneTransactionQueued,
   NewTransactionPayload,
@@ -45,7 +44,7 @@ export class NotificationsGateway
     this.logger.setContext(NotificationsGateway.name);
   }
 
-  handleConnection(@ConnectedSocket() socket: Socket) {
+  async handleConnection(@ConnectedSocket() socket: Socket) {
     try {
       const auth = socket.handshake.auth satisfies Partial<SocketAuthPayload>;
       this.logger.log(auth);
@@ -63,6 +62,8 @@ export class NotificationsGateway
           { id: String(sub), username },
           socket.id,
         );
+        await socket.join(`vendor-${sub}`);
+        this.logger.log(`Client ${socket.id} joined vendor-${sub}`);
       }
       this.logger.log(`Client connected: ${clientType} (${socket.id})`);
     } catch {
@@ -88,15 +89,6 @@ export class NotificationsGateway
     this.logger.log(`Client disconnected: ${clientType} (${socket.id})`);
   }
 
-  @SubscribeMessage('vendor:join')
-  async handleJoinVendor(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() payload: JoinVendorPayload,
-  ): Promise<void> {
-    await client.join(`vendor-${payload.id}`);
-    this.logger.log(`Client ${client.id} joined vendor-${payload.id}`);
-  }
-
   @SubscribeMessage('presence:update')
   handlePresenceUpdate(
     @ConnectedSocket() client: Socket,
@@ -118,9 +110,6 @@ export class NotificationsGateway
         );
         break;
     }
-    this.logger.log(
-      `Client ${client.id} presence updated to ${payload.presence}`,
-    );
   }
 
   @SubscribeMessage('transaction:join')

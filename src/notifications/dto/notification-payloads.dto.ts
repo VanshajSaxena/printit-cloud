@@ -6,12 +6,6 @@ import {
   IsString,
 } from 'class-validator';
 
-export class JoinVendorPayload {
-  @IsNotEmpty()
-  @IsInt()
-  id: number;
-}
-
 export class MilestoneTransactionPrinting {
   vendorId: number;
   transactionId: number;

@@ -87,6 +87,9 @@ export class PresenceService {
     const vendor = this.vendors.get(vendorId);
     if (vendor && vendor.status === UserStatus.ONLINE) {
       vendor.status = UserStatus.AWAY;
+      this.logger.log(
+        `Client ${socketId} presence vendor ${vendorId} updated to: away`,
+      );
     }
   }
 
@@ -96,6 +99,9 @@ export class PresenceService {
     const vendor = this.vendors.get(vendorId);
     if (vendor && vendor.status !== UserStatus.ONLINE) {
       vendor.status = UserStatus.ONLINE;
+      this.logger.log(
+        `Client ${socketId} presence vendor ${vendorId} updated to: online`,
+      );
     }
   }
 
@@ -105,6 +111,9 @@ export class PresenceService {
     const vendor = this.vendors.get(vendorId);
     if (vendor && vendor.status !== UserStatus.OFFLINE) {
       vendor.status = UserStatus.OFFLINE;
+      this.logger.log(
+        `Client ${socketId} presence vendor ${vendorId} updated to: offline`,
+      );
     }
   }
 
