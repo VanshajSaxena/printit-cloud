@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { TransactionStatusHistory } from './transaction-status-history.entity';
 
 @Entity('transactions')
 export class Transaction {
@@ -24,6 +25,9 @@ export class Transaction {
     default: StatusEnum.PENDING,
   })
   status: StatusEnum;
+
+  @OneToMany(() => TransactionStatusHistory, (h) => h.transaction)
+  statusHistory: TransactionStatusHistory[];
 
   @Column({ unique: true })
   friendlyId: string;

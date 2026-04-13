@@ -125,28 +125,33 @@ export class TransactionService {
     id: number,
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<void> {
-    const status = updateTransactionDto.status;
+    const { status, reason } = updateTransactionDto;
 
     const rows = await this.dataSource.query<
       (UpdateTransactionResultRow | undefined)[]
     >(
       `
-      with updated_tx as (
-        update transaction
-        set status = $2,
-        updated_at = NOW()
-        where id = $1
-        returning id, vendor_id
+      WITH updated_transaction AS (
+        UPDATE transaction
+        SET status = $2,
+            updated_at = NOW()
+        WHERE id = $1
+        RETURNING id, vendor_id
       ),
-      updated_jobs as (
-        update job
-        set status = $2,
-        updated_at = NOW()
-        where transaction_id = $1
+      updated_jobs AS (
+        UPDATE job
+        SET status = $2,
+            updated_at = NOW()
+        WHERE transaction_id = $1
+      ),
+      inserted_history AS (
+        INSERT INTO transaction_status_history (transaction_id, status, reason, "createdAt")
+        SELECT id, $2, $3, NOW()
+        FROM updated_transaction
       )
-      select id, vendor_id from updated_tx;
-    `,
-      [id, status],
+      SELECT id, vendor_id FROM updated_transaction;
+      `,
+      [id, status, reason ?? null],
     );
 
     const row = rows[0];
@@ -155,7 +160,7 @@ export class TransactionService {
       throw new NotFoundException(`Transaction not found for id: ${id}`);
     }
 
-    if (updateTransactionDto.status === StatusEnum.COMPLETED) {
+    if (status === StatusEnum.COMPLETED) {
       this.notificationsGateway.emitTransactionCompleted({
         transactionId: row.id,
         vendorId: row.vendor_id,

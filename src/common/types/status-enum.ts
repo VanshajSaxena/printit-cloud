@@ -3,5 +3,6 @@ export enum StatusEnum {
   QUEUED = 'QUEUED',
   PRINTING = 'PRINTING',
   COMPLETED = 'COMPLETED',
+  REJECTED = 'REJECTED',
   ERROR = 'ERROR',
 }
