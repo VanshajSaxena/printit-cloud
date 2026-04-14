@@ -50,6 +50,7 @@ export class AnalyticsService {
 
           WHERE
             t.vendor_id = $1
+            AND t.status = 'COMPLETED'
             AND t.created_at >= date_trunc('day', now()) - interval '1 day'
             AND t.created_at < date_trunc('day', now()) + interval '1 day'
         )
