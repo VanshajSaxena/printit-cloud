@@ -145,7 +145,7 @@ export class TransactionService {
         WHERE transaction_id = $1
       ),
       inserted_history AS (
-        INSERT INTO transaction_status_history (transaction_id, status, reason, "createdAt")
+        INSERT INTO transaction_status_history (transaction_id, status, reason, "created_at")
         SELECT id, $2, $3, NOW()
         FROM updated_transaction
       )

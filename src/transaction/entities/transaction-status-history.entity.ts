@@ -22,6 +22,6 @@ export class TransactionStatusHistory {
   @Column({ type: 'text', nullable: true })
   reason: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 }
