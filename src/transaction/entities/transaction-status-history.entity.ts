@@ -16,7 +16,11 @@ export class TransactionStatusHistory {
   @ManyToOne(() => Transaction, (t) => t.statusHistory)
   transaction: Transaction;
 
-  @Column('enum', { enum: StatusEnum, default: StatusEnum.PENDING })
+  @Column('enum', {
+    enum: StatusEnum,
+    enumName: 'status_enum',
+    default: StatusEnum.PENDING,
+  })
   status: StatusEnum;
 
   @Column({ type: 'text', nullable: true })
