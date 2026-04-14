@@ -44,9 +44,9 @@ export class AnalyticsService {
               WHERE t.created_at < date_trunc('day', now())
             ) AS "yesterdayOrders"
 
-          FROM transaction t
-          JOIN job j ON j.transaction_id = t.id
-          JOIN document d ON j.document_id = d.id
+          FROM transactions t
+          JOIN jobs j ON j.transaction_id = t.id
+          JOIN documents d ON j.document_id = d.id
 
           WHERE
             t.vendor_id = $1
