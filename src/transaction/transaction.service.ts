@@ -23,6 +23,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
 import { UpdateTransactionResultRow } from './types/update-transaction-result-row';
 import { RequestUser } from 'src/decorators/public.decorator';
+import { PaginatedFindTransactionResponseDto } from './dto/paginated-find-transaction-response.dto';
 
 @Injectable()
 export class TransactionService {
@@ -124,7 +125,7 @@ export class TransactionService {
         order: { createdAt: 'DESC' },
       },
     );
-    return {
+    const result = {
       data: plainToInstance(FindTransactionResponseDto, transactions),
       meta: {
         page: safePage,
@@ -133,6 +134,7 @@ export class TransactionService {
         totalPages: Math.ceil(total / safePageSize),
       },
     };
+    return plainToInstance(PaginatedFindTransactionResponseDto, result);
   }
 
   async findOne(id: number) {
