@@ -101,18 +101,38 @@ export class TransactionService {
     }
   }
 
-  async findAll(user: RequestUser, statuses?: StatusEnum[]) {
+  async findAll(
+    user: RequestUser,
+    statuses?: StatusEnum[],
+    page = 1,
+    pageSize = 10,
+  ) {
+    const safePage = page;
+    const safePageSize = pageSize;
     const where: FindOptionsWhere<Transaction> = {
       vendor: { id: user.sub },
     };
     if (statuses?.length) {
       where.status = In(statuses);
     }
-    const transactions = await this.transactionRepository.find({
-      relations: { jobs: { document: true } },
-      where,
-    });
-    return plainToInstance(FindTransactionResponseDto, transactions);
+    const [transactions, total] = await this.transactionRepository.findAndCount(
+      {
+        relations: { jobs: { document: true } },
+        where,
+        take: safePageSize,
+        skip: (safePage - 1) * safePageSize,
+        order: { createdAt: 'DESC' },
+      },
+    );
+    return {
+      data: plainToInstance(FindTransactionResponseDto, transactions),
+      meta: {
+        page: safePage,
+        pageSize: safePageSize,
+        total,
+        totalPages: Math.ceil(total / safePageSize),
+      },
+    };
   }
 
   async findOne(id: number) {
