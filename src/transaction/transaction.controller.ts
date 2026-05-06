@@ -33,12 +33,17 @@ export class TransactionController {
   }
 
   @Get()
-  @ApiQuery({ name: 'status', required: false, enum: StatusEnum })
+  @ApiQuery({
+    name: 'statuses',
+    required: false,
+    enum: StatusEnum,
+    isArray: true,
+  })
   async findAll(
     @CurrentUser() currentUser: RequestUser,
-    @Query('status') status?: StatusEnum,
+    @Query('statuses') statuses?: StatusEnum[],
   ) {
-    return this.transactionService.findAll(currentUser, status);
+    return this.transactionService.findAll(currentUser, statuses);
   }
 
   @Public()

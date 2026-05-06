@@ -11,6 +11,8 @@ import {
   DataSource,
   EntityNotFoundError,
   FindOneOptions,
+  FindOptionsWhere,
+  In,
   Repository,
 } from 'typeorm';
 import { CreateTransactionRequestDto } from './dto/create-transaction-request.dto';
@@ -99,10 +101,16 @@ export class TransactionService {
     }
   }
 
-  async findAll(user: RequestUser, status?: StatusEnum) {
+  async findAll(user: RequestUser, statuses?: StatusEnum[]) {
+    const where: FindOptionsWhere<Transaction> = {
+      vendor: { id: user.sub },
+    };
+    if (statuses?.length) {
+      where.status = In(statuses);
+    }
     const transactions = await this.transactionRepository.find({
       relations: { jobs: { document: true } },
-      where: { status: status, vendor: { id: user.sub } },
+      where,
     });
     return plainToInstance(FindTransactionResponseDto, transactions);
   }
