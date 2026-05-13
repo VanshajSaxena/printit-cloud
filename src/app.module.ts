@@ -19,6 +19,7 @@ import { VendorModule } from './vendor/vendor.module';
 import { AuthModule } from './auth/auth.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AnonUserModule } from './anon-user/anon-user.module';
+import { DownloadController } from './download/download.controller';
 
 @Module({
   imports: [
@@ -61,7 +62,7 @@ import { AnonUserModule } from './anon-user/anon-user.module';
     AnalyticsModule,
     AnonUserModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, DownloadController],
   providers: [
     AppService,
     PresenceService,
