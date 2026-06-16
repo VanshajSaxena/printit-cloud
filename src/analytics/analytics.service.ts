@@ -63,12 +63,18 @@ export class AnalyticsService {
 
           CASE
             WHEN "yesterdaySheets" = 0 THEN NULL
-            ELSE ("todaySheets" - "yesterdaySheets") * 100.0 / "yesterdaySheets"
+            ELSE ROUND(
+              (("todaySheets" - "yesterdaySheets") * 100.0 / "yesterdaySheets")::numeric,
+              2
+            )::float
           END AS "sheetPercentageChange",
 
           CASE
             WHEN "yesterdayOrders" = 0 THEN NULL
-            ELSE ("todayOrders" - "yesterdayOrders") * 100.0 / "yesterdayOrders"
+            ELSE ROUND(
+              (("todayOrders" - "yesterdayOrders") * 100.0 / "yesterdayOrders")::numeric,
+              2
+            )::float
           END AS "orderPercentageChange"
 
         FROM stats;
@@ -123,7 +129,10 @@ export class AnalyticsService {
 
       CASE
         WHEN "yesterdayUsers" = 0 THEN NULL
-        ELSE ("todayUsers" - "yesterdayUsers") * 100.0 / "yesterdayUsers"
+        ELSE ROUND(
+          (("todayUsers" - "yesterdayUsers") * 100.0 / "yesterdayUsers")::numeric,
+          2
+        )::float
       END AS "userPercentageChange"
 
     FROM stats;`,
@@ -137,24 +146,17 @@ export class AnalyticsService {
     return new DashboardCardAnalytics({
       todaySheets: sheetOrder.todaySheets,
       yesterdaySheets: sheetOrder.yesterdaySheets,
-      sheetPercentageChange:
-        sheetOrder.sheetPercentageChange !== null
-          ? sheetOrder.sheetPercentageChange
-          : null,
+      sheetPercentageChange: sheetOrder.sheetPercentageChange,
 
       todayOrders: sheetOrder.todayOrders,
       yesterdayOrders: sheetOrder.yesterdayOrders,
-      orderPercentageChange:
-        sheetOrder.orderPercentageChange !== null
-          ? sheetOrder.orderPercentageChange
-          : null,
+      orderPercentageChange: sheetOrder.orderPercentageChange,
 
       totalUsers: users.totalUsers,
 
       todayUsers: users.todayUsers,
       yesterdayUsers: users.yesterdayUsers,
-      userPercentageChange:
-        users.userPercentageChange !== null ? users.userPercentageChange : null,
+      userPercentageChange: users.userPercentageChange,
 
       todayNewUsers: users.todayNewUsers,
       yesterdayNewUsers: users.yesterdayNewUsers,
