@@ -4,7 +4,7 @@
   "description": "Printit Backend",
   "author": "Vanshaj Saxena",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

@@ -1,98 +1,75 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# printit-cloud
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The backend API for Printit. It keeps track of shops, their printers and orders, hands out upload and download links for files, and passes live updates between the students' web app and the shops' desktop app.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Printit let students send documents to a print shop from their phone. They opened a web app, picked a shop by scanning the QR code on its counter or from a list of nearby shops, uploaded PDFs and chose color and copies for each page. The shop's Windows PC printed the order and reported progress back to the student's phone as it happened.
 
-## Description
+Printit is shelved. I built it between August 2025 and July 2026 and I'm not maintaining it any more.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## How it fits with the rest of Printit
 
-## Project setup
+| Repository | Part |
+| --- | --- |
+| printit-cloud (this one) | The API: shops, orders, file storage, live notifications |
+| [printit-pwa](https://github.com/VanshajSaxena/printit-pwa) | The web app students used on their phones |
+| [printit-desktop](https://github.com/VanshajSaxena/printit-desktop) | The Electron app shops ran on their Windows PC |
+| [win-print-service](https://github.com/VanshajSaxena/win-print-service) | The Windows print service the shop app talks to |
 
-```bash
-$ yarn install
+Both apps talk to this API. Files don't pass through it: the web app asks for signed upload URLs and uploads PDFs straight to Cloudflare R2, and the shop app downloads them with signed URLs in the same way. Both apps generate their TypeScript API types from the OpenAPI document this server publishes.
+
+I wrote about the project at [vanshajsaxena.com/projects/printit](https://vanshajsaxena.com/projects/printit/). The posts on [the shop app's state machine](https://vanshajsaxena.com/posts/electron-state-machine/) and [the Windows print spooler](https://vanshajsaxena.com/posts/windows-print-spooler/) cover what happens once an order reaches a shop.
+
+## What it does
+
+- REST API under `/api/v1` for vendors (shops), printers, transactions (an order) and jobs (one document in an order with its print settings), plus documents, file links, auth and dashboard numbers for shops.
+- Finds shops near a point with PostGIS (`ST_DWithin` on a geography column) and returns them sorted by distance.
+- A Socket.IO namespace, `/notifications`, that tells a shop about new orders, sends job and order status to the student who placed the order, and tracks which shops are online.
+- Shops sign in with email and password, or with Google or Microsoft. The API issues JWTs. Students don't have accounts. The web app sends an anonymous ID, which the API counts per shop for the shop's dashboard.
+- Swagger UI at `/docs`, with the OpenAPI document at `/docs/json` and `/docs/yaml`.
+
+Stack: NestJS 11, TypeScript, TypeORM, PostgreSQL with PostGIS, Socket.IO, Passport, the AWS S3 SDK (pointed at Cloudflare R2) and Swagger. It ran on Railway, built from the `Dockerfile`.
+
+## Running it locally
+
+You need Node.js, Yarn 4 (through Corepack) and PostgreSQL with the PostGIS extension. Docker is the quickest way to get the database:
+
+```sh
+docker run -d --name printit-db -p 5432:5432 \
+  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=printit \
+  postgis/postgis:16-3.4
 ```
 
-## Compile and run the project
+`yarn start` runs with `NODE_ENV=development` and reads `.env.development`:
 
-```bash
-# development
-$ yarn run start
+```sh
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/printit
+JWT_SECRET=change-me
 
-# watch mode
-$ yarn run start:dev
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+R2_BUCKET_NAME=printit
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
 
-# production mode
-$ yarn run start:prod
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/v1/auth/google/callback
+MICROSOFT_CLIENT_ID=...
+MICROSOFT_CLIENT_SECRET=...
+MICROSOFT_CALLBACK_URL=http://localhost:3000/api/v1/auth/microsoft/callback
 ```
 
-## Run tests
+The server won't start without the R2 and OAuth settings, and it needs the database and the JWT secret to do anything. Placeholder values are enough to start it, but uploads need a real R2 bucket and the Google and Microsoft sign-in needs real OAuth apps.
 
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+```sh
+corepack enable
+yarn install
+yarn start
 ```
 
-## Deployment
+In development TypeORM creates the tables on start. The API listens on port 3000 (set `PORT` to change it). `http://localhost:3000/api/v1/ping` should answer and `http://localhost:3000/docs` shows the API.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+`yarn build` compiles to `dist/`. Most of the unit test files are the stubs Nest generated and were never kept up to date, so `yarn test` fails.
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT, see [LICENSE](LICENSE).
